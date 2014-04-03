@@ -24,7 +24,7 @@ class Test():
 
 	NetworkProvider = "UNKNOWN"
 	NetworkOperator = "UNKNOWN"
-	DeviceID = "UNKNWON"
+	DeviceID = "UNKNOWN"
 	ConnectionType = "UNKNOWN"
 
 	def __init__(self,filePath):
