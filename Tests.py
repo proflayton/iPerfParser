@@ -19,19 +19,19 @@ def ReadToAndGetLine(fileStream, delimiter):
 
 class Test():
 
-    Time        = "UNKNOWN"
+    Time = "UNKNOWN"
 
-    OSName      = "UNKNOWN"
-    OSArchitectue="UNKNOWN"
-    OSVersion   = "UNKNOWN"
+    OSName = "UNKNOWN"
+    OSArchitectue ="UNKNOWN"
+    OSVersion = "UNKNOWN"
 
     JavaVersion = "UNKNOWN"
-    JavaVender  = "UNKNOWN"
+    JavaVender = "UNKNOWN"
 
     Networktype = "UNKNWON"
 
-    Server      = "UNKNOWN"
-    Host        = "UNKNOWN"
+    Server = "UNKNOWN"
+    Host = "UNKNOWN"
 
     NetworkProvider = "UNKNOWN"
     NetworkOperator = "UNKNOWN"
