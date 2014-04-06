@@ -1,11 +1,27 @@
-'''
-Testing File
-'''
+# ------------------------------------------------------------------------
+# MAIN.PY
+#
+# AUTHOR(S):   Peter Walker, Brandon Layton
+#
+# PURPOSE-  This program will initially ask the user to choose the folder
+#           that houses the raw data files from iPerf speed tests. It then
+#           constructs an object that will house the raw data parsed into
+#           useable objects for analysis
+#
+# INPUTS-   This program initially asks the user for the location of the
+#           raw data files.
+#           !!NOTE!! All of the data files should be in the same locaiton!!
+#           After parsing the data, the program will ask the user
+#           what type of analysis they wish to perform.
+#
+# OUTPUTS-  The program, upon parsing the data and recieving a command
+#           for a specific analysis, will generate _______
+#
+# ------------------------------------------------------------------------
 
 from Tests import *
 import os
-import Tkinter, tkFileDialog
-#from tKinter import askopenfilename, askdirectory
+import Tkinter as TK, tkFileDialog as TKFD
 
 """
 path = tkFileDialog.askopenfilename()
@@ -21,18 +37,13 @@ print (path[:path.rfind("/")] )
 #print(t)
 """
 
-#import sys
-#print(sys.platform)
-
-import platform
-print(platform.system())
 #apparently, after calling this, Mac is "Darwin", Linux is "linux____", and Windows is "win____"
 # so, basically, if we want to check for windows, check for "win", otherwise, it's Unix based, and "/" is used'
 
 #print(os.name)
 
 #This is another tKinter function in the TkFileDialog (or tkinter.filedialog) module
-rootOfFiles = tkFileDialog.askdirectory()
+rootOfFiles = TKFD.askdirectory()
 for root, dirs, files in os.walk(rootOfFiles):
     for aFile in files:
         print( Test(os.path.join(root, aFile)) )

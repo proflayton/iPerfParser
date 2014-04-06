@@ -1,14 +1,41 @@
-'''
-Tests.py
 
-Class to hold information for each iPerf tests
+# ------------------------------------------------------------------------
+# This section checks to see if the script is being run directly,
+# i.e. through the command line. If it is, then it stops and exits the
+# program, asking the user to use these files by running the main.py
+# ------------------------------------------------------------------------
+if __name__ == '__main__':
+    print("Please run main.py.")
 
-Author: Brandon Layton
-'''
+    import os
+    search = []
+    for root, dirs, files in os.walk("/"):
+        for name in files:
+            if name == "main.py":
+                search.append(os.path.join(root, name))
+    print("Your file seems to be located in one of these paths:")
+    print(search)
+    return false
+#END __name__=='__main__'
 
-'''
-Here are some functions I use to aid in loading information
-'''
+
+
+
+
+# ------------------------------------------------------------------------
+# SPEEDTEST.PY
+#
+# AUTHOR(S):   Peter Walker, Brandon Layton
+#
+# PURPOSE-  ..
+#
+# FUNCTIONS:
+#   ReadToAndGetLine - Given a file stream, reads the stream until the delimiter is found
+#       INPUTS-   ..
+#       OUTPUTS-  ..
+#
+# ------------------------------------------------------------------------
+
 #Keeps reading until it finds a line with the deliminator, then returns that line
 def ReadToAndGetLine(fileStream, delimiter):
     temp = fileStream.readline()
