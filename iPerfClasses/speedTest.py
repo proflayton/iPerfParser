@@ -7,15 +7,25 @@
 if __name__ == '__main__':
     print("Please run main.py.")
 
-    import os
+    #Changing Current Working Directory to 3 levels up
+    import os, sys
+    os.chdir("../../..")
+    duhDir = os.getcwd()
+
+    #Initialize array to hold locations of "main.py"
+    #Using os.walk to look in all sub-directories
     search = []
-    for root, dirs, files in os.walk("/"):
+    for root, dirs, files in os.walk(duhDir):
         for name in files:
             if name == "main.py":
                 search.append(os.path.join(root, name))
+
     print("Your file seems to be located in one of these paths:")
-    print(search)
-    return false
+    for link in search:
+        print(link)
+
+    #Telling the system to exit with no errors
+    sys.exit(0)
 #END __name__=='__main__'
 
 
@@ -44,7 +54,7 @@ def ReadToAndGetLine(fileStream, delimiter):
         if not temp: break
     return temp
 
-class Test():
+class speedTest():
 
     Time = "UNKNOWN"
 
