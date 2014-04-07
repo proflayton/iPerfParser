@@ -48,7 +48,10 @@ if __name__ == '__main__':
 
 from .SpeedTestFile import SpeedTestFile
 import os, sys
-import Tkinter as TK, tkFileDialog as TKFD
+if sys.version_info < (3,0):
+    import Tkinter as TK, tkFileDialog as TKFD
+else:
+    import tkinter as TK, tkinter.filedialog as TKFD
 class SpeedTestDS():
 
     # ---------------------

@@ -44,7 +44,7 @@ if __name__ == '__main__':
 #
 # ------------------------------------------------------------------------
 from .readTo import readToAndGetLine
-from SpeedPings import SpeedPings
+from .SpeedPings import SpeedPings
 class SpeedTest():
 
     Latitude = 0.0
@@ -74,4 +74,3 @@ class SpeedTest():
         pass
     #END DEF
 #END CLASS
-
