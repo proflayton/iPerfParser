@@ -19,7 +19,7 @@
 #
 # ------------------------------------------------------------------------
 
-from iPerfClasses import speedTest
+from iPerfClasses.SpeedTestFile import SpeedTestFile
 import os, sys
 import Tkinter as TK, tkFileDialog as TKFD
 
@@ -32,15 +32,15 @@ if (len(sys.argv) > 1):
     if (sys.argv[1] == "-c"):
         for root, dirs, files in os.walk("/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"):
             for aFile in files:
-                print( speedTest.speedTest(os.path.join(root, aFile)) )
+                print( SpeedTestFile(os.path.join(root, aFile)) )
     elif (sys.argv[1] == "-cs"):
         file1 = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/10_17_2013/99000344556962-10172013151027.txt"
         file2 = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/10_17_2013/356420059231100-10172013094856.txt"
         file3 = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/10_17_2013/WBBDTest2-10172013151943.txt"
 
-        print(str( speedTest.speedTest(file1) ))
-        print(str( speedTest.speedTest(file2) ))
-        print(str( speedTest.speedTest(file3) ))
+        print(str( SpeedTestFile(file1) ))
+        print(str( SpeedTestFile(file2) ))
+        print(str( SpeedTestFile(file3) ))
     else:
         print("I don't know that option. I'm just a silly computer. I know -c and -cs")
     #END IF/ELIF/ELSE
@@ -60,7 +60,7 @@ else:
     # the module, and the right speedTest is the class. Maybe I should rename that?
     for root, dirs, files in os.walk(rootOfFiles):
         for aFile in files:
-            print( speedTest.speedTest(os.path.join(root, aFile)) )
+            print( SpeedTestFile(os.path.join(root, aFile)) )
 
     """ Cool example code of os.walk()
 
