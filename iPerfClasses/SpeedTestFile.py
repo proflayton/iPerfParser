@@ -60,9 +60,9 @@ if __name__ == '__main__':
 #
 # ------------------------------------------------------------------------
 
-from readTo import readToAndGetLine
-
-class speedTest():
+from .readTo import readToAndGetLine
+from .IndividualSpeedTest import SpeedTest
+class SpeedTestFile():
 
     # -------------------
     # Initializing some class attributes
@@ -87,7 +87,7 @@ class speedTest():
 
     LocationID = "UNKNOWN"
 
-    subtests = []
+    speedTests = []
     isWBBD = False #These stupid WBBD files :)
     # -------------------
 
@@ -112,6 +112,7 @@ class speedTest():
     # RETURN:   none
     def load(self, filePath):
 
+        #Print will print out the bottom three levels of the path passed in
         print("Loading in data @ " + "\"/" + "/".join(filePath.split("/")[-3:]) + "\"" );
         f = open(filePath,'r')
 
@@ -133,8 +134,9 @@ class speedTest():
             else:
                 self.Time = f.readline()[:-1]
         except:
-            print("ERROR LOADING Time DATA")
-            return
+            #Raises an error (stops the script) and gives the file that caused the error
+            raise StandardError("ERROR LOADING Time DATA: "
+                                 + "/".join(filePath.split("/")[-2:]))
 
         #Read in Operating System Header Information
         if not self.isWBBD:
@@ -151,8 +153,8 @@ class speedTest():
                 if self.OSArchitectue == "": self.OSArchitectue = "N/A"
                 if self.OSVersion == "": self.OSVersion = "N/A"
             except:
-                print("ERROR LOADING OS Name/Architecture/Version DATA")
-                return
+                raise StandardError("ERROR LOADING OS Name/Architecture/Version DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
         #END IF
 
         #Read in Java Header Information
@@ -164,8 +166,8 @@ class speedTest():
                 if self.JavaVersion == "": self.JavaVersion = "N/A"
                 if self.JavaVender == "": self.JavaVender = "N/A"
             except:
-                print("ERROR LOADING Java Version/Vendor DATA")
-                return
+                raise StandardError("ERROR LOADING Java Version/Vendor DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
         #END IF
 
         #Read in Network Type Information
@@ -174,8 +176,8 @@ class speedTest():
                 self.NetworkType = readToAndGetLine(f,"NetworkType: ").split("NetworkType: ")[1][:-2]
                 if self.NetworkType == "": self.NetworkType = "N/A"
             except:
-                print("ERROR LOADING NetworkType DATA")
-                return
+                raise StandardError("ERROR LOADING NetworkType DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
         else:
             self.NetworkType = "netbook"
         #END IF/ELSE
@@ -187,15 +189,15 @@ class speedTest():
                 self.Server = readToAndGetLine(f,"Server: ").split("Server: ")[1][:-2]
                 if self.Server == "": self.Server = "N/A"
             except:
-                print("ERROR LOADING Server DATA")
-                return
+                raise StandardError("ERROR LOADING Server DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
             #Read in Host Header Information
             try:
                 self.Host = readToAndGetLine(f,"Host: ").split("Host: ")[1][:-2]
                 if self.Host == "": self.Host = "N/A"
             except:
-                print("ERROR LOADING Host DATA")
-                return
+                raise StandardError("ERROR LOADING Host DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
         #END IF
 
         #Get Network Provider
@@ -210,8 +212,8 @@ class speedTest():
                 self.NetworkProvider = readToAndGetLine(f,"Network Provider: ").split("Network Provider: ")[1][:-2]
             if self.NetworkProvider == "": self.NetworkProvider = "N/A"
         except:
-            print("ERROR LOADING NetworkProvider DATA")
-            return
+            raise StandardError("ERROR LOADING NetworkProvider DATA: "
+                                 + "/".join(filePath.split("/")[-2:]))
 
         #Get other Network information
         if not self.isWBBD:
@@ -220,22 +222,22 @@ class speedTest():
                 self.NetworkOperator = readToAndGetLine(f,"NetworkOperator: ").split("NetworkOperator: ")[1][:-2]
                 if self.NetworkOperator == "": self.NetworkOperator = "N/A"
             except:
-                print("ERROR LOADING NetworkOperator DATA")
-                return
+                raise StandardError("ERROR LOADING NetworkOperator DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
             #Get Device ID
             try:
                 self.DeviceID = readToAndGetLine(f,"Device ID: ").split("Device ID: ")[1][:-2]
                 if self.DeviceID == "": self.DeviceID = "N/A"
             except:
-                print("ERROR LOADING Device ID DATA")
-                return
+                raise StandardError("ERROR LOADING Device ID DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
             #Get Device ConnectionType
             try:
                 self.ConnectionType = readToAndGetLine(f,"ConnectionType: ").split("ConnectionType: ")[1][:-2]
                 if self.ConnectionType == "": self.ConnectionType = "N/A"
             except:
-                print("ERROR LOADING Device Connection Type DATA")
-                return
+                raise StandardError("ERROR LOADING Device Connection Type DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
         #END IF
 
         #Get the Location ID
@@ -244,15 +246,17 @@ class speedTest():
                 self.LocationID = readToAndGetLine(f,"Location ID: ").split("Location ID: ")[1][:-2]
                 if self.LocationID == "": self.LocationID = "N/A"
             except:
-                print("ERROR LOADING Location ID DATA")
-                return
+                raise StandardError("ERROR LOADING Location ID DATA: "
+                                     + "/".join(filePath.split("/")[-2:]))
         #END IF
 
+
+
         """
-        tempSubTest = self.findSubTest(f)
-        while not tempSubTest is None:
-            self.subtests.append(tempSubTest)
-            tempSubTest = self.findSubTest(f)
+        tempSpeedTest = self.findSpeedTest(f)
+        while not tempSpeedTest is None:
+            self.subtests.append(tempSpeedTest)
+            tempSpeedTest = self.findSpeedTest(f)
         """
         f.close()
     #END DEF
@@ -262,8 +266,16 @@ class speedTest():
     # PARAMS:   self- reference to object (THIS)
     #           fileStream- FileStream object, read stream of the file
     # RETURN:   subtest - SubTest object holding parsed data for sub-test (e.g. TCP West)
-    def findSubTest(self, fileStream):
-        subtest = None
+
+    # !!!
+    # I think we should instead look for the iperf command line. That function call
+    # will likely hold all of the information that we need, and is always in the file above the test
+    #
+    # e.g. Iperf command line:/data/data/net.measurementlab.ndt/files/iperfT
+    #               -c 184.72.63.139 -e -w 32k -P 4 -i 1 -t 10 -f k -p 5003
+    # !!!
+    def findSpeedTest(self, fileStream):
+        speedtest = None
         temp = fileStream.readline()
         while "Starting Test " not in temp:
             temp = fileStream.readline()
@@ -271,22 +283,22 @@ class speedTest():
         if not temp or temp is None:
             return None
         else:
-            subtest = SubTest()
+            speedtest = SubTest()
             #Start parsing the subtest
 
             #Split from the colon and remove the ....'s on the right
             testType = temp.split(": ")[1].split(".")[0]
-            subtest.Type = testType
+            speedtest.Type = testType
 
             temp = readToAndGetLine(fileStream,"Client connecting to ").split("Client connecting to ")[1]
             ip = temp.split(",")[0]
             port = temp.split("port ")[1].replace("\n","")
-            subtest.IP = ip
-            subtest.Port = port
+            speedtest.IP = ip
+            speedtest.Port = port
 
             print("%s\n%s:%s"%(testType,ip,port))
 
-        return subtest
+        return speedtest
     #END DEF
 
 
@@ -312,56 +324,4 @@ class speedTest():
                 "    "
                 )
     #END DEF
-
-
-
-#Small tests within each Test file
-class SubTest():
-
-    Latitude = 0.0
-    Longitude= 0.0
-
-    #Example: Iperf TCP West
-    ## !!!!
-    ## Some tests (like in WBBD) do not specifiy TCP West,TCP East,UDP West, etc.
-    ## It would be better to just compare the IP address the test is connecting to
-    ##  and then assign TCP/UDP West/East based on that value
-    ##
-    ## 184.72.222.65 = East TCP/UDP
-    ## 184.72.63.139 = West TCP/UDP
-    ## !!!!!
-    Type     = "UNKNOWN"
-
-    IP       = "UNKNOWN"
-    Port     = 0000
-
-    WindowSz = 0 #In KByte
-
-    pings = []
-
-    def __init__(self):
-        pass
-
-#Each subset of pings within each subset (represented by a numbered thread)
-class Pings():
-    localHost = "UNKNOWN"
-    localPort = 0
-    serverHost= "UNKNWON"
-    serverPort= 0
-
-    pings = []
-
-    def __init__(self):
-        pass
-
-#Each ping within a subset of pings
-class Ping():
-    #second started to second ended
-    secIntervalStart = 0
-    secIntervalEnd   = 0
-
-    size             = 0
-    speed            = 0
-
-    def __init__(self):
-        pass
+#END CLASS
