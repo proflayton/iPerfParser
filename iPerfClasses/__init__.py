@@ -4,4 +4,4 @@
 # see - https://docs.python.org/2/tutorial/modules.html - for more details
 # ------------------------------------------------------------------------
 
-__all__ = ["speedTest"]
+#__all__ = ["speedTest"]
