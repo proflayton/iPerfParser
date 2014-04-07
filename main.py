@@ -19,61 +19,13 @@
 #
 # ------------------------------------------------------------------------
 
-from iPerfClasses.SpeedTestFile import SpeedTestFile
+from iPerfClasses.SpeedTestDataStructure import SpeedTestDS
 import os, sys
-import Tkinter as TK, tkFileDialog as TKFD
+
+# Here's where main actually starts
+# creating a Speed Test Data Structure
+NewSpeedTestDS = SpeedTestDS()
+# Loading in the raw data, and passing in the system arguements
+NewSpeedTestDS.loadRawData(sys.argv)
 
 
-#cheat for not having to select the folder every time.
-#change string in os.walk to be the absolute path to the data files
-#In command line, use "python main.py -c"
-# use "python main.py -cs" to only test on 3 files (one of each type)
-if (len(sys.argv) > 1):
-    if (sys.argv[1] == "-c"):
-        for root, dirs, files in os.walk("/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"):
-            for aFile in files:
-                print( SpeedTestFile(os.path.join(root, aFile)) )
-    elif (sys.argv[1] == "-cs"):
-        file1 = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/10_17_2013/99000344556962-10172013151027.txt"
-        file2 = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/10_17_2013/356420059231100-10172013094856.txt"
-        file3 = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/10_17_2013/WBBDTest2-10172013151943.txt"
-
-        print(str( SpeedTestFile(file1) ))
-        print(str( SpeedTestFile(file2) ))
-        print(str( SpeedTestFile(file3) ))
-    else:
-        print("I don't know that option. I'm just a silly computer. I know -c and -cs")
-    #END IF/ELIF/ELSE
-else:
-
-    #Asking for a directory from the user
-    # initialdir sets the starting point as the user's home directory
-    # title sets what to display in the title of the dialog box
-    # mustexits means that the folder chosen must exist
-    print("Please select the folder containing all of the raw data in the new dialog box...")
-    rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
-                                     title = "Select the Folder Containing the Raw Data",
-                                     mustexist = True)
-
-    #Loops through all files in given folder
-    #You must use speedTest.speedTest as the left speedTest is
-    # the module, and the right speedTest is the class. Maybe I should rename that?
-    for root, dirs, files in os.walk(rootOfFiles):
-        for aFile in files:
-            print( SpeedTestFile(os.path.join(root, aFile)) )
-
-    """ Cool example code of os.walk()
-
-    # Delete everything reachable from the directory named in "top",
-    # assuming there are no symbolic links.
-    # CAUTION:  This is dangerous!  For example, if top == '/', it
-    # could delete all your disk files.
-    import os
-    for root, dirs, files in os.walk(top, topdown=False):
-        for name in files:
-            os.remove(os.path.join(root, name))
-        for name in dirs:
-            os.rmdir(os.path.join(root, name))
-
-    """
-#END IF/ELSE

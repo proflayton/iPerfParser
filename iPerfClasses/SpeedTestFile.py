@@ -66,7 +66,9 @@ class SpeedTestFile():
 
     # -------------------
     # Initializing some class attributes
-    Time = "UNKNOWN"
+    FileName = "UNKNOWN"
+
+    DateTime = "UNKNOWN"
 
     OSName = "UNKNOWN"
     OSArchitectue ="UNKNOWN"
@@ -101,6 +103,7 @@ class SpeedTestFile():
         # !!!
         if (filePath.split("/")[-1][:8] == "WBBDTest"):
             self.isWBBD = True
+        self.FileName = filePath.split("/")[-1]
         self.load(filePath)
     #END INIT
 
@@ -126,16 +129,16 @@ class SpeedTestFile():
             print("File Name: "+filePath)
             raise SystemExit
 
-        #Reading in the Time of the test
+        #Reading in the DateTime of the test
         try:
             if not self.isWBBD:
                 time = f.readline().split("at ")[1]
-                self.Time = time[:-1]
+                self.DateTime = time[:-1]
             else:
-                self.Time = f.readline()[:-1]
+                self.DateTime = f.readline()[:-1]
         except:
             #Raises an error (stops the script) and gives the file that caused the error
-            raise StandardError("ERROR LOADING Time DATA: "
+            raise StandardError("ERROR LOADING DateTime DATA: "
                                  + "/".join(filePath.split("/")[-2:]))
 
         #Read in Operating System Header Information
@@ -307,13 +310,15 @@ class SpeedTestFile():
     # RETURN:   String, contains all object data in an easy-to-print-and-read string
     def __str__(self):
         if self.isWBBD:
-            return ("Speed Test taken - " + self.Time + "\n" +
+            return ("Filename: " + self.FileName + "\n" +
+                    "    DateTime of Speed Test - " + self.DateTime + "\n" +
                     "    Network Type: " + self.NetworkType + "\n" +
                     "    Network: Provider = " + self.NetworkProvider + "\n" +
                     "    Location ID: " + self.LocationID + "\n" +
                     "    "
                     )
-        return ("Speed Test taken - " + self.Time + "\n" +
+        return ("Filename: " + self.FileName + "\n" +
+                "    DateTime of Speed Test - " + self.DateTime + "\n" +
                 "    OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
                 "    Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
                 "    Network Type: " + self.NetworkType + "\n" +

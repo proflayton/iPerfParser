@@ -62,4 +62,3 @@ class SpeedPings():
         pass
     #END DEF
 #END CLASS
-
