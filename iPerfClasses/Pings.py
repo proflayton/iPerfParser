@@ -1,5 +1,4 @@
 
-
 # ------------------------------------------------------------------------
 # This section checks to see if the script is being run directly,
 # i.e. through the command line. If it is, then it stops and exits the
@@ -26,14 +25,15 @@ if __name__ == '__main__':
         print(link)
 
     #Telling the system to exit with no errors
-    sys.exit(0)
+    raise SystemExit
 #END __name__=='__main__'
+
 
 
 
 # Each ping within a subset of pings
 # ------------------------------------------------------------------------
-# SPEEDPINGS.PY
+# PINGS.PY
 #
 # AUTHOR(S):   Peter Walker, Brandon Layton
 #
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 #       OUTPUTS-    ..
 #
 # ------------------------------------------------------------------------
-from .readTo import readToAndGetLine
+from .utils import readToAndGetLine
 class Ping():
     #second started to second ended
     secIntervalStart = 0

@@ -25,8 +25,10 @@ if __name__ == '__main__':
         print(link)
 
     #Telling the system to exit with no errors
-    sys.exit(0)
+    raise SystemExit
 #END __name__=='__main__'
+
+
 
 
 # Small tests within each Test file
@@ -43,8 +45,8 @@ if __name__ == '__main__':
 #       OUTPUTS-    ..
 #
 # ------------------------------------------------------------------------
-from .readTo import readToAndGetLine
-from .SpeedPings import SpeedPings
+from .utils import readToAndGetLine
+from .PingThread import PingThread
 class SpeedTest():
 
     Latitude = 0.0

@@ -1,3 +1,12 @@
+
+# ------------------------------------------------------------------------
+# Making sure that the version of python being used is at least 2.7
+# ------------------------------------------------------------------------
+from iPerfClasses.utils import checkVersion
+if not checkVersion((2,6)):
+    raise SystemExit
+
+
 # ------------------------------------------------------------------------
 # MAIN.PY
 #
@@ -19,13 +28,13 @@
 #
 # ------------------------------------------------------------------------
 
-from iPerfClasses.SpeedTestDataStructure import SpeedTestDS
-import os, sys
+from iPerfClasses.SpeedTestDataStructure import SpeedTestDS as STDs
+import os
+import sys
 
 # Here's where main actually starts
 # creating a Speed Test Data Structure
-NewSpeedTestDS = SpeedTestDS()
+NewSpeedTestDS = STDs()
 # Loading in the raw data, and passing in the system arguements
 NewSpeedTestDS.loadRawData(sys.argv)
-
 

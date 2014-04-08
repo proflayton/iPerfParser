@@ -25,9 +25,8 @@ if __name__ == '__main__':
         print(link)
 
     #Telling the system to exit with no errors
-    sys.exit(0)
+    raise SystemExit
 #END __name__=='__main__'
-
 
 
 
@@ -47,8 +46,10 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 
 from .SpeedTestFile import SpeedTestFile
-import os, sys
-if sys.version_info < (3,0):
+import os
+import sys
+from .utils import checkVersion
+if not checkVersion((3,0)):
     import Tkinter as TK, tkFileDialog as TKFD
 else:
     import tkinter as TK, tkinter.filedialog as TKFD
@@ -106,21 +107,12 @@ class SpeedTestDS():
             # the module, and the right speedTest is the class. Maybe I should rename that?
             for root, dirs, files in os.walk(rootOfFiles):
                 for aFile in files:
-                    print( SpeedTestFile(os.path.join(root, aFile)) )
-
-            """ Cool example code of os.walk()
-
-            # Delete everything reachable from the directory named in "top",
-            # assuming there are no symbolic links.
-            # CAUTION:  This is dangerous!  For example, if top == '/', it
-            # could delete all your disk files.
-            import os
-            for root, dirs, files in os.walk(top, topdown=False):
-                for name in files:
-                    os.remove(os.path.join(root, name))
-                for name in dirs:
-                    os.rmdir(os.path.join(root, name))
-            """
+                    #Seeing if the file given is, in fact, a data file
+                    #If not, the script will exit and display the message below
+                    f = open(os.path.join(root, aFile),'r')
+                    isItCPUC = f.readline()
+                    if ("CPUC Tester Beta v2.0" in isItCPUC):
+                        print( SpeedTestFile(os.path.join(root, aFile)) )
         #END IF/ELSE
     #END DEF
 #END CLASS

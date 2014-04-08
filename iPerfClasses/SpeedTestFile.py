@@ -25,9 +25,8 @@ if __name__ == '__main__':
         print(link)
 
     #Telling the system to exit with no errors
-    sys.exit(0)
+    raise SystemExit
 #END __name__=='__main__'
-
 
 
 
@@ -60,13 +59,14 @@ if __name__ == '__main__':
 #
 # ------------------------------------------------------------------------
 
-from .readTo import readToAndGetLine
+from .utils import readToAndGetLine, monthAbbrToNum
 from .IndividualSpeedTest import SpeedTest
 class SpeedTestFile():
 
     # -------------------
     # Initializing some class attributes
     FileName = "UNKNOWN"
+    FileStreamLoc = 0
 
     DateTime = "UNKNOWN"
 
@@ -88,21 +88,14 @@ class SpeedTestFile():
     ConnectionType = "UNKNOWN"
 
     LocationID = "UNKNOWN"
+    Latitude = 0
+    Longitude = 0
 
     speedTests = []
-    isWBBD = False #These stupid WBBD files :)
     # -------------------
 
     # init functions calls load using the given file path
     def __init__(self,filePath):
-        # !!!
-        # Look at the line below! In one line, I am splitting
-        #  the file path string based on "/", then getting
-        #  the last element, and then the first 8 characters of that element.
-        # HOW COOL IS THAT!?!
-        # !!!
-        if (filePath.split("/")[-1][:8] == "WBBDTest"):
-            self.isWBBD = True
         self.FileName = filePath.split("/")[-1]
         self.load(filePath)
     #END INIT
@@ -118,141 +111,147 @@ class SpeedTestFile():
         #Print will print out the bottom three levels of the path passed in
         print("Loading in data @ " + "\"/" + "/".join(filePath.split("/")[-3:]) + "\"" );
         f = open(filePath,'r')
-
-        #Seeing if the file given is, in fact, a data file
-        #If not, the script will exit and display the message below
-        isItCPUC = f.readline()
-        if ("CPUC Tester Beta v2.0" not in isItCPUC):
-            print("The file given to me was not a CPUC Network Speed Test.")
-            print("Here is the first line:")
-            print(isItCPUC)
-            print("File Name: "+filePath)
-            raise SystemExit
+        f.readline()
+        self.FileStreamLoc = f.tell()
 
         #Reading in the DateTime of the test
-        try:
-            if not self.isWBBD:
-                time = f.readline().split("at ")[1]
-                self.DateTime = time[:-1]
-            else:
-                self.DateTime = f.readline()[:-1]
-        except:
-            #Raises an error (stops the script) and gives the file that caused the error
-            raise StandardError("ERROR LOADING DateTime DATA: "
-                                 + "/".join(filePath.split("/")[-2:]))
-
-        #Read in Operating System Header Information
-        if not self.isWBBD:
-            temp = readToAndGetLine(f,"OS: ")
-            try:
-                self.OSName = temp.split("Name = ")[1].split(",")[0]
-                self.OSArchitectue = temp.split("Architecture = ")[1].split(",")[0]
-                ## !!!!!
-                ## [:-2] is used because there is a \r and \n character left on the end of the read line
-                ## !!!!!
-                self.OSVersion = temp.split("Version = ")[1][:-2]
-                # After parsing text, we need to check that there are no empty values
-                if self.OSName == "": self.OSName = "N/A"
-                if self.OSArchitectue == "": self.OSArchitectue = "N/A"
-                if self.OSVersion == "": self.OSVersion = "N/A"
-            except:
-                raise StandardError("ERROR LOADING OS Name/Architecture/Version DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
-        #END IF
-
-        #Read in Java Header Information
-        if not self.isWBBD:
-            temp = readToAndGetLine(f,"Java: ")
-            try:
-                self.JavaVersion = temp.split("Version = ")[1].split(",")[0];
-                self.JavaVender  = temp.split("Vendor = ")[1][:-2]
-                if self.JavaVersion == "": self.JavaVersion = "N/A"
-                if self.JavaVender == "": self.JavaVender = "N/A"
-            except:
-                raise StandardError("ERROR LOADING Java Version/Vendor DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
-        #END IF
-
-        #Read in Network Type Information
-        if not self.isWBBD:
-            try:
-                self.NetworkType = readToAndGetLine(f,"NetworkType: ").split("NetworkType: ")[1][:-2]
-                if self.NetworkType == "": self.NetworkType = "N/A"
-            except:
-                raise StandardError("ERROR LOADING NetworkType DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
+        f.seek(self.FileStreamLoc)
+        datetime = f.readline()
+        self.FileStreamLoc = f.tell()
+        if (self.FileName[:8] == "WBBDTest"):
+            self.DateTime = datetime[:-1]
         else:
-            self.NetworkType = "netbook"
+            datetime = datetime.split("at ")[1][4:-1]
+            month = str(monthAbbrToNum(datetime[:3]))
+            day = str(datetime[4:6])
+            year = str(datetime[-5:-1])
+            time = str(datetime[7:9]) + ":" + str(datetime[10:12]) + ":" + str(datetime[13:15])
+            self.DateTime = month + "/" + day + "/" + year + " " + time
         #END IF/ELSE
 
-        #Read in Connection Information
-        if not self.isWBBD:
-            #Read in Server Header Information
-            try:
-                self.Server = readToAndGetLine(f,"Server: ").split("Server: ")[1][:-2]
-                if self.Server == "": self.Server = "N/A"
-            except:
-                raise StandardError("ERROR LOADING Server DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
-            #Read in Host Header Information
-            try:
-                self.Host = readToAndGetLine(f,"Host: ").split("Host: ")[1][:-2]
-                if self.Host == "": self.Host = "N/A"
-            except:
-                raise StandardError("ERROR LOADING Host DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
-        #END IF
+        #Read in Operating System Header Information
+        temp = readToAndGetLine(f,"OS: ")
+        if temp:
+            self.OSName = temp.split("Name = ")[1].split(",")[0]
+            self.OSArchitectue = temp.split("Architecture = ")[1].split(",")[0]
+            self.OSVersion = temp.split("Version = ")[1][:-2]
+            # After parsing text, we need to check that there are no empty values
+            if self.OSName == "": self.OSName = "N/A"
+            if self.OSArchitectue == "": self.OSArchitectue = "N/A"
+            if self.OSVersion == "": self.OSVersion = "N/A"
+        else:
+            self.OSName = "N/A"
+            self.OSArchitectue = "N/A"
+            self.OSVersion = "N/A"
+        f.seek(self.FileStreamLoc)
+        #END IF/ELSE
+
+        #Read in Java Header Information
+        temp = readToAndGetLine(f,"Java: ")
+        if temp:
+            self.JavaVersion = temp.split("Version = ")[1].split(",")[0];
+            self.JavaVender  = temp.split("Vendor = ")[1][:-2]
+            if self.JavaVersion == "": self.JavaVersion = "N/A"
+            if self.JavaVender == "": self.JavaVender = "N/A"
+        else:
+            self.JavaVersion = "N/A"
+            self.JavaVender = "N/A"
+        f.seek(self.FileStreamLoc)
+        #END IF/ELSE
+
+        #Set the Network Type Information
+        if (self.FileName[:8] == "WBBDTest"):
+            self.NetworkType = "netbook"
+        else:
+            self.NetworkType = "mobile"
+        #END IF/ELSE
+
+        #Read in Server Header Information
+        try:
+            self.Server = readToAndGetLine(f,"Server: ").split("Server: ")[1][:-2]
+            if self.Server == "": self.Server = "N/A"
+        except:
+            self.Server = "N/A"
+        f.seek(self.FileStreamLoc)
+        #Read in Host Header Information
+        try:
+            self.Host = readToAndGetLine(f,"Host: ").split("Host: ")[1][:-2]
+            if self.Host == "": self.Host = "N/A"
+        except:
+            self.Host = "N/A"
+        f.seek(self.FileStreamLoc)
+        #END TRY/EXCEPT
 
         #Get Network Provider
         try:
-            if not self.isWBBD:
-                self.NetworkProvider = readToAndGetLine(f,"NetworkProvider: ").split("NetworkProvider: ")[1][:-2]
-            else:
-                # !!!
-                #Location ID must be read first, otherwise is just read over and cannot be retrieved
-                # !!!
-                self.LocationID = readToAndGetLine(f,"Location: ").split("Location: ")[1][:-2]
-                self.NetworkProvider = readToAndGetLine(f,"Network Provider: ").split("Network Provider: ")[1][:-2]
+            self.NetworkProvider = readToAndGetLine(f,"NetworkProvider: ").split("NetworkProvider: ")[1][:-2]
             if self.NetworkProvider == "": self.NetworkProvider = "N/A"
         except:
-            raise StandardError("ERROR LOADING NetworkProvider DATA: "
-                                 + "/".join(filePath.split("/")[-2:]))
+            f.seek(self.FileStreamLoc)
+            try:
+                self.NetworkProvider = readToAndGetLine(f,"Network Provider: ").split("Network Provider: ")[1][:-2]
+                if self.NetworkProvider == "": self.NetworkProvider = "N/A"
+            except:
+                self.NetworkProvider = "N/A"
+        f.seek(self.FileStreamLoc)
+        #END TRY/EXCEPT
 
-        #Get other Network information
-        if not self.isWBBD:
-            #Get Network Operator
-            try:
-                self.NetworkOperator = readToAndGetLine(f,"NetworkOperator: ").split("NetworkOperator: ")[1][:-2]
-                if self.NetworkOperator == "": self.NetworkOperator = "N/A"
-            except:
-                raise StandardError("ERROR LOADING NetworkOperator DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
-            #Get Device ID
-            try:
-                self.DeviceID = readToAndGetLine(f,"Device ID: ").split("Device ID: ")[1][:-2]
-                if self.DeviceID == "": self.DeviceID = "N/A"
-            except:
-                raise StandardError("ERROR LOADING Device ID DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
-            #Get Device ConnectionType
-            try:
-                self.ConnectionType = readToAndGetLine(f,"ConnectionType: ").split("ConnectionType: ")[1][:-2]
-                if self.ConnectionType == "": self.ConnectionType = "N/A"
-            except:
-                raise StandardError("ERROR LOADING Device Connection Type DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
-        #END IF
+        #Get Network Operator
+        try:
+            self.NetworkOperator = readToAndGetLine(f,"NetworkOperator: ").split("NetworkOperator: ")[1][:-2]
+            if self.NetworkOperator == "": self.NetworkOperator = "N/A"
+        except:
+            self.NetworkOperator = "N/A"
+        f.seek(self.FileStreamLoc)
+        #Get Device ID
+        try:
+            self.DeviceID = readToAndGetLine(f,"Device ID: ").split("Device ID: ")[1][:-2]
+            if self.DeviceID == "": self.DeviceID = "N/A"
+        except:
+            self.DeviceID = "N/A"
+        f.seek(self.FileStreamLoc)
+        #Get Device ConnectionType
+        try:
+            self.ConnectionType = readToAndGetLine(f,"ConnectionType: ").split("ConnectionType: ")[1][:-2]
+            if self.ConnectionType == "": self.ConnectionType = "N/A"
+        except:
+            self.ConnectionType = "N/A"
+        f.seek(self.FileStreamLoc)
+        #END TRY/EXCEPTs
 
         #Get the Location ID
-        if not self.isWBBD:
+        try:
+            self.LocationID = readToAndGetLine(f,"Location ID: ").split("Location ID: ")[1][:-2]
+            if self.LocationID == "": self.LocationID = "N/A"
+        except:
+            f.seek(self.FileStreamLoc)
             try:
-                self.LocationID = readToAndGetLine(f,"Location ID: ").split("Location ID: ")[1][:-2]
+                self.LocationID = readToAndGetLine(f,"Location: ").split("Location: ")[1][:-2]
                 if self.LocationID == "": self.LocationID = "N/A"
             except:
-                raise StandardError("ERROR LOADING Location ID DATA: "
-                                     + "/".join(filePath.split("/")[-2:]))
-        #END IF
+                self.LocationID = "N/A"
+        f.seek(self.FileStreamLoc)
+        #END TRY/EXCEPT
 
+        #Get the Latitude and Longitude, if it is available
+        try:
+            temp = readToAndGetLine(f, "Latitude:")
+            while temp:
+                temp = temp.split("Latitude:")[1][:-2]
+                if temp != "0.0":
+                    self.Latitude = temp
+                temp = readToAndGetLine(f, "Longitude:")
+                temp = temp.split("Longitude:")[1][:-2]
+                if temp != "0.0":
+                    self.Longitude = temp
+                temp = readToAndGetLine(f, "Latitude:")
+        except:
+            not_doing_anything = True
+
+        #Set the file stream to the line after "Checking Connectivity"
+        f.seek(0)
+        readToAndGetLine(f, "Checking Connectivity..")
+        self.FileStreamLoc = f.tell()
 
 
         """
@@ -309,23 +308,16 @@ class SpeedTestFile():
     # PARAMS:   self- reference to object (THIS)
     # RETURN:   String, contains all object data in an easy-to-print-and-read string
     def __str__(self):
-        if self.isWBBD:
-            return ("Filename: " + self.FileName + "\n" +
-                    "    DateTime of Speed Test - " + self.DateTime + "\n" +
-                    "    Network Type: " + self.NetworkType + "\n" +
-                    "    Network: Provider = " + self.NetworkProvider + "\n" +
-                    "    Location ID: " + self.LocationID + "\n" +
-                    "    "
-                    )
         return ("Filename: " + self.FileName + "\n" +
                 "    DateTime of Speed Test - " + self.DateTime + "\n" +
                 "    OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
                 "    Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
                 "    Network Type: " + self.NetworkType + "\n" +
                 "    Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
-                "    Network: Provider = " + self.NetworkProvider + ", Operator = " + self.NetworkOperator + "\n" +
+                "    Network: Operator = " + self.NetworkOperator + ", Provider = " + self.NetworkProvider + "\n" +
                 "    Device: ID = " + self.DeviceID + ", Connection Type = " + self.ConnectionType + "\n" +
                 "    Location ID: " + self.LocationID + "\n" +
+                "    Latitude:" + str(self.Latitude) + "  Longitude:" + str(self.Longitude) + "\n"
                 "    "
                 )
     #END DEF
