@@ -26,6 +26,12 @@
 #       OUTPUTS-    ..:     String, abbreviation for a month (e.g. Jun, Oct, etc.)
 #
 # ------------------------------------------------------------------------
+
+#This is going to be a global variable used in the __str__ methods of all other modules
+global_str_padding = "   "
+#END GLOBAL VARS
+
+
 def readToAndGetLine(fileStream, delimiter):
     line = fileStream.readline()
     while delimiter not in line:
@@ -76,4 +82,5 @@ def monthNumToAbbr(num):
             12: 'Dec'
             }[num]
 #END DEF
+
 

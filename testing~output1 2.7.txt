@@ -1,0 +1,73 @@
+Loading in data @ "/bb results/10_17_2013/99000344556962-10172013151027.txt"
+   Filename: 99000344556962-10172013151027.txt
+    DateTime of Speed Test - 10/17/2013 15:10:27
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344556962, Connection Type = EHRPD
+    Location ID: 1234
+    Latitude:39.73170583 Longitude:-121.84104666
+      Speed Test #1
+       Connection Type: TCP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.63.139  port:5003
+       Test Interval:10 
+      Speed Test #2
+       Connection Type: TCP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.222.65  port:5003
+       Test Interval:10 
+      Speed Test #3
+       Connection Type: TCP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.63.139  port:5003
+       Test Interval:10 
+      Speed Test #4
+       Connection Type: TCP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.222.65  port:5003
+       Test Interval:10 
+      Speed Test #5
+       Connection Type: UDP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.63.139  port:5004
+       Test Interval:1 
+      Speed Test #6
+       Connection Type: UDP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.63.139  port:5004
+       Test Interval:1 
+      Speed Test #7
+       Connection Type: UDP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.63.139  port:5004
+       Test Interval:1 
+      Speed Test #8
+       Connection Type: UDP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.222.65  port:5004
+       Test Interval:1 
+      Speed Test #9
+       Connection Type: UDP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.222.65  port:5004
+       Test Interval:1 
+      Speed Test #10
+       Connection Type: UDP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.222.65  port:5004
+       Test Interval:1 
+      Speed Test #11
+       Connection Type: UDP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.63.139  port:5004
+       Test Interval:5 
+      Speed Test #12
+       Connection Type: UDP
+       Connection Location: UNKNOWN
+       Reciever IP:184.72.222.65  port:5004
+       Test Interval:5 
+
+

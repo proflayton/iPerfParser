@@ -57,14 +57,14 @@ class SpeedTestDS():
 
     # ---------------------
     # Initializing some class attributes
-    SpeedTests = []
+    this_SpeedTestFiles = []
     # ---------------------
     def __init__(self):
         self.meaningOfLife = "bacon"
     #END DEF
 
-    def loadRawData(self, sysArgv):
 
+    def loadRawData(self, sysArgv):
         #cheat for not having to select the folder every time.
         #change string in os.walk to be the absolute path to the data files
         #In command line, use "python main.py -c"
@@ -72,26 +72,29 @@ class SpeedTestDS():
         if (len(sysArgv) > 1):
             #Alter this string to be the parent directory holding all of the data
             DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
-            if (("-c" in sysArgv) and (sysArgv[1] == "-c")):
-                for root, dirs, files in os.walk(DataRoot):
+            if (sysArgv[1] == "-c"):
+                for root, dirs, files in os.walk(DataRoot+"10_17_2013/"):
                     for aFile in files:
-                        self.SpeedTests.append( SpeedTestFile(os.path.join(root, aFile)) )
-                        print( self.SpeedTests[-1] )
-            elif (("-cs" in sysArgv) and (sysArgv[1] == "-cs")):
+                        self.this_SpeedTestFiles.append( SpeedTestFile(os.path.join(root, aFile)) )
+                        print( self.this_SpeedTestFiles[-1] )
+            elif (sysArgv[1] == "-cs"):
                 #Alter these strings to be individual data files
                 file1 = DataRoot + "10_17_2013/99000344556962-10172013151027.txt"
                 file2 = DataRoot + "10_17_2013/356420059231100-10172013094856.txt"
                 file3 = DataRoot + "10_17_2013/WBBDTest2-10172013151943.txt"
-
-                self.SpeedTests.append( SpeedTestFile(file1) )
-                self.SpeedTests.append( SpeedTestFile(file2) )
-                self.SpeedTests.append( SpeedTestFile(file3) )
-
-                for elem in self.SpeedTests:
+                self.this_SpeedTestFiles.append( SpeedTestFile(file1) )
+                self.this_SpeedTestFiles.append( SpeedTestFile(file2) )
+                self.this_SpeedTestFiles.append( SpeedTestFile(file3) )
+                for elem in self.this_SpeedTestFiles:
                     print( str(elem) )
+            elif (sysArgv[1] == "-css"):
+                #Alter this strings to be an individual data file
+                file1 = DataRoot + "10_17_2013/99000344556962-10172013151027.txt"
+                test_SpeedTest = SpeedTestFile(file1)
+                print( str(test_SpeedTest) )
             else:
-                print("I don't know that option. I'm just a silly computer. I know -c and -cs")
-            #END IF/ELIF/ELSE
+                print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")
+            #END IF/ELIF/ELIF/ELSE
         else:
             #Asking for a directory from the user
             # initialdir sets the starting point as the user's home directory
@@ -111,6 +114,12 @@ class SpeedTestDS():
                     #If not, the script will exit and display the message below
                     f = open(os.path.join(root, aFile),'r')
                     isItCPUC = f.readline()
+                    # !!!!!!!!!
+                    # The internal block of the IF statement will need
+                    # to be elaborated on. It currently does nothing.
+                    # It should build the array of SpeedTestFile objects and
+                    # then allow the user to perform analysis on these objects
+                    # !!!!!!!!1
                     if ("CPUC Tester Beta v2.0" in isItCPUC):
                         print( SpeedTestFile(os.path.join(root, aFile)) )
         #END IF/ELSE

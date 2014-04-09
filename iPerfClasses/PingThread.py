@@ -48,17 +48,15 @@ if __name__ == '__main__':
 from .utils import readToAndGetLine
 from .Pings import Ping
 class PingThread():
-    localHost = "UNKNOWN"
-    localPort = 0
-    serverHost = "UNKNWON"
-    serverPort = 0
 
+    # ----------------
     #some tests are numbered 3, 4, 5, etc. There is also a test numbered SUM
     numTest = 0
 
-    pings = []
+    this_Pings = []
+    # ----------------
 
     def __init__(self):
-        pass
+        this_Pings.append(Ping())
     #END DEF
 #END CLASS

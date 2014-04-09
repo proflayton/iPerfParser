@@ -34,7 +34,21 @@ import sys
 
 # Here's where main actually starts
 # creating a Speed Test Data Structure
-NewSpeedTestDS = STDs()
+MainSpeedTestDS = STDs()
 # Loading in the raw data, and passing in the system arguements
-NewSpeedTestDS.loadRawData(sys.argv)
+MainSpeedTestDS.loadRawData(sys.argv)
 
+
+
+"""
+# Was testing that iperf command line option -i was always followed by 1
+from iPerfClasses.utils import readToAndGetLine as rt
+DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
+for root, dirs, files in os.walk(DataRoot+"10_17_2013/"):
+    for aFile in files:
+        f = open(os.path.join(root, aFile), "r")
+        line = rt(f, "Iperf command line:")
+        while line:
+            print(line.split("-i ")[1][:2])
+            line = rt(f, "Iperf command line:")
+"""

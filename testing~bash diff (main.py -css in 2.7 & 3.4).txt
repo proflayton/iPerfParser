@@ -1,0 +1,70 @@
+Peters-MacBook-Pro:iPerfParser peterwalker$ diff output1.txt output2.txt 
+3,5c3,5
+<     DateTime of Speed Test - 10/17/2013 15:10:27
+<     OS: Linux, armv7l, 3.4.0-529760
+<     Java: 0, The Android Project
+---
+>     DateTime of Speed Test - 10/17/ 201 15:10:27
+>     OS: Linux, armv7l, 3.4.0-52976
+>     Java: 0, The Android Projec
+7,11c7,11
+<     Connection: Server = Amazon West Server, Host = 184.72.63.139
+<     Network: Operator = Sprint, Provider = Sprint
+<     Device: ID = 99000344556962, Connection Type = EHRPD
+<     Location ID: 1234
+<     Latitude:39.73170583 Longitude:-121.84104666
+---
+>     Connection: Server = Amazon West Serve, Host = 184.72.63.13
+>     Network: Operator = Sprin, Provider = Sprin
+>     Device: ID = 9900034455696, Connection Type = EHRP
+>     Location ID: 123
+>     Latitude:39.7317058 Longitude:-121.8410466
+15c15
+<        Reciever IP:184.72.63.139  port:5003
+---
+>        Reciever IP:184.72.63.139  port:500
+20c20
+<        Reciever IP:184.72.222.65  port:5003
+---
+>        Reciever IP:184.72.222.65  port:500
+25c25
+<        Reciever IP:184.72.63.139  port:5003
+---
+>        Reciever IP:184.72.63.139  port:500
+30c30
+<        Reciever IP:184.72.222.65  port:5003
+---
+>        Reciever IP:184.72.222.65  port:500
+35c35
+<        Reciever IP:184.72.63.139  port:5004
+---
+>        Reciever IP:184.72.63.139  port:500
+40c40
+<        Reciever IP:184.72.63.139  port:5004
+---
+>        Reciever IP:184.72.63.139  port:500
+45c45
+<        Reciever IP:184.72.63.139  port:5004
+---
+>        Reciever IP:184.72.63.139  port:500
+50c50
+<        Reciever IP:184.72.222.65  port:5004
+---
+>        Reciever IP:184.72.222.65  port:500
+55c55
+<        Reciever IP:184.72.222.65  port:5004
+---
+>        Reciever IP:184.72.222.65  port:500
+60c60
+<        Reciever IP:184.72.222.65  port:5004
+---
+>        Reciever IP:184.72.222.65  port:500
+65c65
+<        Reciever IP:184.72.63.139  port:5004
+---
+>        Reciever IP:184.72.63.139  port:500
+70c70
+<        Reciever IP:184.72.222.65  port:5004
+---
+>        Reciever IP:184.72.222.65  port:500
+Peters-MacBook-Pro:iPerfParser peterwalker$ 

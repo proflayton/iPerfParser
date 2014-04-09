@@ -54,7 +54,10 @@ class Ping():
     size             = 0
     speed            = 0
 
-    def __init__(self):
-        pass
+    def __init__(self, start=0, end=0, size=0, speed=0):
+        self.secIntervalStart = start
+        self.secIntervalEnd = end
+        self.size = size
+        self.speed = speed
     #END DEF
 #END CLASS

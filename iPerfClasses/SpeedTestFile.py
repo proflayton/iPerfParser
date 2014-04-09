@@ -60,6 +60,8 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 
 from .utils import readToAndGetLine, monthAbbrToNum
+from .utils import global_str_padding as pad
+pad = pad*1
 from .IndividualSpeedTest import SpeedTest
 class SpeedTestFile():
 
@@ -91,7 +93,7 @@ class SpeedTestFile():
     Latitude = 0
     Longitude = 0
 
-    speedTests = []
+    this_speedTests = []
     # -------------------
 
     # init functions calls load using the given file path
@@ -110,6 +112,9 @@ class SpeedTestFile():
 
         #Print will print out the bottom three levels of the path passed in
         print("Loading in data @ " + "\"/" + "/".join(filePath.split("/")[-3:]) + "\"" );
+
+        #open the file and read through the first line (which is "CPUC Beta .....")
+        # save byte location to self.FileStreamLoc
         f = open(filePath,'r')
         f.readline()
         self.FileStreamLoc = f.tell()
@@ -121,12 +126,14 @@ class SpeedTestFile():
         if (self.FileName[:8] == "WBBDTest"):
             self.DateTime = datetime[:-1]
         else:
+            #Formatting the datetime as "mm/dd/yyyy hh:mm:ss" when not in this format
             datetime = datetime.split("at ")[1][4:-1]
             month = str(monthAbbrToNum(datetime[:3]))
             day = str(datetime[4:6])
             year = str(datetime[-5:-1])
             time = str(datetime[7:9]) + ":" + str(datetime[10:12]) + ":" + str(datetime[13:15])
             self.DateTime = month + "/" + day + "/" + year + " " + time
+        f.seek(self.FileStreamLoc)
         #END IF/ELSE
 
         #Read in Operating System Header Information
@@ -247,60 +254,44 @@ class SpeedTestFile():
                 temp = readToAndGetLine(f, "Latitude:")
         except:
             not_doing_anything = True
+        f.seek(self.FileStreamLoc)
 
         #Set the file stream to the line after "Checking Connectivity"
-        f.seek(0)
         readToAndGetLine(f, "Checking Connectivity..")
         self.FileStreamLoc = f.tell()
 
-
-        """
-        tempSpeedTest = self.findSpeedTest(f)
-        while not tempSpeedTest is None:
-            self.subtests.append(tempSpeedTest)
-            tempSpeedTest = self.findSpeedTest(f)
-        """
+        # Loop through the rest of the file, creating individual
+        # Speed Test objects, which will hold an array of all of the actual data
+        continueLoop = True
+        while continueLoop:
+            f.seek(self.FileStreamLoc)
+            SpeedTestData = readToAndGetLine(f, "Iperf command line:")
+            if not SpeedTestData:
+                continueLoop = False
+            else:
+                SpeedTestData = SpeedTestData[:-2] + "\n"
+                temp = f.readline()
+                while (temp[:-2] != ''):
+                    SpeedTestData += temp[:-2] + "\n"
+                    temp = f.readline()
+                #END WHILE
+                createdSpeedTest = SpeedTest(SpeedTestData)
+                self.this_speedTests.append(createdSpeedTest)
+                self.FileStreamLoc = f.tell()
+            #END IF/ELSE
+        #END WHILE
         f.close()
     #END DEF
 
 
-    # DESC: Finds all of the sub-tests in the given file stream
+    # DESC: Returns all of the sub tests for this file as a string
     # PARAMS:   self- reference to object (THIS)
-    #           fileStream- FileStream object, read stream of the file
-    # RETURN:   subtest - SubTest object holding parsed data for sub-test (e.g. TCP West)
-
-    # !!!
-    # I think we should instead look for the iperf command line. That function call
-    # will likely hold all of the information that we need, and is always in the file above the test
-    #
-    # e.g. Iperf command line:/data/data/net.measurementlab.ndt/files/iperfT
-    #               -c 184.72.63.139 -e -w 32k -P 4 -i 1 -t 10 -f k -p 5003
-    # !!!
-    def findSpeedTest(self, fileStream):
-        speedtest = None
-        temp = fileStream.readline()
-        while "Starting Test " not in temp:
-            temp = fileStream.readline()
-            if not temp: break
-        if not temp or temp is None:
-            return None
-        else:
-            speedtest = SubTest()
-            #Start parsing the subtest
-
-            #Split from the colon and remove the ....'s on the right
-            testType = temp.split(": ")[1].split(".")[0]
-            speedtest.Type = testType
-
-            temp = readToAndGetLine(fileStream,"Client connecting to ").split("Client connecting to ")[1]
-            ip = temp.split(",")[0]
-            port = temp.split("port ")[1].replace("\n","")
-            speedtest.IP = ip
-            speedtest.Port = port
-
-            print("%s\n%s:%s"%(testType,ip,port))
-
-        return speedtest
+    # RETURN:   text - String all text for individual tests
+    def printSpeedTests(self):
+        text = ""
+        for obj in self.this_speedTests:
+            text += pad*2 + "Speed Test #" + str(self.this_speedTests.index(obj)+1) + "\n" + str(obj)
+        return text
     #END DEF
 
 
@@ -308,17 +299,23 @@ class SpeedTestFile():
     # PARAMS:   self- reference to object (THIS)
     # RETURN:   String, contains all object data in an easy-to-print-and-read string
     def __str__(self):
-        return ("Filename: " + self.FileName + "\n" +
-                "    DateTime of Speed Test - " + self.DateTime + "\n" +
-                "    OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
-                "    Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
-                "    Network Type: " + self.NetworkType + "\n" +
-                "    Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
-                "    Network: Operator = " + self.NetworkOperator + ", Provider = " + self.NetworkProvider + "\n" +
-                "    Device: ID = " + self.DeviceID + ", Connection Type = " + self.ConnectionType + "\n" +
-                "    Location ID: " + self.LocationID + "\n" +
-                "    Latitude:" + str(self.Latitude) + "  Longitude:" + str(self.Longitude) + "\n"
-                "    "
+        return (pad + "Filename: " + self.FileName + "\n" +
+                pad + " DateTime of Speed Test - " + self.DateTime + "\n" +
+                pad + " OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
+                pad + " Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
+                pad + " Network Type: " + self.NetworkType + "\n" +
+                pad + " Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
+                pad + " Network: Operator = " + self.NetworkOperator +
+                      ", Provider = " + self.NetworkProvider + "\n" +
+                pad + " Device: ID = " + self.DeviceID +
+                      ", Connection Type = " + self.ConnectionType + "\n" +
+                pad + " Location ID: " + self.LocationID + "\n" +
+                pad + " Latitude:" + str(self.Latitude) +
+                      " Longitude:" + str(self.Longitude) + "\n" +
+                self.printSpeedTests() +
+                "\n"
                 )
     #END DEF
 #END CLASS
+
+
