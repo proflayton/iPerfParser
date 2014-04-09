@@ -1,0 +1,2352 @@
+Loading in data @ "/bb results/10_17_2013/356420059231100-10172013094856.txt"
+Filename: 356420059231100-10172013094856.txt
+    DateTime of Speed Test - 10/17/2013 09:48:56
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059231100, Connection Type = HSPA
+    Location ID: 3000
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356420059231100-10172013120152.txt"
+Filename: 356420059231100-10172013120152.txt
+    DateTime of Speed Test - 10/17/2013 12:01:52
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059231100, Connection Type = LTE
+    Location ID: 2639
+    Latitude:34.20120521  Longitude:-118.54678329
+    
+Loading in data @ "/bb results/10_17_2013/356420059231100-10172013130612.txt"
+Filename: 356420059231100-10172013130612.txt
+    DateTime of Speed Test - 10/17/2013 13:06:12
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059231100, Connection Type = HSPA
+    Location ID: 2611
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356420059231100-10172013134703.txt"
+Filename: 356420059231100-10172013134703.txt
+    DateTime of Speed Test - 10/17/2013 13:47:03
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059231100, Connection Type = LTE
+    Location ID: 1159
+    Latitude:34.17380973  Longitude:-118.64870264
+    
+Loading in data @ "/bb results/10_17_2013/356420059231100-10172013143233.txt"
+Filename: 356420059231100-10172013143233.txt
+    DateTime of Speed Test - 10/17/2013 14:32:33
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059231100, Connection Type = LTE
+    Location ID: 1192
+    Latitude:34.17324338  Longitude:-118.55788401
+    
+Loading in data @ "/bb results/10_17_2013/356420059463273-10172013151617.txt"
+Filename: 356420059463273-10172013151617.txt
+    DateTime of Speed Test - 10/17/2013 15:16:17
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059463273, Connection Type = HSPA
+    Location ID: 1234
+    Latitude:39.73156918  Longitude:-121.84120523
+    
+Loading in data @ "/bb results/10_17_2013/356420059512996-10172013094843.txt"
+Filename: 356420059512996-10172013094843.txt
+    DateTime of Speed Test - 10/17/2013 09:48:43
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059512996, Connection Type = HSPA
+    Location ID: 3000
+    Latitude:34.23846716  Longitude:-118.53157352
+    
+Loading in data @ "/bb results/10_17_2013/356420059512996-10172013115626.txt"
+Filename: 356420059512996-10172013115626.txt
+    DateTime of Speed Test - 10/17/2013 11:56:26
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059512996, Connection Type = HSPA
+    Location ID: 1155
+    Latitude:34.31788856  Longitude:-118.49023802
+    
+Loading in data @ "/bb results/10_17_2013/356420059512996-10172013124514.txt"
+Filename: 356420059512996-10172013124514.txt
+    DateTime of Speed Test - 10/17/2013 12:45:14
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059512996, Connection Type = HSPA
+    Location ID: 2674
+    Latitude:34.25655014  Longitude:-118.58929931
+    
+Loading in data @ "/bb results/10_17_2013/356420059512996-10172013133022.txt"
+Filename: 356420059512996-10172013133022.txt
+    DateTime of Speed Test - 10/17/2013 13:30:22
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059512996, Connection Type = HSPA
+    Location ID: 1860
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356420059512996-10172013140018.txt"
+Filename: 356420059512996-10172013140018.txt
+    DateTime of Speed Test - 10/17/2013 14:00:18
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059512996, Connection Type = HSPA
+    Location ID: 2830
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356420059704288-10172013094839.txt"
+Filename: 356420059704288-10172013094839.txt
+    DateTime of Speed Test - 10/17/2013 09:48:39
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059704288, Connection Type = LTE
+    Location ID: 3000
+    Latitude:34.23849421  Longitude:-118.5314672
+    
+Loading in data @ "/bb results/10_17_2013/356420059704288-10172013120138.txt"
+Filename: 356420059704288-10172013120138.txt
+    DateTime of Speed Test - 10/17/2013 12:01:38
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059704288, Connection Type = LTE
+    Location ID: 1325
+    Latitude:34.2349158  Longitude:-118.49269959
+    
+Loading in data @ "/bb results/10_17_2013/356420059704288-10172013124655.txt"
+Filename: 356420059704288-10172013124655.txt
+    DateTime of Speed Test - 10/17/2013 12:46:55
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059704288, Connection Type = LTE
+    Location ID: 2498
+    Latitude:34.16673874  Longitude:-118.4928642
+    
+Loading in data @ "/bb results/10_17_2013/356420059704288-10172013132610.txt"
+Filename: 356420059704288-10172013132610.txt
+    DateTime of Speed Test - 10/17/2013 13:26:10
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059704288, Connection Type = LTE
+    Location ID: 1253
+    Latitude:34.15544893  Longitude:-118.41171182
+    
+Loading in data @ "/bb results/10_17_2013/356420059704288-10172013141809.txt"
+Filename: 356420059704288-10172013141809.txt
+    DateTime of Speed Test - 10/17/2013 14:18:09
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059704288, Connection Type = LTE
+    Location ID: 2652
+    Latitude:34.22582694  Longitude:-118.37625736
+    
+Loading in data @ "/bb results/10_17_2013/356420059704353-10172013151546.txt"
+Filename: 356420059704353-10172013151546.txt
+    DateTime of Speed Test - 10/17/2013 15:15:46
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059704353, Connection Type = HSPA
+    Location ID: 1234
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356420059824748-10172013094856.txt"
+Filename: 356420059824748-10172013094856.txt
+    DateTime of Speed Test - 10/17/2013 09:48:56
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059824748, Connection Type = HSPAP
+    Location ID: 3000
+    Latitude:34.23836404  Longitude:-118.53156442
+    
+Loading in data @ "/bb results/10_17_2013/356420059824748-10172013141334.txt"
+Filename: 356420059824748-10172013141334.txt
+    DateTime of Speed Test - 10/17/2013 14:13:34
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059824748, Connection Type = LTE
+    Location ID: 1213
+    Latitude:34.28671253  Longitude:-118.40769604
+    
+Loading in data @ "/bb results/10_17_2013/356420059824748-10172013141430.txt"
+Filename: 356420059824748-10172013141430.txt
+    DateTime of Speed Test - 10/17/2013 14:14:30
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059824748, Connection Type = LTE
+    Location ID: 1213
+    Latitude:34.28671257  Longitude:-118.40769507
+    
+Loading in data @ "/bb results/10_17_2013/356420059824748-10172013150653.txt"
+Filename: 356420059824748-10172013150653.txt
+    DateTime of Speed Test - 10/17/2013 15:06:53
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059824748, Connection Type = LTE
+    Location ID: 2735
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356420059824748-10172013154112.txt"
+Filename: 356420059824748-10172013154112.txt
+    DateTime of Speed Test - 10/17/2013 15:41:12
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059824748, Connection Type = LTE
+    Location ID: 2659
+    Latitude:34.31673893  Longitude:-118.4424329
+    
+Loading in data @ "/bb results/10_17_2013/356420059824748-10172013161529.txt"
+Filename: 356420059824748-10172013161529.txt
+    DateTime of Speed Test - 10/17/2013 16:15:29
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059824748, Connection Type = LTE
+    Location ID: 1155
+    Latitude:34.31860733  Longitude:-118.49017971
+    
+Loading in data @ "/bb results/10_17_2013/356420059835355-10172013150948.txt"
+Filename: 356420059835355-10172013150948.txt
+    DateTime of Speed Test - 10/17/2013 15:09:48
+    OS: Linux, armv7l, 3.4.0-453951
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = T-Mobile, Provider = N/A
+    Device: ID = 356420059835355, Connection Type = HSPA
+    Location ID: 1234
+    Latitude:39.73173607  Longitude:-121.84111791
+    
+Loading in data @ "/bb results/10_17_2013/356567057515296-10172013094904.txt"
+Filename: 356567057515296-10172013094904.txt
+    DateTime of Speed Test - 10/17/2013 09:49:04
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567057515296, Connection Type = LTE
+    Location ID: 3000
+    Latitude:34.23844476  Longitude:-118.53158946
+    
+Loading in data @ "/bb results/10_17_2013/356567057515296-10172013141316.txt"
+Filename: 356567057515296-10172013141316.txt
+    DateTime of Speed Test - 10/17/2013 14:13:16
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567057515296, Connection Type = LTE
+    Location ID: 1213
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567057515296-10172013141507.txt"
+Filename: 356567057515296-10172013141507.txt
+    DateTime of Speed Test - 10/17/2013 14:15:07
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567057515296, Connection Type = LTE
+    Location ID: 1213
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567057515296-10172013141527.txt"
+Filename: 356567057515296-10172013141527.txt
+    DateTime of Speed Test - 10/17/2013 14:15:27
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567057515296, Connection Type = LTE
+    Location ID: 1213
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567057515296-10172013145553.txt"
+Filename: 356567057515296-10172013145553.txt
+    DateTime of Speed Test - 10/17/2013 14:55:53
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567057515296, Connection Type = LTE
+    Location ID: 2735
+    Latitude:34.31417407  Longitude:-118.38473963
+    
+Loading in data @ "/bb results/10_17_2013/356567057515296-10172013154143.txt"
+Filename: 356567057515296-10172013154143.txt
+    DateTime of Speed Test - 10/17/2013 15:41:43
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567057515296, Connection Type = LTE
+    Location ID: 2659
+    Latitude:34.31672265  Longitude:-118.44245193
+    
+Loading in data @ "/bb results/10_17_2013/356567057515296-10172013162107.txt"
+Filename: 356567057515296-10172013162107.txt
+    DateTime of Speed Test - 10/17/2013 16:21:07
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567057515296, Connection Type = LTE
+    Location ID: 1155
+    Latitude:34.31858531  Longitude:-118.49017931
+    
+Loading in data @ "/bb results/10_17_2013/356567057548495-10172013151545.txt"
+Filename: 356567057548495-10172013151545.txt
+    DateTime of Speed Test - 10/17/2013 15:15:45
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567057548495, Connection Type = LTE
+    Location ID: 1234
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567058220664-10172013094843.txt"
+Filename: 356567058220664-10172013094843.txt
+    DateTime of Speed Test - 10/17/2013 09:48:43
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058220664, Connection Type = LTE
+    Location ID: 3000
+    Latitude:34.238437  Longitude:-118.53155578
+    
+Loading in data @ "/bb results/10_17_2013/356567058220664-10172013115501.txt"
+Filename: 356567058220664-10172013115501.txt
+    DateTime of Speed Test - 10/17/2013 11:55:01
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058220664, Connection Type = LTE
+    Location ID: 1325
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567058220664-10172013124120.txt"
+Filename: 356567058220664-10172013124120.txt
+    DateTime of Speed Test - 10/17/2013 12:41:20
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058220664, Connection Type = LTE
+    Location ID: 2498
+    Latitude:34.16669564  Longitude:-118.49275672
+    
+Loading in data @ "/bb results/10_17_2013/356567058220664-10172013132521.txt"
+Filename: 356567058220664-10172013132521.txt
+    DateTime of Speed Test - 10/17/2013 13:25:21
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058220664, Connection Type = LTE
+    Location ID: 1253
+    Latitude:34.15538575  Longitude:-118.41165768
+    
+Loading in data @ "/bb results/10_17_2013/356567058220664-10172013141235.txt"
+Filename: 356567058220664-10172013141235.txt
+    DateTime of Speed Test - 10/17/2013 14:12:35
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058220664, Connection Type = LTE
+    Location ID: 2652
+    Latitude:34.22574487  Longitude:-118.37620767
+    
+Loading in data @ "/bb results/10_17_2013/356567058250737-10172013094856.txt"
+Filename: 356567058250737-10172013094856.txt
+    DateTime of Speed Test - 10/17/2013 09:48:56
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058250737, Connection Type = LTE
+    Location ID: 3000
+    Latitude:34.2383998  Longitude:-118.53151372
+    
+Loading in data @ "/bb results/10_17_2013/356567058250737-10172013115130.txt"
+Filename: 356567058250737-10172013115130.txt
+    DateTime of Speed Test - 10/17/2013 11:51:30
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058250737, Connection Type = LTE
+    Location ID: 1155
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567058250737-10172013125201.txt"
+Filename: 356567058250737-10172013125201.txt
+    DateTime of Speed Test - 10/17/2013 12:52:01
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058250737, Connection Type = LTE
+    Location ID: 2674
+    Latitude:34.25663559  Longitude:-118.58929749
+    
+Loading in data @ "/bb results/10_17_2013/356567058250737-10172013132533.txt"
+Filename: 356567058250737-10172013132533.txt
+    DateTime of Speed Test - 10/17/2013 13:25:33
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058250737, Connection Type = LTE
+    Location ID: 1860
+    Latitude:34.20537536  Longitude:-118.669506
+    
+Loading in data @ "/bb results/10_17_2013/356567058250737-10172013140035.txt"
+Filename: 356567058250737-10172013140035.txt
+    DateTime of Speed Test - 10/17/2013 14:00:35
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058250737, Connection Type = LTE
+    Location ID: 2830
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567058293067-10172013151134.txt"
+Filename: 356567058293067-10172013151134.txt
+    DateTime of Speed Test - 10/17/2013 15:11:34
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058293067, Connection Type = LTE
+    Location ID: 1234
+    Latitude:39.7313573  Longitude:-121.84142659
+    
+Loading in data @ "/bb results/10_17_2013/356567058293265-10172013151511.txt"
+Filename: 356567058293265-10172013151511.txt
+    DateTime of Speed Test - 10/17/2013 15:15:11
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058293265, Connection Type = LTE
+    Location ID: 1234
+    Latitude:39.73162509  Longitude:-121.84117616
+    
+Loading in data @ "/bb results/10_17_2013/356567058425321-10172013094908.txt"
+Filename: 356567058425321-10172013094908.txt
+    DateTime of Speed Test - 10/17/2013 09:49:08
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058425321, Connection Type = LTE
+    Location ID: 3000
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567058425321-10172013120133.txt"
+Filename: 356567058425321-10172013120133.txt
+    DateTime of Speed Test - 10/17/2013 12:01:33
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058425321, Connection Type = LTE
+    Location ID: 2639
+    Latitude:34.20125062  Longitude:-118.54680438
+    
+Loading in data @ "/bb results/10_17_2013/356567058425321-10172013130556.txt"
+Filename: 356567058425321-10172013130556.txt
+    DateTime of Speed Test - 10/17/2013 13:05:56
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058425321, Connection Type = LTE
+    Location ID: 2611
+    Latitude:34.17954799  Longitude:-118.62369759
+    
+Loading in data @ "/bb results/10_17_2013/356567058425321-10172013134724.txt"
+Filename: 356567058425321-10172013134724.txt
+    DateTime of Speed Test - 10/17/2013 13:47:24
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058425321, Connection Type = LTE
+    Location ID: 1159
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/356567058425321-10172013143302.txt"
+Filename: 356567058425321-10172013143302.txt
+    DateTime of Speed Test - 10/17/2013 14:33:02
+    OS: Linux, armv7l, 3.4.0-812098
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = AT&T, Provider = N/A
+    Device: ID = 356567058425321, Connection Type = LTE
+    Location ID: 1192
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/99000344556962-10172013151027.txt"
+Filename: 99000344556962-10172013151027.txt
+    DateTime of Speed Test - 10/17/2013 15:10:27
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344556962, Connection Type = EHRPD
+    Location ID: 1234
+    Latitude:39.73170583  Longitude:-121.84104666
+    
+Loading in data @ "/bb results/10_17_2013/99000344556964-10172013151536.txt"
+Filename: 99000344556964-10172013151536.txt
+    DateTime of Speed Test - 10/17/2013 15:15:36
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344556964, Connection Type = EHRPD
+    Location ID: 1234
+    Latitude:39.73170396  Longitude:-121.84097412
+    
+Loading in data @ "/bb results/10_17_2013/99000344557039-10172013151442.txt"
+Filename: 99000344557039-10172013151442.txt
+    DateTime of Speed Test - 10/17/2013 15:14:42
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557039, Connection Type = EHRPD
+    Location ID: 1234
+    Latitude:39.73163181  Longitude:-121.84090046
+    
+Loading in data @ "/bb results/10_17_2013/99000344557502-10172013094912.txt"
+Filename: 99000344557502-10172013094912.txt
+    DateTime of Speed Test - 10/17/2013 09:49:12
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557502, Connection Type = EHRPD
+    Location ID: 3000
+    Latitude:34.23854643  Longitude:-118.53163797
+    
+Loading in data @ "/bb results/10_17_2013/99000344557502-10172013141352.txt"
+Filename: 99000344557502-10172013141352.txt
+    DateTime of Speed Test - 10/17/2013 14:13:52
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557502, Connection Type = EHRPD
+    Location ID: 1213
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/99000344557502-10172013145518.txt"
+Filename: 99000344557502-10172013145518.txt
+    DateTime of Speed Test - 10/17/2013 14:55:18
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557502, Connection Type = EHRPD
+    Location ID: 2735
+    Latitude:34.31419357  Longitude:-118.3847518
+    
+Loading in data @ "/bb results/10_17_2013/99000344557502-10172013153343.txt"
+Filename: 99000344557502-10172013153343.txt
+    DateTime of Speed Test - 10/17/2013 15:33:43
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557502, Connection Type = EHRPD
+    Location ID: 2659
+    Latitude:34.3167701  Longitude:-118.44244222
+    
+Loading in data @ "/bb results/10_17_2013/99000344557502-10172013163338.txt"
+Filename: 99000344557502-10172013163338.txt
+    DateTime of Speed Test - 10/17/2013 16:33:38
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557502, Connection Type = EHRPD
+    Location ID: 1155
+    Latitude:34.31862471  Longitude:-118.49019674
+    
+Loading in data @ "/bb results/10_17_2013/99000344557505-10172013094904.txt"
+Filename: 99000344557505-10172013094904.txt
+    DateTime of Speed Test - 10/17/2013 09:49:04
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557505, Connection Type = EHRPD
+    Location ID: 3000
+    Latitude:34.23846851  Longitude:-118.53149466
+    
+Loading in data @ "/bb results/10_17_2013/99000344557505-10172013115111.txt"
+Filename: 99000344557505-10172013115111.txt
+    DateTime of Speed Test - 10/17/2013 11:51:11
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557505, Connection Type = EHRPD
+    Location ID: 1155
+    Latitude:34.31790834  Longitude:-118.49021626
+    
+Loading in data @ "/bb results/10_17_2013/99000344557505-10172013124428.txt"
+Filename: 99000344557505-10172013124428.txt
+    DateTime of Speed Test - 10/17/2013 12:44:28
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557505, Connection Type = EHRPD
+    Location ID: 2674
+    Latitude:34.25655071  Longitude:-118.58926279
+    
+Loading in data @ "/bb results/10_17_2013/99000344557505-10172013132545.txt"
+Filename: 99000344557505-10172013132545.txt
+    DateTime of Speed Test - 10/17/2013 13:25:45
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557505, Connection Type = EHRPD
+    Location ID: 1860
+    Latitude:34.20530552  Longitude:-118.66951986
+    
+Loading in data @ "/bb results/10_17_2013/99000344557505-10172013140028.txt"
+Filename: 99000344557505-10172013140028.txt
+    DateTime of Speed Test - 10/17/2013 14:00:28
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557505, Connection Type = EHRPD
+    Location ID: 2830
+    Latitude:34.24832752  Longitude:-118.6497393
+    
+Loading in data @ "/bb results/10_17_2013/99000344557506-10172013094842.txt"
+Filename: 99000344557506-10172013094842.txt
+    DateTime of Speed Test - 10/17/2013 09:48:42
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557506, Connection Type = EVDO REV A
+    Location ID: 3000
+    Latitude:34.23846686  Longitude:-118.53155536
+    
+Loading in data @ "/bb results/10_17_2013/99000344557506-10172013115443.txt"
+Filename: 99000344557506-10172013115443.txt
+    DateTime of Speed Test - 10/17/2013 11:54:43
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557506, Connection Type = LTE
+    Location ID: 1325
+    Latitude:34.23490526  Longitude:-118.49268177
+    
+Loading in data @ "/bb results/10_17_2013/99000344557506-10172013124139.txt"
+Filename: 99000344557506-10172013124139.txt
+    DateTime of Speed Test - 10/17/2013 12:41:39
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557506, Connection Type = LTE
+    Location ID: 2498
+    Latitude:34.16667137  Longitude:-118.49276346
+    
+Loading in data @ "/bb results/10_17_2013/99000344557506-10172013132507.txt"
+Filename: 99000344557506-10172013132507.txt
+    DateTime of Speed Test - 10/17/2013 13:25:07
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557506, Connection Type = LTE
+    Location ID: 1253
+    Latitude:34.15539549  Longitude:-118.41163221
+    
+Loading in data @ "/bb results/10_17_2013/99000344557506-10172013133152.txt"
+Filename: 99000344557506-10172013133152.txt
+    DateTime of Speed Test - 10/17/2013 13:31:52
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557506, Connection Type = LTE
+    Location ID: 1253
+    Latitude:34.15539704  Longitude:-118.41163561
+    
+Loading in data @ "/bb results/10_17_2013/99000344557506-10172013141250.txt"
+Filename: 99000344557506-10172013141250.txt
+    DateTime of Speed Test - 10/17/2013 14:12:50
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557506, Connection Type = LTE
+    Location ID: 2652
+    Latitude:34.22581601  Longitude:-118.3762295
+    
+Loading in data @ "/bb results/10_17_2013/99000344557519-10172013094921.txt"
+Filename: 99000344557519-10172013094921.txt
+    DateTime of Speed Test - 10/17/2013 09:49:21
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557519, Connection Type = EHRPD
+    Location ID: 3000
+    Latitude:34.23850132  Longitude:-118.53161444
+    
+Loading in data @ "/bb results/10_17_2013/99000344557519-10172013120003.txt"
+Filename: 99000344557519-10172013120003.txt
+    DateTime of Speed Test - 10/17/2013 12:00:03
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557519, Connection Type = LTE
+    Location ID: 2639
+    Latitude:34.20120842  Longitude:-118.54673417
+    
+Loading in data @ "/bb results/10_17_2013/99000344557519-10172013130539.txt"
+Filename: 99000344557519-10172013130539.txt
+    DateTime of Speed Test - 10/17/2013 13:05:39
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557519, Connection Type = LTE
+    Location ID: 2611
+    Latitude:34.17951068  Longitude:-118.62371378
+    
+Loading in data @ "/bb results/10_17_2013/99000344557519-10172013134759.txt"
+Filename: 99000344557519-10172013134759.txt
+    DateTime of Speed Test - 10/17/2013 13:47:59
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557519, Connection Type = EVDO REV A
+    Location ID: 1159
+    Latitude:34.17385551  Longitude:-118.6487124
+    
+Loading in data @ "/bb results/10_17_2013/99000344557519-10172013143250.txt"
+Filename: 99000344557519-10172013143250.txt
+    DateTime of Speed Test - 10/17/2013 14:32:50
+    OS: Linux, armv7l, 3.4.0-529760
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Sprint, Provider = Sprint
+    Device: ID = 99000344557519, Connection Type = EVDO REV A
+    Location ID: 1192
+    Latitude:34.17325108  Longitude:-118.55791009
+    
+Loading in data @ "/bb results/10_17_2013/99000348229220-10172013094839.txt"
+Filename: 99000348229220-10172013094839.txt
+    DateTime of Speed Test - 10/17/2013 09:48:39
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229220, Connection Type = LTE
+    Location ID: 3000
+    Latitude:34.23839083  Longitude:-118.53159457
+    
+Loading in data @ "/bb results/10_17_2013/99000348229220-10172013141258.txt"
+Filename: 99000348229220-10172013141258.txt
+    DateTime of Speed Test - 10/17/2013 14:12:58
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229220, Connection Type = LTE
+    Location ID: 1213
+    Latitude:34.28670928  Longitude:-118.40762847
+    
+Loading in data @ "/bb results/10_17_2013/99000348229220-10172013141544.txt"
+Filename: 99000348229220-10172013141544.txt
+    DateTime of Speed Test - 10/17/2013 14:15:44
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229220, Connection Type = LTE
+    Location ID: 1213
+    Latitude:34.28675798  Longitude:-118.4076503
+    
+Loading in data @ "/bb results/10_17_2013/99000348229220-10172013145939.txt"
+Filename: 99000348229220-10172013145939.txt
+    DateTime of Speed Test - 10/17/2013 14:59:39
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229220, Connection Type = LTE
+    Location ID: 2735
+    Latitude:34.3141779  Longitude:-118.3847755
+    
+Loading in data @ "/bb results/10_17_2013/99000348229220-10172013153437.txt"
+Filename: 99000348229220-10172013153437.txt
+    DateTime of Speed Test - 10/17/2013 15:34:37
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229220, Connection Type = LTE
+    Location ID: 2659
+    Latitude:34.31676075  Longitude:-118.44246411
+    
+Loading in data @ "/bb results/10_17_2013/99000348229220-10172013153653.txt"
+Filename: 99000348229220-10172013153653.txt
+    DateTime of Speed Test - 10/17/2013 15:36:53
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229220, Connection Type = LTE
+    Location ID: 2659
+    Latitude:34.31675346  Longitude:-118.44245604
+    
+Loading in data @ "/bb results/10_17_2013/99000348229220-10172013161550.txt"
+Filename: 99000348229220-10172013161550.txt
+    DateTime of Speed Test - 10/17/2013 16:15:50
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229220, Connection Type = LTE
+    Location ID: 1155
+    Latitude:34.31858094  Longitude:-118.49018578
+    
+Loading in data @ "/bb results/10_17_2013/99000348229343-10172013094912.txt"
+Filename: 99000348229343-10172013094912.txt
+    DateTime of Speed Test - 10/17/2013 09:49:12
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229343, Connection Type = LTE
+    Location ID: 3000
+    Latitude:34.23842174  Longitude:-118.53166451
+    
+Loading in data @ "/bb results/10_17_2013/99000348229343-10172013115125.txt"
+Filename: 99000348229343-10172013115125.txt
+    DateTime of Speed Test - 10/17/2013 11:51:25
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229343, Connection Type = LTE
+    Location ID: 1155
+    Latitude:34.31788785  Longitude:-118.49025042
+    
+Loading in data @ "/bb results/10_17_2013/99000348229343-10172013124417.txt"
+Filename: 99000348229343-10172013124417.txt
+    DateTime of Speed Test - 10/17/2013 12:44:17
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229343, Connection Type = LTE
+    Location ID: 2674
+    Latitude:34.25668835  Longitude:-118.58924063
+    
+Loading in data @ "/bb results/10_17_2013/99000348229343-10172013132554.txt"
+Filename: 99000348229343-10172013132554.txt
+    DateTime of Speed Test - 10/17/2013 13:25:54
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229343, Connection Type = LTE
+    Location ID: 1860
+    Latitude:34.20531372  Longitude:-118.66950978
+    
+Loading in data @ "/bb results/10_17_2013/99000348229343-10172013140856.txt"
+Filename: 99000348229343-10172013140856.txt
+    DateTime of Speed Test - 10/17/2013 14:08:56
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229343, Connection Type = LTE
+    Location ID: 2830
+    Latitude:34.24836665  Longitude:-118.64969002
+    
+Loading in data @ "/bb results/10_17_2013/99000348229343-10172013140911.txt"
+Filename: 99000348229343-10172013140911.txt
+    DateTime of Speed Test - 10/17/2013 14:09:11
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348229343, Connection Type = EHRPD
+    Location ID: 2830
+    Latitude:34.24836673  Longitude:-118.64969065
+    
+Loading in data @ "/bb results/10_17_2013/99000348241991-10172013152426.txt"
+Filename: 99000348241991-10172013152426.txt
+    DateTime of Speed Test - 10/17/2013 15:24:26
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348241991, Connection Type = LTE
+    Location ID: 1234
+    Latitude:39.7316681  Longitude:-121.84104355
+    
+Loading in data @ "/bb results/10_17_2013/99000348242007-10172013150914.txt"
+Filename: 99000348242007-10172013150914.txt
+    DateTime of Speed Test - 10/17/2013 15:09:14
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242007, Connection Type = LTE
+    Location ID: 1234
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/99000348242015-10172013094838.txt"
+Filename: 99000348242015-10172013094838.txt
+    DateTime of Speed Test - 10/17/2013 09:48:38
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242015, Connection Type = LTE
+    Location ID: 3000
+    Latitude:34.23846726  Longitude:-118.53166429
+    
+Loading in data @ "/bb results/10_17_2013/99000348242015-10172013120047.txt"
+Filename: 99000348242015-10172013120047.txt
+    DateTime of Speed Test - 10/17/2013 12:00:47
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242015, Connection Type = LTE
+    Location ID: 2639
+    Latitude:34.20120425  Longitude:-118.54678374
+    
+Loading in data @ "/bb results/10_17_2013/99000348242015-10172013120100.txt"
+Filename: 99000348242015-10172013120100.txt
+    DateTime of Speed Test - 10/17/2013 12:01:00
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242015, Connection Type = LTE
+    Location ID: 2639
+    Latitude:34.20120546  Longitude:-118.54678352
+    
+Loading in data @ "/bb results/10_17_2013/99000348242015-10172013130430.txt"
+Filename: 99000348242015-10172013130430.txt
+    DateTime of Speed Test - 10/17/2013 13:04:30
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242015, Connection Type = LTE
+    Location ID: 2611
+    Latitude:34.17957253  Longitude:-118.62369206
+    
+Loading in data @ "/bb results/10_17_2013/99000348242015-10172013130832.txt"
+Filename: 99000348242015-10172013130832.txt
+    DateTime of Speed Test - 10/17/2013 13:08:32
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242015, Connection Type = LTE
+    Location ID: 2611
+    Latitude:34.17953702  Longitude:-118.62372268
+    
+Loading in data @ "/bb results/10_17_2013/99000348242015-10172013134739.txt"
+Filename: 99000348242015-10172013134739.txt
+    DateTime of Speed Test - 10/17/2013 13:47:39
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242015, Connection Type = LTE
+    Location ID: 1159
+    Latitude:34.17379679  Longitude:-118.64866751
+    
+Loading in data @ "/bb results/10_17_2013/99000348242015-10172013143328.txt"
+Filename: 99000348242015-10172013143328.txt
+    DateTime of Speed Test - 10/17/2013 14:33:28
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242015, Connection Type = LTE
+    Location ID: 1192
+    Latitude:34.17321181  Longitude:-118.55785738
+    
+Loading in data @ "/bb results/10_17_2013/99000348242368-10172013151604.txt"
+Filename: 99000348242368-10172013151604.txt
+    DateTime of Speed Test - 10/17/2013 15:16:04
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348242368, Connection Type = LTE
+    Location ID: 1234
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/99000348245577-10172013094842.txt"
+Filename: 99000348245577-10172013094842.txt
+    DateTime of Speed Test - 10/17/2013 09:48:42
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348245577, Connection Type = LTE
+    Location ID: 3000
+    Latitude:34.23845663  Longitude:-118.53158605
+    
+Loading in data @ "/bb results/10_17_2013/99000348245577-10172013115427.txt"
+Filename: 99000348245577-10172013115427.txt
+    DateTime of Speed Test - 10/17/2013 11:54:27
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348245577, Connection Type = LTE
+    Location ID: 1325
+    Latitude:34.23488565  Longitude:-118.49268346
+    
+Loading in data @ "/bb results/10_17_2013/99000348245577-10172013124110.txt"
+Filename: 99000348245577-10172013124110.txt
+    DateTime of Speed Test - 10/17/2013 12:41:10
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348245577, Connection Type = LTE
+    Location ID: 2498
+    Latitude:34.1666564  Longitude:-118.49285682
+    
+Loading in data @ "/bb results/10_17_2013/99000348245577-10172013132446.txt"
+Filename: 99000348245577-10172013132446.txt
+    DateTime of Speed Test - 10/17/2013 13:24:46
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348245577, Connection Type = LTE
+    Location ID: 1253
+    Latitude:34.15537538  Longitude:-118.41163185
+    
+Loading in data @ "/bb results/10_17_2013/99000348245577-10172013141222.txt"
+Filename: 99000348245577-10172013141222.txt
+    DateTime of Speed Test - 10/17/2013 14:12:22
+    OS: Linux, armv7l, 3.4.0-690088
+    Java: 0, The Android Project
+    Network Type: mobile
+    Connection: Server = Amazon West Server, Host = 184.72.63.139
+    Network: Operator = Verizon Wireless, Provider = Verizon
+    Device: ID = 99000348245577, Connection Type = LTE
+    Location ID: 2652
+    Latitude:34.22582501  Longitude:-118.37624939
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest11-10172013152728.txt"
+Filename: WBBDTest11-10172013152728.txt
+    DateTime of Speed Test - 10/17/2013 15:27:28
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.731572  Longitude:-121.841278
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest11-10172013154313.txt"
+Filename: WBBDTest11-10172013154313.txt
+    DateTime of Speed Test - 10/17/2013 15:43:13
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.731662  Longitude:-121.841065
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest11-10172013155532.txt"
+Filename: WBBDTest11-10172013155532.txt
+    DateTime of Speed Test - 10/17/2013 15:55:32
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.73169  Longitude:-121.841025
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest11-10172013160106.txt"
+Filename: WBBDTest11-10172013160106.txt
+    DateTime of Speed Test - 10/17/2013 16:01:06
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.731708  Longitude:-121.841088
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013101335.txt"
+Filename: WBBDTest12-10172013101335.txt
+    DateTime of Speed Test - 10/17/2013 10:13:35
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238553  Longitude:-118.531703
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013102556.txt"
+Filename: WBBDTest12-10172013102556.txt
+    DateTime of Speed Test - 10/17/2013 10:25:56
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238415  Longitude:-118.531448
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013103415.txt"
+Filename: WBBDTest12-10172013103415.txt
+    DateTime of Speed Test - 10/17/2013 10:34:15
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238423  Longitude:-118.531655
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013103750.txt"
+Filename: WBBDTest12-10172013103750.txt
+    DateTime of Speed Test - 10/17/2013 10:37:50
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238432  Longitude:-118.531638
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013121644.txt"
+Filename: WBBDTest12-10172013121644.txt
+    DateTime of Speed Test - 10/17/2013 12:16:44
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2639
+    Latitude:34.201235  Longitude:-118.54674
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013122646.txt"
+Filename: WBBDTest12-10172013122646.txt
+    DateTime of Speed Test - 10/17/2013 12:26:46
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2639
+    Latitude:34.20125  Longitude:-118.546775
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013123249.txt"
+Filename: WBBDTest12-10172013123249.txt
+    DateTime of Speed Test - 10/17/2013 12:32:49
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2639
+    Latitude:34.201255  Longitude:-118.546757
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013123851.txt"
+Filename: WBBDTest12-10172013123851.txt
+    DateTime of Speed Test - 10/17/2013 12:38:51
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2639
+    Latitude:34.20123  Longitude:-118.546798
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013131154.txt"
+Filename: WBBDTest12-10172013131154.txt
+    DateTime of Speed Test - 10/17/2013 13:11:54
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2611
+    Latitude:34.179567  Longitude:-118.623658
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013132214.txt"
+Filename: WBBDTest12-10172013132214.txt
+    DateTime of Speed Test - 10/17/2013 13:22:14
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2611
+    Latitude:34.179565  Longitude:-118.623677
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013132924.txt"
+Filename: WBBDTest12-10172013132924.txt
+    DateTime of Speed Test - 10/17/2013 13:29:24
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2611
+    Latitude:34.179515  Longitude:-118.623617
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013133346.txt"
+Filename: WBBDTest12-10172013133346.txt
+    DateTime of Speed Test - 10/17/2013 13:33:46
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2611
+    Latitude:34.179517  Longitude:-118.62366
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013135135.txt"
+Filename: WBBDTest12-10172013135135.txt
+    DateTime of Speed Test - 10/17/2013 13:51:35
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1159
+    Latitude:34.173797  Longitude:-118.648638
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013135641.txt"
+Filename: WBBDTest12-10172013135641.txt
+    DateTime of Speed Test - 10/17/2013 13:56:41
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1159
+    Latitude:34.173833  Longitude:-118.64867
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013135937.txt"
+Filename: WBBDTest12-10172013135937.txt
+    DateTime of Speed Test - 10/17/2013 13:59:37
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1159
+    Latitude:34.173797  Longitude:-118.648638
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013140026.txt"
+Filename: WBBDTest12-10172013140026.txt
+    DateTime of Speed Test - 10/17/2013 14:00:26
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1159
+    Latitude:34.1738  Longitude:-118.64865
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013140832.txt"
+Filename: WBBDTest12-10172013140832.txt
+    DateTime of Speed Test - 10/17/2013 14:08:32
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1159
+    Latitude:34.173817  Longitude:-118.648663
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013143638.txt"
+Filename: WBBDTest12-10172013143638.txt
+    DateTime of Speed Test - 10/17/2013 14:36:38
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1192
+    Latitude:34.173258  Longitude:-118.557915
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013144128.txt"
+Filename: WBBDTest12-10172013144128.txt
+    DateTime of Speed Test - 10/17/2013 14:41:28
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1192
+    Latitude:34.17323  Longitude:-118.557898
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013144623.txt"
+Filename: WBBDTest12-10172013144623.txt
+    DateTime of Speed Test - 10/17/2013 14:46:23
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1192
+    Latitude:34.173245  Longitude:-118.557873
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest12-10172013145126.txt"
+Filename: WBBDTest12-10172013145126.txt
+    DateTime of Speed Test - 10/17/2013 14:51:26
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1192
+    Latitude:34.173212  Longitude:-118.557797
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest2-10172013151943.txt"
+Filename: WBBDTest2-10172013151943.txt
+    DateTime of Speed Test - 10/17/2013 15:19:43
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.73201  Longitude:-121.840617
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest2-10172013152747.txt"
+Filename: WBBDTest2-10172013152747.txt
+    DateTime of Speed Test - 10/17/2013 15:27:47
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.731745  Longitude:-121.840908
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest2-10172013153759.txt"
+Filename: WBBDTest2-10172013153759.txt
+    DateTime of Speed Test - 10/17/2013 15:37:59
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest2-10172013154759.txt"
+Filename: WBBDTest2-10172013154759.txt
+    DateTime of Speed Test - 10/17/2013 15:47:59
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest3-10172013151312.txt"
+Filename: WBBDTest3-10172013151312.txt
+    DateTime of Speed Test - 10/17/2013 15:13:12
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.731732  Longitude:-121.841068
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest3-10172013152129.txt"
+Filename: WBBDTest3-10172013152129.txt
+    DateTime of Speed Test - 10/17/2013 15:21:29
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.731657  Longitude:-121.840983
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest3-10172013153702.txt"
+Filename: WBBDTest3-10172013153702.txt
+    DateTime of Speed Test - 10/17/2013 15:37:02
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1234
+    Latitude:39.73173  Longitude:-121.841023
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013101705.txt"
+Filename: WBBDTest7-10172013101705.txt
+    DateTime of Speed Test - 10/17/2013 10:17:05
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013101939.txt"
+Filename: WBBDTest7-10172013101939.txt
+    DateTime of Speed Test - 10/17/2013 10:19:39
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:0  Longitude:0
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013102553.txt"
+Filename: WBBDTest7-10172013102553.txt
+    DateTime of Speed Test - 10/17/2013 10:25:53
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.23891  Longitude:-118.531937
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013103208.txt"
+Filename: WBBDTest7-10172013103208.txt
+    DateTime of Speed Test - 10/17/2013 10:32:08
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.23842  Longitude:-118.531598
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013103600.txt"
+Filename: WBBDTest7-10172013103600.txt
+    DateTime of Speed Test - 10/17/2013 10:36:00
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238455  Longitude:-118.531627
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013115703.txt"
+Filename: WBBDTest7-10172013115703.txt
+    DateTime of Speed Test - 10/17/2013 11:57:03
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1325
+    Latitude:34.234952  Longitude:-118.492628
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013115847.txt"
+Filename: WBBDTest7-10172013115847.txt
+    DateTime of Speed Test - 10/17/2013 11:58:47
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1325
+    Latitude:34.234943  Longitude:-118.492622
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013120412.txt"
+Filename: WBBDTest7-10172013120412.txt
+    DateTime of Speed Test - 10/17/2013 12:04:12
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1325
+    Latitude:34.23492  Longitude:-118.49264
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013121436.txt"
+Filename: WBBDTest7-10172013121436.txt
+    DateTime of Speed Test - 10/17/2013 12:14:36
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1325
+    Latitude:34.234935  Longitude:-118.492608
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013121930.txt"
+Filename: WBBDTest7-10172013121930.txt
+    DateTime of Speed Test - 10/17/2013 12:19:30
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1325
+    Latitude:34.234953  Longitude:-118.49265
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013124429.txt"
+Filename: WBBDTest7-10172013124429.txt
+    DateTime of Speed Test - 10/17/2013 12:44:29
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2498
+    Latitude:34.166665  Longitude:-118.492808
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013124946.txt"
+Filename: WBBDTest7-10172013124946.txt
+    DateTime of Speed Test - 10/17/2013 12:49:46
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2498
+    Latitude:34.166667  Longitude:-118.492775
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013125358.txt"
+Filename: WBBDTest7-10172013125358.txt
+    DateTime of Speed Test - 10/17/2013 12:53:58
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2498
+    Latitude:34.166652  Longitude:-118.492773
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013130539.txt"
+Filename: WBBDTest7-10172013130539.txt
+    DateTime of Speed Test - 10/17/2013 13:05:39
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2498
+    Latitude:34.166643  Longitude:-118.492738
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013131019.txt"
+Filename: WBBDTest7-10172013131019.txt
+    DateTime of Speed Test - 10/17/2013 13:10:19
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2498
+    Latitude:34.166667  Longitude:-118.492753
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013132750.txt"
+Filename: WBBDTest7-10172013132750.txt
+    DateTime of Speed Test - 10/17/2013 13:27:50
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1253
+    Latitude:34.155378  Longitude:-118.411625
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013133455.txt"
+Filename: WBBDTest7-10172013133455.txt
+    DateTime of Speed Test - 10/17/2013 13:34:55
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1253
+    Latitude:34.155388  Longitude:-118.411633
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013134034.txt"
+Filename: WBBDTest7-10172013134034.txt
+    DateTime of Speed Test - 10/17/2013 13:40:34
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1253
+    Latitude:34.155397  Longitude:-118.41164
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013134714.txt"
+Filename: WBBDTest7-10172013134714.txt
+    DateTime of Speed Test - 10/17/2013 13:47:14
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1253
+    Latitude:34.155377  Longitude:-118.41164
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013141519.txt"
+Filename: WBBDTest7-10172013141519.txt
+    DateTime of Speed Test - 10/17/2013 14:15:19
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2652
+    Latitude:34.225808  Longitude:-118.376195
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013142129.txt"
+Filename: WBBDTest7-10172013142129.txt
+    DateTime of Speed Test - 10/17/2013 14:21:29
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2652
+    Latitude:34.22583  Longitude:-118.376222
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013142552.txt"
+Filename: WBBDTest7-10172013142552.txt
+    DateTime of Speed Test - 10/17/2013 14:25:52
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2652
+    Latitude:34.225803  Longitude:-118.376207
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest7-10172013143004.txt"
+Filename: WBBDTest7-10172013143004.txt
+    DateTime of Speed Test - 10/17/2013 14:30:04
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2652
+    Latitude:34.225813  Longitude:-118.376213
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013101252.txt"
+Filename: WBBDTest8-10172013101252.txt
+    DateTime of Speed Test - 10/17/2013 10:12:52
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.23858  Longitude:-118.53157
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013102405.txt"
+Filename: WBBDTest8-10172013102405.txt
+    DateTime of Speed Test - 10/17/2013 10:24:05
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238452  Longitude:-118.531658
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013103121.txt"
+Filename: WBBDTest8-10172013103121.txt
+    DateTime of Speed Test - 10/17/2013 10:31:21
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238438  Longitude:-118.531628
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013103704.txt"
+Filename: WBBDTest8-10172013103704.txt
+    DateTime of Speed Test - 10/17/2013 10:37:04
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238423  Longitude:-118.531595
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013115028.txt"
+Filename: WBBDTest8-10172013115028.txt
+    DateTime of Speed Test - 10/17/2013 11:50:28
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1155
+    Latitude:34.317907  Longitude:-118.490203
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013115700.txt"
+Filename: WBBDTest8-10172013115700.txt
+    DateTime of Speed Test - 10/17/2013 11:57:00
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1155
+    Latitude:34.317907  Longitude:-118.490203
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013120231.txt"
+Filename: WBBDTest8-10172013120231.txt
+    DateTime of Speed Test - 10/17/2013 12:02:31
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1155
+    Latitude:34.317903  Longitude:-118.490198
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013120720.txt"
+Filename: WBBDTest8-10172013120720.txt
+    DateTime of Speed Test - 10/17/2013 12:07:20
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1155
+    Latitude:34.317912  Longitude:-118.490207
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013124442.txt"
+Filename: WBBDTest8-10172013124442.txt
+    DateTime of Speed Test - 10/17/2013 12:44:42
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2674
+    Latitude:34.256548  Longitude:-118.589285
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013125223.txt"
+Filename: WBBDTest8-10172013125223.txt
+    DateTime of Speed Test - 10/17/2013 12:52:23
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2674
+    Latitude:34.256582  Longitude:-118.589263
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013125645.txt"
+Filename: WBBDTest8-10172013125645.txt
+    DateTime of Speed Test - 10/17/2013 12:56:45
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2674
+    Latitude:34.256577  Longitude:-118.58926
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013130444.txt"
+Filename: WBBDTest8-10172013130444.txt
+    DateTime of Speed Test - 10/17/2013 13:04:44
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2674
+    Latitude:34.256568  Longitude:-118.589265
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013132520.txt"
+Filename: WBBDTest8-10172013132520.txt
+    DateTime of Speed Test - 10/17/2013 13:25:20
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1860
+    Latitude:34.205285  Longitude:-118.669478
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013133006.txt"
+Filename: WBBDTest8-10172013133006.txt
+    DateTime of Speed Test - 10/17/2013 13:30:06
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1860
+    Latitude:34.205275  Longitude:-118.669485
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013134048.txt"
+Filename: WBBDTest8-10172013134048.txt
+    DateTime of Speed Test - 10/17/2013 13:40:48
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1860
+    Latitude:34.20528  Longitude:-118.669482
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013134441.txt"
+Filename: WBBDTest8-10172013134441.txt
+    DateTime of Speed Test - 10/17/2013 13:44:41
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1860
+    Latitude:34.205258  Longitude:-118.669468
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013140112.txt"
+Filename: WBBDTest8-10172013140112.txt
+    DateTime of Speed Test - 10/17/2013 14:01:12
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2830
+    Latitude:34.248322  Longitude:-118.649753
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013140947.txt"
+Filename: WBBDTest8-10172013140947.txt
+    DateTime of Speed Test - 10/17/2013 14:09:47
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2830
+    Latitude:34.248305  Longitude:-118.649715
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013141500.txt"
+Filename: WBBDTest8-10172013141500.txt
+    DateTime of Speed Test - 10/17/2013 14:15:00
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2830
+    Latitude:34.248342  Longitude:-118.649743
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest8-10172013141928.txt"
+Filename: WBBDTest8-10172013141928.txt
+    DateTime of Speed Test - 10/17/2013 14:19:28
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2830
+    Latitude:34.248353  Longitude:-118.649792
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013101335.txt"
+Filename: WBBDTest9-10172013101335.txt
+    DateTime of Speed Test - 10/17/2013 10:13:35
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.2385  Longitude:-118.531642
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013101940.txt"
+Filename: WBBDTest9-10172013101940.txt
+    DateTime of Speed Test - 10/17/2013 10:19:40
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.2384  Longitude:-118.531543
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013103059.txt"
+Filename: WBBDTest9-10172013103059.txt
+    DateTime of Speed Test - 10/17/2013 10:30:59
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238465  Longitude:-118.53173
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013103834.txt"
+Filename: WBBDTest9-10172013103834.txt
+    DateTime of Speed Test - 10/17/2013 10:38:34
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 3000
+    Latitude:34.238467  Longitude:-118.531535
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013142044.txt"
+Filename: WBBDTest9-10172013142044.txt
+    DateTime of Speed Test - 10/17/2013 14:20:44
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1213
+    Latitude:34.28672  Longitude:-118.407685
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013142634.txt"
+Filename: WBBDTest9-10172013142634.txt
+    DateTime of Speed Test - 10/17/2013 14:26:34
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1213
+    Latitude:34.286783  Longitude:-118.407683
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013143116.txt"
+Filename: WBBDTest9-10172013143116.txt
+    DateTime of Speed Test - 10/17/2013 14:31:16
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1213
+    Latitude:34.286688  Longitude:-118.407682
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013143709.txt"
+Filename: WBBDTest9-10172013143709.txt
+    DateTime of Speed Test - 10/17/2013 14:37:09
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1213
+    Latitude:34.2867  Longitude:-118.40766
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013145438.txt"
+Filename: WBBDTest9-10172013145438.txt
+    DateTime of Speed Test - 10/17/2013 14:54:38
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2735
+    Latitude:34.314167  Longitude:-118.384722
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013145930.txt"
+Filename: WBBDTest9-10172013145930.txt
+    DateTime of Speed Test - 10/17/2013 14:59:30
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2735
+    Latitude:34.314165  Longitude:-118.384713
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013150634.txt"
+Filename: WBBDTest9-10172013150634.txt
+    DateTime of Speed Test - 10/17/2013 15:06:34
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2735
+    Latitude:34.314165  Longitude:-118.384715
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013151053.txt"
+Filename: WBBDTest9-10172013151053.txt
+    DateTime of Speed Test - 10/17/2013 15:10:53
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2735
+    Latitude:34.314165  Longitude:-118.384715
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013153414.txt"
+Filename: WBBDTest9-10172013153414.txt
+    DateTime of Speed Test - 10/17/2013 15:34:14
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2659
+    Latitude:34.316757  Longitude:-118.442455
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013154013.txt"
+Filename: WBBDTest9-10172013154013.txt
+    DateTime of Speed Test - 10/17/2013 15:40:13
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2659
+    Latitude:34.316745  Longitude:-118.442438
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013154909.txt"
+Filename: WBBDTest9-10172013154909.txt
+    DateTime of Speed Test - 10/17/2013 15:49:09
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2659
+    Latitude:34.316735  Longitude:-118.442427
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013155404.txt"
+Filename: WBBDTest9-10172013155404.txt
+    DateTime of Speed Test - 10/17/2013 15:54:04
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 2659
+    Latitude:34.316723  Longitude:-118.442452
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013161512.txt"
+Filename: WBBDTest9-10172013161512.txt
+    DateTime of Speed Test - 10/17/2013 16:15:12
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = AT&T
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1155
+    Latitude:34.318595  Longitude:-118.490158
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013162915.txt"
+Filename: WBBDTest9-10172013162915.txt
+    DateTime of Speed Test - 10/17/2013 16:29:15
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Sprint
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1155
+    Latitude:34.318605  Longitude:-118.490148
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013163420.txt"
+Filename: WBBDTest9-10172013163420.txt
+    DateTime of Speed Test - 10/17/2013 16:34:20
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = Verizon
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1155
+    Latitude:34.318603  Longitude:-118.490152
+    
+Loading in data @ "/bb results/10_17_2013/WBBDTest9-10172013163835.txt"
+Filename: WBBDTest9-10172013163835.txt
+    DateTime of Speed Test - 10/17/2013 16:38:35
+    OS: N/A, N/A, N/A
+    Java: N/A, N/A
+    Network Type: netbook
+    Connection: Server = N/A, Host = N/A
+    Network: Operator = N/A, Provider = T-Mobile
+    Device: ID = N/A, Connection Type = N/A
+    Location ID: 1155
+    Latitude:34.318607  Longitude:-118.490163
+    

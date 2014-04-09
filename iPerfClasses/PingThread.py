@@ -1,5 +1,4 @@
 
-
 # ------------------------------------------------------------------------
 # This section checks to see if the script is being run directly,
 # i.e. through the command line. If it is, then it stops and exits the
@@ -26,14 +25,15 @@ if __name__ == '__main__':
         print(link)
 
     #Telling the system to exit with no errors
-    sys.exit(0)
+    raise SystemExit
 #END __name__=='__main__'
+
 
 
 
 # Each subset of pings within each subset (represented by a numbered thread)
 # ------------------------------------------------------------------------
-# SPEEDPINGS.PY
+# PINGTHREAD.PY
 #
 # AUTHOR(S):   Peter Walker, Brandon Layton
 #
@@ -45,20 +45,18 @@ if __name__ == '__main__':
 #       OUTPUTS-    ..
 #
 # ------------------------------------------------------------------------
-from .readTo import readToAndGetLine
+from .utils import readToAndGetLine
 from .Pings import Ping
-class SpeedPings():
-    localHost = "UNKNOWN"
-    localPort = 0
-    serverHost = "UNKNWON"
-    serverPort = 0
+class PingThread():
 
+    # ----------------
     #some tests are numbered 3, 4, 5, etc. There is also a test numbered SUM
     numTest = 0
 
-    pings = []
+    this_Pings = []
+    # ----------------
 
     def __init__(self):
-        pass
+        this_Pings.append(Ping())
     #END DEF
 #END CLASS

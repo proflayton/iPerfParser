@@ -25,8 +25,10 @@ if __name__ == '__main__':
         print(link)
 
     #Telling the system to exit with no errors
-    sys.exit(0)
+    raise SystemExit
 #END __name__=='__main__'
+
+
 
 
 # Small tests within each Test file
@@ -43,13 +45,11 @@ if __name__ == '__main__':
 #       OUTPUTS-    ..
 #
 # ------------------------------------------------------------------------
-from .readTo import readToAndGetLine
-from .SpeedPings import SpeedPings
+from .utils import readToAndGetLine
+from .utils import global_str_padding as pad
+pad = pad*2
+from .PingThread import PingThread
 class SpeedTest():
-
-    Latitude = 0.0
-    Longitude = 0.0
-
     ## !!!!
     ## Some tests (like in WBBD) do not specifiy TCP West,TCP East,UDP West, etc.
     ## It would be better to just compare the IP address the test is connecting to
@@ -57,20 +57,114 @@ class SpeedTest():
     ##
     ## 184.72.222.65 = East TCP/UDP
     ## 184.72.63.139 = West TCP/UDP
+    """
+        Here's what I've found in my analysis of the iperf commands.
+            read line is always "Iperf command line:___"
+            where ___ is the start of the command.
+            there is always a space between the command in the options
+
+        OPTIONS----
+        ALL
+        -c ____ = client IP (East or West)
+        -p ____ = port
+        -i 1 = why always 1?
+        -f ____ = ?????
+        -t ____ = time????
+
+        TCP:
+        -e = use TCP?
+        -P ____ = # of channels (local ports connected with client IP:port)
+        -w ____ = window size
+           -t 10 != 10 second long tests!!!
+           -t 10 results in a 10 second long test and then a longer test (arbitrary length, 35sec -> 50sec long)
+
+        UDP:
+        -u = use UDP?
+        -l ____ = datagram size in bytes
+        -t 1 == 1 second test
+        -t 5 == 5 second test
+        -b ____ = transmit speed in Kbits/sec
+    """
     ## !!!!!
-    #e.g. TCP, UDP, Ping
+
+    # ------------------------
+    # Class variables
+    #e.g. TCP, UDP
     ConnectionType = "UNKNOWN"
-    #e.g. West, East, None
+    #e.g. West, East
     ConnectionLoc = "UNKNOWN"
 
-    IP = "UNKNOWN"
+    RecieverIP = "UNKNOWN"
     Port = 0000
 
-    WindowSz = 0 #In KByte
+    TestInterval = 0
 
-    pings = []
+    this_PingThreads = []
 
-    def __init__(self):
-        pass
+    # ------------------------
+
+    def __init__(self, data):
+        self.load(data)
+        #self.allText = None
+    #END DEF
+
+
+    def load(self, data):
+        #splitting the first line from the rest of the data
+        iPerfCommand = data.split("\n", 1)[0]
+
+        #Finding the connection type
+        if iPerfCommand.find("-e")>0:
+            self.ConnectionType = "TCP"
+        if iPerfCommand.find("-u")>0:
+            self.ConnectionType = "UDP"
+
+        #Getting the Reciever IP address
+        c_opt_strt = iPerfCommand.find("-c")+3
+        c_opt_end = iPerfCommand.find(" ", c_opt_strt)+1
+        if (c_opt_end != 0):
+            self.RecieverIP = iPerfCommand[c_opt_strt:c_opt_end]
+        else:
+            self.RecieverIP = iPerfCommand[c_opt_strt:]
+
+        #Determining the Connection Location
+        if self.RecieverIP == "184.72.222.65":
+            self.ConnectionLoc = "East"
+        if self.RecieverIP == "184.72.63.139":
+            self.ConnectionLoc = "West"
+
+        #Getting port number
+        p_opt_strt = iPerfCommand.find("-p")+3
+        p_opt_end = iPerfCommand.find(" ", p_opt_strt)+1
+        if (p_opt_end != 0):
+            self.Port = iPerfCommand[p_opt_strt:p_opt_end]
+        else:
+            self.Port = iPerfCommand[p_opt_strt:]
+
+        #Getting test time interval number
+        t_opt_strt = iPerfCommand.find("-t")+3
+        t_opt_end = iPerfCommand.find(" ", t_opt_strt)+1
+        if (t_opt_end != 0):
+            self.TestInterval = iPerfCommand[t_opt_strt:t_opt_end]
+        else:
+            self.TestInterval = iPerfCommand[t_opt_strt:]
+
+        if self.ConnectionType == "TCP":
+            create_multiple_ping_threads = True
+        else:
+            create_one_ping_thread = True
+        #END IF/ELSE
+    #END DEF
+
+
+    def __str__(self):
+        this_str = (pad + " Connection Type: " + self.ConnectionType + "\n" +
+                    pad + " Connection Location: " + self.ConnectionLoc + "\n" +
+                    pad + " Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
+                    pad + " Test Interval:" + self.TestInterval + "\n"
+                   )
+        for elem in self.this_PingThreads:
+            this_str += pad + str(elem, add_pad+pad) + "\n"
+        return this_str
     #END DEF
 #END CLASS
