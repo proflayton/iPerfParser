@@ -57,7 +57,21 @@ class SpeedTestDS():
 
     # ---------------------
     # Initializing some class attributes
-    this_SpeedTestFiles = []
+
+    Carriers = ["AT&T", "Verizon", "Sprint", "T-Mobile"]
+    ignored_Carriers = []
+    ignored_Files = []
+
+    this_SpeedTestFiles = {
+                            "mobile"  : {},
+                            "netbook" : {}
+                          }
+
+    for key in this_SpeedTestFiles:
+        for elem in Carriers:
+            this_SpeedTestFiles[key][elem] = []
+    #END FORS
+
     # ---------------------
     def __init__(self):
         self.meaningOfLife = "bacon"
@@ -73,10 +87,24 @@ class SpeedTestDS():
             #Alter this string to be the parent directory holding all of the data
             DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
             if (sysArgv[1] == "-c"):
-                for root, dirs, files in os.walk(DataRoot+"10_17_2013/"):
+                for root, dirs, files in os.walk(DataRoot+"10_18_2013/"):
                     for aFile in files:
-                        self.this_SpeedTestFiles.append( SpeedTestFile(os.path.join(root, aFile)) )
-                        print( self.this_SpeedTestFiles[-1] )
+                        test_STFile = SpeedTestFile(os.path.join(root, aFile))
+                        if test_STFile.NetworkProvider != "N/A":
+                            self.this_SpeedTestFiles[test_STFile.NetworkType] \
+                                                    [test_STFile.NetworkProvider] \
+                                                    .append( SpeedTestFile(os.path.join(root, aFile)) )
+                        else:
+                            self.this_SpeedTestFiles[test_STFile.NetworkType] \
+                                                    [test_STFile.NetworkOperator] \
+                                                    .append( SpeedTestFile(os.path.join(root, aFile)) )
+                        #END IF/ELSE
+                    #END FOR files
+                #END FOR os.walk
+                print(self.this_SpeedTestFiles)
+
+
+            #END IF
             elif (sysArgv[1] == "-cs"):
                 #Alter these strings to be individual data files
                 file1 = DataRoot + "10_17_2013/99000344556962-10172013151027.txt"
@@ -95,6 +123,10 @@ class SpeedTestDS():
             else:
                 print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")
             #END IF/ELIF/ELIF/ELSE
+
+
+
+
         else:
             #Asking for a directory from the user
             # initialdir sets the starting point as the user's home directory
@@ -114,14 +146,49 @@ class SpeedTestDS():
                     #If not, the script will exit and display the message below
                     f = open(os.path.join(root, aFile),'r')
                     isItCPUC = f.readline()
-                    # !!!!!!!!!
-                    # The internal block of the IF statement will need
-                    # to be elaborated on. It currently does nothing.
-                    # It should build the array of SpeedTestFile objects and
-                    # then allow the user to perform analysis on these objects
-                    # !!!!!!!!1
                     if ("CPUC Tester Beta v2.0" in isItCPUC):
-                        print( SpeedTestFile(os.path.join(root, aFile)) )
+                        test_STFile = SpeedTestFile(os.path.join(root, aFile))
+                        try:
+                            if test_STFile.NetworkProvider in self.Carriers:
+                                (self.this_SpeedTestFiles[test_STFile.NetworkType]
+                                                        [test_STFile.NetworkProvider]
+                                                        .append( SpeedTestFile(os.path.join(root, aFile)) ) )
+                            elif test_STFile.NetworkOperator in self.Carriers:
+                                (self.this_SpeedTestFiles[test_STFile.NetworkType]
+                                                        [test_STFile.NetworkOperator]
+                                                        .append( SpeedTestFile(os.path.join(root, aFile)) ) )
+                            else:
+                                ignoring_last_file_parsed = True
+                                if test_STFile.NetworkProvider != "N/A":
+                                    if not(test_STFile.NetworkProvider in self.ignored_Carriers):
+                                        self.ignored_Carriers.append(test_STFile.NetworkProvider)
+                                elif test_STFile.NetworkOperator != "N/A":
+                                    if not(test_STFile.NetworkOperator in self.ignored_Carriers):
+                                        self.ignored_Carriers.append(test_STFile.NetworkOperator)
+                                #END IF/ELIF
+                                self.ignored_Files.append(aFile)
+                            #END IF/ELIF/ELSE
+                        except:
+                            print(os.path.join(root, aFile))
+                            print(test_STFile.NetworkProvider+" "+test_STFile.NetworkOperator)
+                            print(test_STFile.NetworkProvider in self.Carriers)
+                            raise SystemExit
+                        #END TRY/EXCEPT
+                    #END IF
+                #END FOR files
+            #END FOR os.walk
+            for deviceType in self.this_SpeedTestFiles:
+                print(deviceType)
+                for name in self.this_SpeedTestFiles[deviceType]:
+                    print("  " + name + ", count:" + str(len(self.this_SpeedTestFiles[deviceType][name])) )
+            print("")
+
+            newstr = ""
+            for elem in self.ignored_Carriers:
+                newstr += elem + "; "
+            print(newstr)
+            print(len(self.ignored_Files))
+            print("Parsing completed. The data structure has been built.\nWhat analysis would you like to perform?")
         #END IF/ELSE
     #END DEF
 #END CLASS

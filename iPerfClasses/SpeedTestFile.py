@@ -111,7 +111,7 @@ class SpeedTestFile():
     def load(self, filePath):
 
         #Print will print out the bottom three levels of the path passed in
-        print("Loading in data @ " + "\"/" + "/".join(filePath.split("/")[-3:]) + "\"" );
+        #print("Loading in data @ " + "\"/" + "/".join(filePath.split("/")[-3:]) + "\"" );
 
         #open the file and read through the first line (which is "CPUC Beta .....")
         # save byte location to self.FileStreamLoc
@@ -303,8 +303,8 @@ class SpeedTestFile():
                 pad + " Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
                 pad + " Network Type: " + self.NetworkType + "\n" +
                 pad + " Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
-                pad + " Network: Operator = " + self.NetworkOperator +
-                      ", Provider = " + self.NetworkProvider + "\n" +
+                pad + " Network: Provider = " + self.NetworkProvider +
+                      ", Operator = " + self.NetworkOperator + "\n" +
                 pad + " Device: ID = " + self.DeviceID +
                       ", Connection Type = " + self.ConnectionType + "\n" +
                 pad + " Location ID: " + self.LocationID + "\n" +
