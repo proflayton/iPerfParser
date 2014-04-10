@@ -111,7 +111,7 @@ class SpeedTestFile():
     def load(self, filePath):
 
         #Print will print out the bottom three levels of the path passed in
-        print("Loading in data @ " + "\"/" + "/".join(filePath.split("/")[-3:]) + "\"" );
+        #print("Loading in data @ " + "\"/" + "/".join(filePath.split("/")[-3:]) + "\"" );
 
         #open the file and read through the first line (which is "CPUC Beta .....")
         # save byte location to self.FileStreamLoc
@@ -141,7 +141,7 @@ class SpeedTestFile():
         if temp:
             self.OSName = temp.split("Name = ")[1].split(",")[0]
             self.OSArchitectue = temp.split("Architecture = ")[1].split(",")[0]
-            self.OSVersion = temp.split("Version = ")[1][:-2]
+            self.OSVersion = temp.split("Version = ")[1][:-1]
             # After parsing text, we need to check that there are no empty values
             if self.OSName == "": self.OSName = "N/A"
             if self.OSArchitectue == "": self.OSArchitectue = "N/A"
@@ -157,7 +157,7 @@ class SpeedTestFile():
         temp = readToAndGetLine(f,"Java: ")
         if temp:
             self.JavaVersion = temp.split("Version = ")[1].split(",")[0];
-            self.JavaVender  = temp.split("Vendor = ")[1][:-2]
+            self.JavaVender  = temp.split("Vendor = ")[1][:-1]
             if self.JavaVersion == "": self.JavaVersion = "N/A"
             if self.JavaVender == "": self.JavaVender = "N/A"
         else:
@@ -175,14 +175,14 @@ class SpeedTestFile():
 
         #Read in Server Header Information
         try:
-            self.Server = readToAndGetLine(f,"Server: ").split("Server: ")[1][:-2]
+            self.Server = readToAndGetLine(f,"Server: ").split("Server: ")[1][:-1]
             if self.Server == "": self.Server = "N/A"
         except:
             self.Server = "N/A"
         f.seek(self.FileStreamLoc)
         #Read in Host Header Information
         try:
-            self.Host = readToAndGetLine(f,"Host: ").split("Host: ")[1][:-2]
+            self.Host = readToAndGetLine(f,"Host: ").split("Host: ")[1][:-1]
             if self.Host == "": self.Host = "N/A"
         except:
             self.Host = "N/A"
@@ -191,12 +191,12 @@ class SpeedTestFile():
 
         #Get Network Provider
         try:
-            self.NetworkProvider = readToAndGetLine(f,"NetworkProvider: ").split("NetworkProvider: ")[1][:-2]
+            self.NetworkProvider = readToAndGetLine(f,"NetworkProvider: ").split("NetworkProvider: ")[1][:-1]
             if self.NetworkProvider == "": self.NetworkProvider = "N/A"
         except:
             f.seek(self.FileStreamLoc)
             try:
-                self.NetworkProvider = readToAndGetLine(f,"Network Provider: ").split("Network Provider: ")[1][:-2]
+                self.NetworkProvider = readToAndGetLine(f,"Network Provider: ").split("Network Provider: ")[1][:-1]
                 if self.NetworkProvider == "": self.NetworkProvider = "N/A"
             except:
                 self.NetworkProvider = "N/A"
@@ -205,21 +205,21 @@ class SpeedTestFile():
 
         #Get Network Operator
         try:
-            self.NetworkOperator = readToAndGetLine(f,"NetworkOperator: ").split("NetworkOperator: ")[1][:-2]
+            self.NetworkOperator = readToAndGetLine(f,"NetworkOperator: ").split("NetworkOperator: ")[1][:-1]
             if self.NetworkOperator == "": self.NetworkOperator = "N/A"
         except:
             self.NetworkOperator = "N/A"
         f.seek(self.FileStreamLoc)
         #Get Device ID
         try:
-            self.DeviceID = readToAndGetLine(f,"Device ID: ").split("Device ID: ")[1][:-2]
+            self.DeviceID = readToAndGetLine(f,"Device ID: ").split("Device ID: ")[1][:-1]
             if self.DeviceID == "": self.DeviceID = "N/A"
         except:
             self.DeviceID = "N/A"
         f.seek(self.FileStreamLoc)
         #Get Device ConnectionType
         try:
-            self.ConnectionType = readToAndGetLine(f,"ConnectionType: ").split("ConnectionType: ")[1][:-2]
+            self.ConnectionType = readToAndGetLine(f,"ConnectionType: ").split("ConnectionType: ")[1][:-1]
             if self.ConnectionType == "": self.ConnectionType = "N/A"
         except:
             self.ConnectionType = "N/A"
@@ -228,12 +228,12 @@ class SpeedTestFile():
 
         #Get the Location ID
         try:
-            self.LocationID = readToAndGetLine(f,"Location ID: ").split("Location ID: ")[1][:-2]
+            self.LocationID = readToAndGetLine(f,"Location ID: ").split("Location ID: ")[1][:-1]
             if self.LocationID == "": self.LocationID = "N/A"
         except:
             f.seek(self.FileStreamLoc)
             try:
-                self.LocationID = readToAndGetLine(f,"Location: ").split("Location: ")[1][:-2]
+                self.LocationID = readToAndGetLine(f,"Location: ").split("Location: ")[1][:-1]
                 if self.LocationID == "": self.LocationID = "N/A"
             except:
                 self.LocationID = "N/A"
@@ -244,11 +244,11 @@ class SpeedTestFile():
         try:
             temp = readToAndGetLine(f, "Latitude:")
             while temp:
-                temp = temp.split("Latitude:")[1][:-2]
+                temp = temp.split("Latitude:")[1][:-1]
                 if temp != "0.0":
                     self.Latitude = temp
                 temp = readToAndGetLine(f, "Longitude:")
-                temp = temp.split("Longitude:")[1][:-2]
+                temp = temp.split("Longitude:")[1][:-1]
                 if temp != "0.0":
                     self.Longitude = temp
                 temp = readToAndGetLine(f, "Latitude:")
@@ -269,7 +269,6 @@ class SpeedTestFile():
             if not SpeedTestData:
                 continueLoop = False
             else:
-                SpeedTestData = SpeedTestData[:-2] + "\n"
                 temp = f.readline()
                 while (temp[:-2] != ''):
                     SpeedTestData += temp[:-2] + "\n"
@@ -280,7 +279,6 @@ class SpeedTestFile():
                 self.FileStreamLoc = f.tell()
             #END IF/ELSE
         #END WHILE
-        f.close()
     #END DEF
 
 
@@ -305,8 +303,8 @@ class SpeedTestFile():
                 pad + " Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
                 pad + " Network Type: " + self.NetworkType + "\n" +
                 pad + " Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
-                pad + " Network: Operator = " + self.NetworkOperator +
-                      ", Provider = " + self.NetworkProvider + "\n" +
+                pad + " Network: Provider = " + self.NetworkProvider +
+                      ", Operator = " + self.NetworkOperator + "\n" +
                 pad + " Device: ID = " + self.DeviceID +
                       ", Connection Type = " + self.ConnectionType + "\n" +
                 pad + " Location ID: " + self.LocationID + "\n" +
@@ -317,5 +315,3 @@ class SpeedTestFile():
                 )
     #END DEF
 #END CLASS
-
-

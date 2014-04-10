@@ -104,12 +104,13 @@ class SpeedTest():
     # ------------------------
 
     def __init__(self, data):
-        self.load(data)
+        self.loadHeaderInfo(data)
+        self.createPingThreads(data)
         #self.allText = None
     #END DEF
 
 
-    def load(self, data):
+    def loadHeaderInfo(self, data):
         #splitting the first line from the rest of the data
         iPerfCommand = data.split("\n", 1)[0]
 
@@ -154,6 +155,11 @@ class SpeedTest():
         else:
             create_one_ping_thread = True
         #END IF/ELSE
+    #END DEF
+
+
+    def createPingThreads(self, data):
+        a = False
     #END DEF
 
 
