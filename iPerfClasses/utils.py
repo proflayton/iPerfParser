@@ -37,6 +37,8 @@ def readToAndGetLine(fileStream, delimiter):
     while delimiter not in line:
         line = fileStream.readline()
         if not line: break
+    if line and (not checkVersion((3,0,0))):
+        line = line[:-2] + "\n"
     return line
 #END DEF
 
@@ -82,5 +84,3 @@ def monthNumToAbbr(num):
             12: 'Dec'
             }[num]
 #END DEF
-
-
