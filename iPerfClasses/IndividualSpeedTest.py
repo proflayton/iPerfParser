@@ -45,6 +45,7 @@ if __name__ == '__main__':
 #       OUTPUTS-    ..
 #
 # ------------------------------------------------------------------------
+import io
 from .utils import readToAndGetLine
 from .utils import global_str_padding as pad
 pad = pad*2
@@ -114,6 +115,12 @@ class SpeedTest():
         #splitting the first line from the rest of the data
         iPerfCommand = data.split("\n", 1)[0]
 
+        #We have a string, but we want to treat it as a stream so 
+        #that we can use our other functions 
+        dataStream = io.StringIO(data)
+
+        #dataIO = io.StringIO(data)
+
         #Finding the connection type
         if iPerfCommand.find("-e")>0:
             self.ConnectionType = "TCP"
@@ -152,8 +159,30 @@ class SpeedTest():
 
         if self.ConnectionType == "TCP":
             create_multiple_ping_threads = True
+            pingLine = readToAndGetLine(dataStream,"[")
+            while(pingLine != None):
+                threadNumber  = pingLine[pingLine.find("[")+1 : pingLine.find("]")].replace(" ","")
+                if "local " in pingLine:
+                    print(pingLine)
+                else:
+                    intervalStart = pingLine[pingLine.find("]")+1 : pingLine.find("-")].replace(" ","")
+                    intervalEnd   = pingLine[pingLine.find("-")+1 : pingLine.find("s")].replace(" ","")
+                    speed = pingLine[pingLine.find("KBytes")+6:pingLine.find("Kbites/sec")-9].replace(" ","")
+                    
+                    if intervalStart == "SUM": 
+                        pass
+                    else:
+                        pass
+
+                    #print(speed)
+                    #import sys
+                    #sys.exit()
+                pingLine = readToAndGetLine(dataStream,"[")
         else:
             create_one_ping_thread = True
+
+
+
         #END IF/ELSE
     #END DEF
 
@@ -171,6 +200,7 @@ class SpeedTest():
                    )
         for elem in self.this_PingThreads:
             this_str += pad + str(elem, add_pad+pad) + "\n"
+        return ""
         return this_str
     #END DEF
 #END CLASS
