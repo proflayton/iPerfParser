@@ -211,9 +211,8 @@ class SpeedTestDS():
 
             for deviceType in self.this_SpeedTestFiles:
                 print(deviceType)
-                for name in self.this_SpeedTestFiles[deviceType]:
-                    for elem in self.this_SpeedTestFiles[deviceType][name]:
-                        print(str(elem))
+                for carrier in self.this_SpeedTestFiles[deviceType]:
+                    print(carrier + ": " + str(len(self.this_SpeedTestFiles[deviceType][carrier])))
 
             newstr = ""
             print(newstr)
