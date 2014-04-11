@@ -32,15 +32,8 @@ from iPerfClasses.SpeedTestDataStructure import SpeedTestDS as STDs
 import os
 import sys
 
-from time import time
-start = time()
 # Here's where main actually starts
 # creating a Speed Test Data Structure
 MainSpeedTestDS = STDs()
 # Loading in the raw data, and passing in the system arguements
 MainSpeedTestDS.loadRawData(sys.argv)
-end = time()
-print("time to run: " + str(end-start))
-
-
-
