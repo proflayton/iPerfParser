@@ -80,31 +80,63 @@ class SpeedTestDS():
 
     def loadRawData(self, sysArgv):
         #cheat for not having to select the folder every time.
-        #change string in os.walk to be the absolute path to the data files
+        #change string in DataRoot to be the absolute path to the data files
         #In command line, use "python main.py -c"
         # use "python main.py -cs" to only test on 3 files (one of each type)
+        # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
             #Alter this string to be the parent directory holding all of the data
             DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
             if (sysArgv[1] == "-c"):
-                for root, dirs, files in os.walk(DataRoot+"10_18_2013/"):
+                for root, dirs, files in os.walk(DataRoot+"10_17_2013/"):
                     for aFile in files:
-                        test_STFile = SpeedTestFile(os.path.join(root, aFile))
-                        if test_STFile.NetworkProvider != "N/A":
-                            self.this_SpeedTestFiles[test_STFile.NetworkType] \
-                                                    [test_STFile.NetworkProvider] \
-                                                    .append( SpeedTestFile(os.path.join(root, aFile)) )
-                        else:
-                            self.this_SpeedTestFiles[test_STFile.NetworkType] \
-                                                    [test_STFile.NetworkOperator] \
-                                                    .append( SpeedTestFile(os.path.join(root, aFile)) )
-                        #END IF/ELSE
+                        f = open(os.path.join(root, aFile),'r')
+                        isItCPUC = f.readline()
+                        if ("CPUC Tester Beta v2.0" in isItCPUC):
+                            test_STFile = SpeedTestFile(os.path.join(root, aFile))
+                            try:
+                                if test_STFile.NetworkProvider in self.Carriers:
+                                    (self.this_SpeedTestFiles[test_STFile.NetworkType]
+                                                            [test_STFile.NetworkProvider]
+                                                            .append( SpeedTestFile(os.path.join(root, aFile)) ) )
+                                elif test_STFile.NetworkOperator in self.Carriers:
+                                    (self.this_SpeedTestFiles[test_STFile.NetworkType]
+                                                            [test_STFile.NetworkOperator]
+                                                            .append( SpeedTestFile(os.path.join(root, aFile)) ) )
+                                else:
+                                    ignoring_last_file_parsed = True
+                                    if test_STFile.NetworkProvider != "N/A":
+                                        if not(test_STFile.NetworkProvider in self.ignored_Carriers):
+                                            self.ignored_Carriers.append(test_STFile.NetworkProvider)
+                                    elif test_STFile.NetworkOperator != "N/A":
+                                        if not(test_STFile.NetworkOperator in self.ignored_Carriers):
+                                            self.ignored_Carriers.append(test_STFile.NetworkOperator)
+                                    #END IF/ELIF
+                                    self.ignored_Files.append(aFile)
+                                #END IF/ELIF/ELSE
+                            except:
+                                print(os.path.join(root, aFile))
+                                print(test_STFile.NetworkProvider+" "+test_STFile.NetworkOperator)
+                                print(test_STFile.NetworkProvider in self.Carriers)
+                                raise SystemExit
+                            #END TRY/EXCEPT
+                        #END IF
                     #END FOR files
                 #END FOR os.walk
-                print(self.this_SpeedTestFiles)
+                for deviceType in self.this_SpeedTestFiles:
+                    print(deviceType)
+                    for name in self.this_SpeedTestFiles[deviceType]:
+                        for elem in self.this_SpeedTestFiles[deviceType][name]:
+                            print(str(elem))
 
-
+                print("")
+                newstr = ""
+                for elem in self.ignored_Carriers:
+                    newstr += elem + "; "
+                print(newstr)
+                print(len(self.ignored_Files))
             #END IF
+
             elif (sysArgv[1] == "-cs"):
                 #Alter these strings to be individual data files
                 file1 = DataRoot + "10_17_2013/99000344556962-10172013151027.txt"
@@ -115,6 +147,7 @@ class SpeedTestDS():
                 self.this_SpeedTestFiles.append( SpeedTestFile(file3) )
                 for elem in self.this_SpeedTestFiles:
                     print( str(elem) )
+
             elif (sysArgv[1] == "-css"):
                 #Alter this strings to be an individual data file
                 file1 = DataRoot + "10_17_2013/99000344556962-10172013151027.txt"
@@ -124,9 +157,7 @@ class SpeedTestDS():
                 print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")
             #END IF/ELIF/ELIF/ELSE
 
-
-
-
+        # ----------------------------------------------------------
         else:
             #Asking for a directory from the user
             # initialdir sets the starting point as the user's home directory
@@ -177,18 +208,20 @@ class SpeedTestDS():
                     #END IF
                 #END FOR files
             #END FOR os.walk
+
             for deviceType in self.this_SpeedTestFiles:
                 print(deviceType)
                 for name in self.this_SpeedTestFiles[deviceType]:
-                    print("  " + name + ", count:" + str(len(self.this_SpeedTestFiles[deviceType][name])) )
-            print("")
+                    for elem in self.this_SpeedTestFiles[deviceType][name]:
+                        print(str(elem))
 
             newstr = ""
+            print(newstr)
             for elem in self.ignored_Carriers:
                 newstr += elem + "; "
             print(newstr)
             print(len(self.ignored_Files))
-            print("Parsing completed. The data structure has been built.\nWhat analysis would you like to perform?")
+            #print("Parsing completed. The data structure has been built.\nWhat analysis would you like to perform?")
         #END IF/ELSE
     #END DEF
 #END CLASS
