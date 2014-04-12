@@ -63,7 +63,7 @@ from .utils import readToAndGetLine, monthAbbrToNum, isLessThanVersion
 from .utils import global_str_padding as pad
 pad = pad*1
 from .IndividualSpeedTest import SpeedTest
-class SpeedTestFile():
+class SpeedTestFile(object):
 
     # -------------------
     # Initializing some class attributes
@@ -93,11 +93,11 @@ class SpeedTestFile():
     Latitude = 0
     Longitude = 0
 
-    this_speedTests = []
     # -------------------
 
     # init functions calls load using the given file path
     def __init__(self,filePath):
+        self.this_speedTests = []
         self.FileName = filePath.split("/")[-1]
         self.load(filePath)
     #END INIT
@@ -279,6 +279,7 @@ class SpeedTestFile():
         # !!!!
         # SUPER IMPORTANT!! Otherwise, problems galore
         # !!!!
+        # Don't want open streams o_O
         fs.close()
     #END DEF
 

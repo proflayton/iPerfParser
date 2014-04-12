@@ -86,7 +86,7 @@ class SpeedTestDS():
         # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
             #Alter this string to be the parent directory holding all of the data
-            DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
+            DataRoot = "D:/CPUC/BB_results/"
             if (sysArgv[1] == "-c"):
                 for root, dirs, files in os.walk(DataRoot+"10_18_2013/"):
                     for aFile in files:
