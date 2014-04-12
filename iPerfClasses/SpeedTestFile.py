@@ -279,10 +279,7 @@ class SpeedTestFile(object):
         # !!!!
         # SUPER IMPORTANT!! Otherwise, problems galore
         # !!!!
-<<<<<<< HEAD
-=======
         # Don't want open streams o_O
->>>>>>> origin/Brandon's-REAL-Test-Branch
         fs.close()
     #END DEF
 
