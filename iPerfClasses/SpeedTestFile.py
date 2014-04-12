@@ -270,9 +270,14 @@ class SpeedTestFile():
                 continueLoop = False
             else:
                 temp = f.readline()
-                while (temp[:-2] != ''):
-                    SpeedTestData += temp[:-2] + "\n"
-                    temp = f.readline()
+                if not checkVersion((3,0,0)):
+                    while (temp[:-2] != ''):
+                        SpeedTestData += temp[:-2] + "\n"
+                        temp = f.readline()
+                else:
+                    while (temp[:-1] != ''):
+                        SpeedTestData += temp
+                        temp = f.readline()
                 #END WHILE
                 createdSpeedTest = SpeedTest(SpeedTestData)
                 self.this_speedTests.append(createdSpeedTest)
