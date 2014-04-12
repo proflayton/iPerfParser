@@ -119,7 +119,11 @@ class SpeedTest():
 
 
     def createPingThreads(self, dataStream):
-        a = readToAndGetLine(dataStream, b"\n")
+        a = True
+        while a:
+            a = dataStream.readline()
+            if a == b"\n":
+                a = False
     #END DEF
 
 
