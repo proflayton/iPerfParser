@@ -59,7 +59,7 @@ if __name__ == '__main__':
 #
 # ------------------------------------------------------------------------
 
-from .utils import readToAndGetLine, monthAbbrToNum
+from .utils import readToAndGetLine, monthAbbrToNum, isLessThanVersion
 from .utils import global_str_padding as pad
 pad = pad*1
 from .IndividualSpeedTest import SpeedTest
@@ -115,14 +115,14 @@ class SpeedTestFile():
 
         #open the file and read through the first line (which is "CPUC Beta .....")
         # save byte location to self.FileStreamLoc
-        f = open(filePath,'r')
-        f.readline()
-        self.FileStreamLoc = f.tell()
+        fs = open(filePath,'r')
+        fs.readline()
+        self.FileStreamLoc = fs.tell()
 
         #Reading in the DateTime of the test
-        f.seek(self.FileStreamLoc)
-        datetime = f.readline()
-        self.FileStreamLoc = f.tell()
+        fs.seek(self.FileStreamLoc)
+        datetime = fs.readline()
+        self.FileStreamLoc = fs.tell()
         if (self.FileName[:8] == "WBBDTest"):
             self.DateTime = datetime[:-1]
         else:
@@ -133,11 +133,11 @@ class SpeedTestFile():
             year = str(datetime[-5:-1])
             time = str(datetime[7:9]) + ":" + str(datetime[10:12]) + ":" + str(datetime[13:15])
             self.DateTime = month + "/" + day + "/" + year + " " + time
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #END IF/ELSE
 
         #Read in Operating System Header Information
-        temp = readToAndGetLine(f,"OS: ")
+        temp = readToAndGetLine(fs,"OS: ")
         if temp:
             self.OSName = temp.split("Name = ")[1].split(",")[0]
             self.OSArchitectue = temp.split("Architecture = ")[1].split(",")[0]
@@ -150,11 +150,11 @@ class SpeedTestFile():
             self.OSName = "N/A"
             self.OSArchitectue = "N/A"
             self.OSVersion = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #END IF/ELSE
 
         #Read in Java Header Information
-        temp = readToAndGetLine(f,"Java: ")
+        temp = readToAndGetLine(fs,"Java: ")
         if temp:
             self.JavaVersion = temp.split("Version = ")[1].split(",")[0];
             self.JavaVender  = temp.split("Vendor = ")[1][:-1]
@@ -163,7 +163,7 @@ class SpeedTestFile():
         else:
             self.JavaVersion = "N/A"
             self.JavaVender = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #END IF/ELSE
 
         #Set the Network Type Information
@@ -175,115 +175,111 @@ class SpeedTestFile():
 
         #Read in Server Header Information
         try:
-            self.Server = readToAndGetLine(f,"Server: ").split("Server: ")[1][:-1]
+            self.Server = readToAndGetLine(fs,"Server: ").split("Server: ")[1][:-1]
             if self.Server == "": self.Server = "N/A"
         except:
             self.Server = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #Read in Host Header Information
         try:
-            self.Host = readToAndGetLine(f,"Host: ").split("Host: ")[1][:-1]
+            self.Host = readToAndGetLine(fs,"Host: ").split("Host: ")[1][:-1]
             if self.Host == "": self.Host = "N/A"
         except:
             self.Host = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #END TRY/EXCEPT
 
         #Get Network Provider
         try:
-            self.NetworkProvider = readToAndGetLine(f,"NetworkProvider: ").split("NetworkProvider: ")[1][:-1]
+            self.NetworkProvider = readToAndGetLine(fs,"NetworkProvider: ").split("NetworkProvider: ")[1][:-1]
             if self.NetworkProvider == "": self.NetworkProvider = "N/A"
         except:
-            f.seek(self.FileStreamLoc)
+            fs.seek(self.FileStreamLoc)
             try:
-                self.NetworkProvider = readToAndGetLine(f,"Network Provider: ").split("Network Provider: ")[1][:-1]
+                self.NetworkProvider = readToAndGetLine(fs,"Network Provider: ").split("Network Provider: ")[1][:-1]
                 if self.NetworkProvider == "": self.NetworkProvider = "N/A"
             except:
                 self.NetworkProvider = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #END TRY/EXCEPT
 
         #Get Network Operator
         try:
-            self.NetworkOperator = readToAndGetLine(f,"NetworkOperator: ").split("NetworkOperator: ")[1][:-1]
+            self.NetworkOperator = readToAndGetLine(fs,"NetworkOperator: ").split("NetworkOperator: ")[1][:-1]
             if self.NetworkOperator == "": self.NetworkOperator = "N/A"
         except:
             self.NetworkOperator = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #Get Device ID
         try:
-            self.DeviceID = readToAndGetLine(f,"Device ID: ").split("Device ID: ")[1][:-1]
+            self.DeviceID = readToAndGetLine(fs,"Device ID: ").split("Device ID: ")[1][:-1]
             if self.DeviceID == "": self.DeviceID = "N/A"
         except:
             self.DeviceID = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #Get Device ConnectionType
         try:
-            self.ConnectionType = readToAndGetLine(f,"ConnectionType: ").split("ConnectionType: ")[1][:-1]
+            self.ConnectionType = readToAndGetLine(fs,"ConnectionType: ").split("ConnectionType: ")[1][:-1]
             if self.ConnectionType == "": self.ConnectionType = "N/A"
         except:
             self.ConnectionType = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #END TRY/EXCEPTs
 
         #Get the Location ID
         try:
-            self.LocationID = readToAndGetLine(f,"Location ID: ").split("Location ID: ")[1][:-1]
+            self.LocationID = readToAndGetLine(fs,"Location ID: ").split("Location ID: ")[1][:-1]
             if self.LocationID == "": self.LocationID = "N/A"
         except:
-            f.seek(self.FileStreamLoc)
+            fs.seek(self.FileStreamLoc)
             try:
-                self.LocationID = readToAndGetLine(f,"Location: ").split("Location: ")[1][:-1]
+                self.LocationID = readToAndGetLine(fs,"Location: ").split("Location: ")[1][:-1]
                 if self.LocationID == "": self.LocationID = "N/A"
             except:
                 self.LocationID = "N/A"
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
         #END TRY/EXCEPT
 
         #Get the Latitude and Longitude, if it is available
         try:
-            temp = readToAndGetLine(f, "Latitude:")
+            temp = readToAndGetLine(fs, "Latitude:")
             while temp:
                 temp = temp.split("Latitude:")[1][:-1]
                 if temp != "0.0":
                     self.Latitude = temp
-                temp = readToAndGetLine(f, "Longitude:")
+                temp = readToAndGetLine(fs, "Longitude:")
                 temp = temp.split("Longitude:")[1][:-1]
                 if temp != "0.0":
                     self.Longitude = temp
-                temp = readToAndGetLine(f, "Latitude:")
+                temp = readToAndGetLine(fs, "Latitude:")
         except:
             not_doing_anything = True
-        f.seek(self.FileStreamLoc)
+        fs.seek(self.FileStreamLoc)
 
         #Set the file stream to the line after "Checking Connectivity"
-        readToAndGetLine(f, "Checking Connectivity..")
-        self.FileStreamLoc = f.tell()
+        readToAndGetLine(fs, "Checking Connectivity..")
+        self.FileStreamLoc = fs.tell()
 
         # Loop through the rest of the file, creating individual
         # Speed Test objects, which will hold an array of all of the actual data
         continueLoop = True
         while continueLoop:
-            f.seek(self.FileStreamLoc)
-            SpeedTestData = readToAndGetLine(f, "Iperf command line:")
-            if not SpeedTestData:
+            fs.seek(self.FileStreamLoc)
+            iPerfLine = readToAndGetLine(fs, "Iperf command line:")
+            self.FileStreamLoc = fs.tell()
+            if not iPerfLine:
                 continueLoop = False
             else:
-                temp = f.readline()
-                if not checkVersion((3,0,0)):
-                    while (temp[:-2] != ''):
-                        SpeedTestData += temp[:-2] + "\n"
-                        temp = f.readline()
-                else:
-                    while (temp[:-1] != ''):
-                        SpeedTestData += temp
-                        temp = f.readline()
-                #END WHILE
-                createdSpeedTest = SpeedTest(SpeedTestData)
-                self.this_speedTests.append(createdSpeedTest)
-                self.FileStreamLoc = f.tell()
+                fs.seek(self.FileStreamLoc - len(iPerfLine)-1)
+                aSpeedTest = SpeedTest(fs)
+                self.this_speedTests.append(aSpeedTest)
             #END IF/ELSE
         #END WHILE
+
+        # !!!!
+        # SUPER IMPORTANT!! Otherwise, problems galore
+        # !!!!
+        fs.close()
     #END DEF
 
 
