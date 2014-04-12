@@ -37,12 +37,12 @@ def readToAndGetLine(fileStream, delimiter):
     while delimiter not in line:
         line = fileStream.readline()
         if not line: break
-    if line and (not checkVersion((3,0,0))):
+    if line and (not isLessThanVersion((3,0,0))):
         line = line[:-2] + "\n"
     return line
 #END DEF
 
-def checkVersion(minVer):
+def isLessThanVersion(minVer):
     if type(minVer) is tuple:
         import sys
         # Comparing the version info in the sys module to the version 2.7

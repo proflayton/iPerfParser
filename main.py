@@ -2,8 +2,8 @@
 # ------------------------------------------------------------------------
 # Making sure that the version of python being used is at least 2.7
 # ------------------------------------------------------------------------
-from iPerfClasses.utils import checkVersion
-if not checkVersion((2,6)):
+from iPerfClasses.utils import isLessThanVersion
+if not isLessThanVersion((2,6)):
     raise SystemExit
 
 
@@ -37,3 +37,5 @@ import sys
 MainSpeedTestDS = STDs()
 # Loading in the raw data, and passing in the system arguements
 MainSpeedTestDS.loadRawData(sys.argv)
+
+print(str(MainSpeedTestDS))
