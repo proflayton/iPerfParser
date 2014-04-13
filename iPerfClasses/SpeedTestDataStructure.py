@@ -114,9 +114,9 @@ class SpeedTestDS():
                 self.addToStructure(stfile1)
                 self.addToStructure(stfile2)
                 self.addToStructure(stfile3)
-                print(str(stfile1))
-                print(str(stfile2))
-                print(str(stfile3))
+               # print(str(stfile1))
+                #print(str(stfile2))
+                #print(str(stfile3))
 
             elif (sysArgv[1] == "-css"):
                 #Alter this strings to be an individual data file

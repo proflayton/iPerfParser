@@ -50,6 +50,7 @@ from .utils import readToAndGetLine
 from .utils import global_str_padding as pad
 pad = pad*2
 from .PingThread import PingThread
+from .Pings import Ping
 
 class SpeedTest():
 
@@ -63,13 +64,11 @@ class SpeedTest():
     RecieverIP = "UNKNOWN"
     Port = 0000
 
-    TestInterval = 0
-
-    this_PingThreads = []
-
     # ------------------------
 
     def __init__(self, dataStream):
+        #print("IST")
+        self.this_PingThreads = []
         self.loadHeaderInfo(readToAndGetLine(dataStream, "Iperf command line:"))
         self.createPingThreads(dataStream)
     #END DEF
@@ -119,11 +118,71 @@ class SpeedTest():
 
 
     def createPingThreads(self, dataStream):
-        a = True
+        a = readToAndGetLine(dataStream,"[")
         while a:
+            if a.strip() == '':
+                break
+            else:
+                if self.ConnectionType == "TCP":
+                    temp = a.split("[")[1]
+                    threadNumber = temp.split("]")[0].replace(" ","")
+                    temp = temp.split("]")[1]
+                    if "local" in temp:
+                        temp     = temp.split("local")[1]
+                        localIP  = temp.split("port")[0].replace(" ","")
+                        temp     = temp.split(localIP + " port")[1]
+                        localPort= temp.split("connected")[0]
+                        temp     = temp.split("connected with")[1]
+                        serverIP = temp.split("port")[0]
+                        temp     = temp.split("port")[1]
+                        serverPort=temp.split("\n")[0]
+                        self.this_PingThreads.append(
+                            PingThread(threadNumber,localIP,localPort,serverIP,serverPort)
+                            );
+                        #print("Local")
+                    elif threadNumber == "SUM":
+                        pass
+                    else:
+                        start = temp.split("-")[0].replace(" ","")
+                        temp  = temp.split("-")[1]
+                        end   = temp.split("sec")[0].replace(" ","")
+                        temp  = temp.split("sec")[1]
+                        size  = temp.split("KBytes")[0].replace(" ","")
+                        temp  = temp.split("KBytes")[1]
+                        speed = temp.split("Kbits/sec")[0].replace(" ","")
+
+                        currPingThread = self.getPingThreadWithNumber(threadNumber)
+
+                        currPingThread.addPing(Ping(start,end,size,speed))
+                        #print("CURR: " + str(currPingThread))
+                    #END IF/ELSE
+                elif self.ConnectionType == "UDP":
+                    temp = a.split("[")[1]
+                    threadNumber = temp.split("]")[0]
+                    temp = temp.split("]")[1]
+                    if "local" in temp:
+                        pass
+                    elif "datagrams" in temp:
+                        pass
+                    elif "Server Report" in temp:
+                        pass
+                    else:
+                        pass
+                else:
+                    print("ERROR! NO CONNECTION TYPE")
+                    return
+                #END IF/ELSE
+            #END IF/ELSE
             a = dataStream.readline()
-            if a == b"\n":
-                a = False
+        #END LOOP
+    #END DEF
+
+    #Searches for the ping thread with the threadNumber provided
+    def getPingThreadWithNumber(self,threadNumber):
+        for ping in self.this_PingThreads:
+            if ping.testNum == threadNumber:
+                return ping
+        return None
     #END DEF
 
 
@@ -133,6 +192,13 @@ class SpeedTest():
                     pad + " Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
                     pad + " Test Interval:" + self.TestInterval + "\n"
                    )
+
+        for pingThread in self.this_PingThreads:
+            this_str = (
+                        this_str + 
+                        pad + pad+ str(pingThread)
+                        )
+
         return this_str
     #END DEF
 #END CLASS

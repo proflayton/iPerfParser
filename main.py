@@ -38,4 +38,4 @@ MainSpeedTestDS = STDs()
 # Loading in the raw data, and passing in the system arguements
 MainSpeedTestDS.loadRawData(sys.argv)
 
-print(str(MainSpeedTestDS))
+#print(str(MainSpeedTestDS))
