@@ -67,7 +67,6 @@ class SpeedTest():
     # ------------------------
 
     def __init__(self, dataStream):
-        #print("IST")
         self.this_PingThreads = []
         self.loadHeaderInfo(readToAndGetLine(dataStream, "Iperf command line:"))
         self.createPingThreads(dataStream)
@@ -178,11 +177,13 @@ class SpeedTest():
     #END DEF
 
     #Searches for the ping thread with the threadNumber provided
+    #Gets the LATTER one so that when new ones are created, we add to that one
     def getPingThreadWithNumber(self,threadNumber):
+        realPing = None
         for ping in self.this_PingThreads:
             if ping.testNum == threadNumber:
-                return ping
-        return None
+                realPing = ping
+        return realPing
     #END DEF
 
 
@@ -196,7 +197,7 @@ class SpeedTest():
         for pingThread in self.this_PingThreads:
             this_str = (
                         this_str + 
-                        pad + pad+ str(pingThread)
+                        pad + pad+ str(pingThread) + "\n"
                         )
 
         return this_str

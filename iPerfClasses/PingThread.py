@@ -75,7 +75,7 @@ class PingThread():
     def __str__(self):
         return (
                "PingThread: " + str(self.testNum) + 
-               "    Pings: " + str(len(self.this_Pings))
+               "     Pings: " + str(len(self.this_Pings))
                )
 
 #END CLASS
