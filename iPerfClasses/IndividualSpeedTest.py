@@ -160,13 +160,41 @@ class SpeedTest():
                     threadNumber = temp.split("]")[0]
                     temp = temp.split("]")[1]
                     if "local" in temp:
-                        pass
+                        temp     = temp.split("local")[1]
+                        localIP  = temp.split("port")[0].replace(" ","")
+                        temp     = temp.split(localIP + " port")[1]
+                        localPort= temp.split("connected")[0]
+                        temp     = temp.split("connected with")[1]
+                        serverIP = temp.split("port")[0]
+                        temp     = temp.split("port")[1]
+                        serverPort=temp.split("\n")[0]
+                        self.this_PingThreads.append(
+                            PingThread(threadNumber,localIP,localPort,serverIP,serverPort)
+                            );
+                        #print("Local")
+                    elif "-" in temp:
+                        if "datagrams" in temp:
+                            #error with the test (datagrams received out-of-order)
+                            a = dataStream.readline() 
+                            continue
+                        start = temp.split("-")[0].replace(" ","")
+                        temp  = temp.split("-")[1]
+                        end   = temp.split("sec")[0].replace(" ","")
+                        temp  = temp.split("sec")[1]
+                        size  = temp.split("KBytes")[0].replace(" ","")
+                        temp  = temp.split("KBytes")[1]
+                        speed = temp.split("Kbits/sec")[0].replace(" ","")
+
+                        self.this_PingThreads[0].addPing(
+                            Ping(start,end,size,speed)
+                            ) 
                     elif "datagrams" in temp:
-                        pass
+                        datagrams = temp.split("Sent")[1].split("datagrams")[0].replace(" ","")
+                        self.this_PingThreads[0].datagrams = datagrams
                     elif "Server Report" in temp:
-                        pass
-                    else:
-                        pass
+                        #the report is actually a line down
+                        temp = dataStream.readline() 
+                    #END IF/ELSE
                 else:
                     print("ERROR! NO CONNECTION TYPE")
                     return

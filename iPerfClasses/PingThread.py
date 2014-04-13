@@ -56,6 +56,7 @@ class PingThread():
     localPort = 0
     serverIP  = 0
     serverPort= 0
+    datagrams = None
     # ----------------
 
     def __init__(self,testNum,localIP,localPort,serverIP,serverPort):
