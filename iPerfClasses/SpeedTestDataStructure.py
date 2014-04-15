@@ -36,12 +36,30 @@ if __name__ == '__main__':
 #
 # AUTHOR(S):   Peter Walker, Brandon Layton
 #
-# PURPOSE-  ..
+# PURPOSE-  This is the parent object, which will hold all of the parsed data files in
+#           Speed Test File objects. The class will also be capable of creating and
+#           returning analyses of the parsed data in .csv files
 #
 # FUNCTIONS:
-#   __init__ - ...
-#       INPUTS-     ...:    ...
-#       OUTPUTS-    ...
+#   __init__ - Used to initialize an object of this class
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    none
+#
+#   loadRawData - Given an array of system arguements, take appropiate actions to load
+#                 the raw data from text files, parse into Speed Test File objects, and
+#                 add to the Data Structure's internal array
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    none
+#
+#   addToStructure - Takes the given Speed Test File object and adds it to the correct internal array
+#                    based on the STFileObj's Network Provider and Network Type
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   STFileObj:  SpeedTestFile object, holds the raw data that has been parsed
+#       OUTPUTS-    none
+#
+#   __str__ - Returns a string represenation of the object
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    String, representing the attributes of the object (THIS)
 #
 # ------------------------------------------------------------------------
 
@@ -53,31 +71,36 @@ if not isLessThanVersion((3,0)):
     import Tkinter as TK, tkFileDialog as TKFD
 else:
     import tkinter as TK, tkinter.filedialog as TKFD
+
 class SpeedTestDS():
 
     # ---------------------
     # Initializing some class attributes
-
     Carriers = ["AT&T", "Verizon", "Sprint", "T-Mobile"]
     ignored_Carriers = []
     ignored_Files = []
 
-    this_SpeedTestFiles = {
-                            "mobile"  : {},
-                            "netbook" : {}
-                          }
-
-    for key in this_SpeedTestFiles:
-        for elem in Carriers:
-            this_SpeedTestFiles[key][elem] = []
-    #END FORS
-
+    this_SpeedTestFiles = {}
     # ---------------------
+
+    # DESC: Initializing class
     def __init__(self):
         self.meaningOfLife = "bacon"
+        #This bit creates the SpeedTest Files array. For each type of connection
+        # (i.e., mobile or netbook), it will instantiate another dictionary, where
+        # each key is the carrier name, and points to an array
+        self.this_SpeedTestFiles = {
+                                    "mobile"  : {},
+                                    "netbook" : {}
+                                   }
+        for key in self.this_SpeedTestFiles:
+            for elem in self.Carriers:
+                self.this_SpeedTestFiles[key][elem] = []
+        #END FORS
     #END DEF
 
 
+    # DESC: Given the system arguements from main.py, load in the raw data files
     def loadRawData(self, sysArgv):
         #cheat for not having to select the folder every time.
         #change string in DataRoot to be the absolute path to the data files
@@ -86,9 +109,10 @@ class SpeedTestDS():
         # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
             #Alter this string to be the parent directory holding all of the data
-            DataRoot = "D:/CPUC/BB_results/"
+            DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
+            DataRootBrandon = "D:/CPUC/BB_results/"
             if (sysArgv[1] == "-c"):
-                for root, dirs, files in os.walk(DataRoot+"10_18_2013/"):
+                for root, dirs, files in os.walk(DataRootPeter+"10_18_2013/"):
                     for aFile in files:
                         #Seeing if the file given is, in fact, a data file
                         #If not, the script will exit and display the message below
@@ -105,9 +129,9 @@ class SpeedTestDS():
 
             elif (sysArgv[1] == "-cs"):
                 #Alter these strings to be individual data files
-                file1 = DataRoot + "10_17_2013/99000344556962-10172013151027.txt"
-                file2 = DataRoot + "10_17_2013/356420059231100-10172013094856.txt"
-                file3 = DataRoot + "10_17_2013/WBBDTest2-10172013151943.txt"
+                file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
+                file2 = DataRootPeter + "10_17_2013/356420059231100-10172013094856.txt"
+                file3 = DataRootPeter + "10_17_2013/WBBDTest2-10172013151943.txt"
                 stfile1 = SpeedTestFile(file1)
                 stfile2 = SpeedTestFile(file2)
                 stfile3 = SpeedTestFile(file3)
@@ -119,8 +143,8 @@ class SpeedTestDS():
                 print(str(stfile3))
 
             elif (sysArgv[1] == "-css"):
-                #Alter this strings to be an individual data file
-                file1 = DataRoot + "10_17_2013/99000344556962-10172013151027.txt"
+                #Alter this string to be an individual data file
+                file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
                 test_SpeedTest = SpeedTestFile(file1)
                 print( str(test_SpeedTest) )
             else:
@@ -158,21 +182,26 @@ class SpeedTestDS():
     #END DEF
 
 
-
-
-
-
-    # NEED TO COMMENT BELOW
-
+    # DESC: Add the created Speed Test File object to the correct dictionaries
     def addToStructure(self, STFileObj):
+        #Checking to see if the passed object's Network Provider
+        # is in our list of Carriers. If it is, use the STFile's
+        # network type and provider to add it to the correct dictionary
         if STFileObj.NetworkProvider in self.Carriers:
             (self.this_SpeedTestFiles[STFileObj.NetworkType]
                                      [STFileObj.NetworkProvider]
                                      .append(STFileObj) )
+        #If the Network Provider was not in the list of carriers, try
+        # using the Network Operator. If that variable is in the list of
+        # carriers, use it and the network type to add it to the correct dict
         elif STFileObj.NetworkOperator in self.Carriers:
             (self.this_SpeedTestFiles[STFileObj.NetworkType]
                                      [STFileObj.NetworkOperator]
                                      .append(STFileObj) )
+        #Otherwise, the File parsed does not have any useful information for us.
+        # As long as it's Network Provider and Network Operator are not "N/A", add
+        # the value to the list of ignored carriers. Also, add the object's filename
+        # to the list of ignored files, for use later
         else:
             if STFileObj.NetworkProvider != "N/A":
                 if not(STFileObj.NetworkProvider in self.ignored_Carriers):
@@ -186,21 +215,32 @@ class SpeedTestDS():
     #END DEF
 
 
+    # DESC: Creating a string representation of our object
     def __str__(self):
         returnedString = ""
+        #For each type of carrier in each device type, print the number of object
         for deviceType in self.this_SpeedTestFiles:
             returnedString += deviceType + "\n"
             for carrier in self.this_SpeedTestFiles[deviceType]:
                 returnedString += ("   "+ carrier + ": " +
                                    str(len(self.this_SpeedTestFiles[deviceType][carrier])) + "\n")
+            #END FOR
+        #END FOR
+        #Also, print the carriers that were ignored
         for elem in self.ignored_Carriers:
             returnedString += elem + "; "
+        #END FOR
 
+        #Also, print the number of files that were ignored because of bad
+        # carrier information
         returnedString += "\nNum ignore files: " + str(len(self.ignored_Files)) + "\n"
 
+        #Use this commented out section to print the file names of all of the
+        # ignored files
         """
         for elem in self.ignored_Files:
             returnedString += "\n" + elem
         """
         return returnedString
+    #END DEF
 #END CLASS

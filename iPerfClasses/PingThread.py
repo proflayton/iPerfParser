@@ -31,52 +31,67 @@ if __name__ == '__main__':
 
 
 
-# Each subset of pings within each subset (represented by a numbered thread)
 # ------------------------------------------------------------------------
 # PINGTHREAD.PY
 #
 # AUTHOR(S):   Peter Walker, Brandon Layton
 #
-# PURPOSE-  ..
+# PURPOSE-  This object will represent a single thread, or pipe, in a network
+#           speed test. It will hold an array of
 #
 # FUNCTIONS:
-#   __init__ - ..
-#       INPUTS-     ..:     ..
-#       OUTPUTS-    ..
+#   __init__ - Used to initialize an object of this class
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    none
 #
+#   __str__ - Returns a string represenation of the object
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
 from .utils import readToAndGetLine
+from .utils import global_str_padding as pad
+pad = pad*3
 from .Pings import Ping
 class PingThread():
 
     # ----------------
-    #some tests are numbered 3, 4, 5, etc. There is also a test numbered SUM
-    testNum   = 0
-    localIP   = 0
-    localPort = 0
-    serverIP  = 0
-    serverPort= 0
-    datagrams = None
+    # Initializing some class attributes
+    testNum    = 0
+    localIP    = 0
+    localPort  = 0
+    serverIP   = 0
+    serverPort = 0
+    datagrams  = None
     # ----------------
 
-    def __init__(self,testNum,localIP,localPort,serverIP,serverPort):
-        self.this_Pings= []
-        self.testNum   = testNum
-        self.localIP   = localIP
-        self.localPort = localPort
-        self.serverIP  = serverIP
-        self.serverPort= serverPort
+    # DESC: Initializing class
+    def __init__(self, testNum, data):
+        #This takes the given data String and parses the object information
+        data       = data.split("local")[1]
+        localIP    = data.split("port")[0].replace(" ","")
+        data       = data.split(localIP + " port")[1]
+        localPort  = data.split("connected")[0]
+        data       = data.split("connected with")[1]
+        serverIP   = data.split("port")[0]
+        data       = data.split("port")[1]
+        serverPort = data.split("\n")[0]
+        self.this_Pings = []
+        self.testNum    = testNum
+        self.localIP    = localIP
+        self.localPort  = localPort
+        self.serverIP   = serverIP
+        self.serverPort = serverPort
     #END DEF
 
+    # DESC: Adding a Ping object to this class' array of Ping objects
     def addPing(self,ping):
         self.this_Pings.append(ping)
     #END DEF
 
-
+    # DESC: Creating a string representation of our object
     def __str__(self):
-        return (
-               "PingThread: " + str(self.testNum) + 
-               "     Pings: " + str(len(self.this_Pings))
+        return (pad + "PingThread: " + str(self.testNum)
+                    + "   Pings: " + str(len(self.this_Pings))
                )
 
 #END CLASS

@@ -49,12 +49,12 @@ if __name__ == '__main__':
 #                   filePath:   String, containing absolute path to raw data file
 #       OUTPUTS-    none
 #
-#   findSubTest - ..
+#   printSpeedTests - ..
 #       INPUTS-     ..
 #       OUTPUTS-    ..
 #
-#   __repr__ - returns a String representation of the object
-#       INPUTS-     none
+#   __str__ - Returns a string represenation of the object
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 #
 # ------------------------------------------------------------------------
@@ -92,10 +92,9 @@ class SpeedTestFile(object):
     LocationID = "UNKNOWN"
     Latitude = 0
     Longitude = 0
-
     # -------------------
 
-    # init functions calls load using the given file path
+    # DESC: init functions calls load using the given file path
     def __init__(self,filePath):
         self.this_speedTests = []
         self.FileName = filePath.split("/")[-1]
@@ -105,9 +104,6 @@ class SpeedTestFile(object):
 
     # DESC: parses data and info in given file (location is filePath)
     #       and stores it in the object's attributes
-    # PARAMS:   self- reference to object (THIS)
-    #           filePath- String, absolute path of raw data file
-    # RETURN:   none
     def load(self, filePath):
 
         #Print will print out the bottom three levels of the path passed in
@@ -285,8 +281,6 @@ class SpeedTestFile(object):
 
 
     # DESC: Returns all of the sub tests for this file as a string
-    # PARAMS:   self- reference to object (THIS)
-    # RETURN:   text - String all text for individual tests
     def printSpeedTests(self):
         text = ""
         for obj in self.this_speedTests:
@@ -296,8 +290,6 @@ class SpeedTestFile(object):
 
 
     # DESC: Returns a string representation of the object
-    # PARAMS:   self- reference to object (THIS)
-    # RETURN:   String, contains all object data in an easy-to-print-and-read string
     def __str__(self):
         return (pad + "Filename: " + self.FileName + "\n" +
                 pad + " DateTime of Speed Test - " + self.DateTime + "\n" +
