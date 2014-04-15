@@ -31,19 +31,42 @@ if __name__ == '__main__':
 
 
 
-# Small tests within each Test file
 # ------------------------------------------------------------------------
 # INDIVIDUALSPEEDTEST.PY
 #
 # AUTHOR(S):   Peter Walker, Brandon Layton
 #
-# PURPOSE-  ..
+# PURPOSE-  This class will hold just an individual speed test (be it either a TCP or UDP test).
+#           This will be where we have functions that do a lot of data analysis functions (like
+#           standard deviation of TCP upload and download speed tests).
 #
 # FUNCTIONS:
-#   __init__ - ..
-#       INPUTS-     ..:     ..
-#       OUTPUTS-    ..
+#   __init__ - Used to initialize an object of this class
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    none
 #
+#   loadHeaderInfo - Given a string (in most cases, a line read from the file stream starting
+#                    with "Iperf command line:"), this section will use the string to determine
+#                    the basic information about this test
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#                   data:   a String, holding the command used to run this iPerf test, which
+#                           also has all of the information we need
+#       OUTPUTS-    none
+#
+#   createPingThreads - Given the data stream, parses the Speed Test streams into
+#                       individual Ping Threads
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   dataStream: a data stream, with the rest of the Speed Test information
+#       OUTPUTS-    none
+#
+#   getPingThreadWithNumber - This returns the PingThread object with the thread number given
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   threadNumber:   Integer, representing the ping thread's pipe/thread number
+#       OUTPUTS-    realPing:       ...
+#
+#   __str__ - Returns a string represenation of the object
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
 import io
 from .utils import readToAndGetLine
@@ -63,9 +86,10 @@ class SpeedTest():
 
     RecieverIP = "UNKNOWN"
     Port = 0000
-
     # ------------------------
 
+
+    # DESC: Initializing class
     def __init__(self, dataStream):
         self.this_PingThreads = []
         self.loadHeaderInfo(readToAndGetLine(dataStream, "Iperf command line:"))
@@ -73,6 +97,7 @@ class SpeedTest():
     #END DEF
 
 
+    # DESC:
     def loadHeaderInfo(self, data):
         #splitting the first line from the rest of the data
         iPerfCommand = data.split("\n", 1)[0]
@@ -116,96 +141,72 @@ class SpeedTest():
     #END DEF
 
 
+    # DESC: Given the data stream, parses the Speed Test streams into individual Ping Threads
     def createPingThreads(self, dataStream):
-        a = readToAndGetLine(dataStream,"[")
-        while a:
-            if a.strip() == '':
+        dataLine = readToAndGetLine(dataStream,"[")
+        while dataLine:
+            if dataLine.strip() == '':
                 break
             else:
+                #If the connection type was determined to be TCP (from the
+                # loadHeaderInfo function), then parse
                 if self.ConnectionType == "TCP":
-                    temp = a.split("[")[1]
+                    #This section determines the pipe/thread number (i.e. 3, 4, 5, or 6)
+                    temp = dataLine.split("[")[1]
                     threadNumber = temp.split("]")[0].replace(" ","")
                     temp = temp.split("]")[1]
-                    if "local" in temp:
-                        temp     = temp.split("local")[1]
-                        localIP  = temp.split("port")[0].replace(" ","")
-                        temp     = temp.split(localIP + " port")[1]
-                        localPort= temp.split("connected")[0]
-                        temp     = temp.split("connected with")[1]
-                        serverIP = temp.split("port")[0]
-                        temp     = temp.split("port")[1]
-                        serverPort=temp.split("\n")[0]
-                        self.this_PingThreads.append(
-                            PingThread(threadNumber,localIP,localPort,serverIP,serverPort)
-                            );
-                        #print("Local")
-                    elif threadNumber == "SUM":
+                    #If the threadNumber is SUM, we ignore it (i.e. pass)
+                    if threadNumber == "SUM":
                         pass
+                    #If local is in the rest of the line, then we are starting a new thread
+                    elif "local" in temp:
+                        self.this_PingThreads.append(PingThread(threadNumber, temp));
+                        #print("Local")
+                    #Otherwise, we are adding a new ping to our ping thread
                     else:
-                        start = temp.split("-")[0].replace(" ","")
-                        temp  = temp.split("-")[1]
-                        end   = temp.split("sec")[0].replace(" ","")
-                        temp  = temp.split("sec")[1]
-                        size  = temp.split("KBytes")[0].replace(" ","")
-                        temp  = temp.split("KBytes")[1]
-                        speed = temp.split("Kbits/sec")[0].replace(" ","")
-
                         currPingThread = self.getPingThreadWithNumber(threadNumber)
-
-                        currPingThread.addPing(Ping(start,end,size,speed))
+                        currPingThread.addPing(Ping(temp))
                         #print("CURR: " + str(currPingThread))
-                    #END IF/ELSE
+                    #END IF/ELIF/ELSE
                 elif self.ConnectionType == "UDP":
-                    temp = a.split("[")[1]
+                    temp = dataLine.split("[")[1]
                     threadNumber = temp.split("]")[0]
                     temp = temp.split("]")[1]
                     if "local" in temp:
-                        temp     = temp.split("local")[1]
-                        localIP  = temp.split("port")[0].replace(" ","")
-                        temp     = temp.split(localIP + " port")[1]
-                        localPort= temp.split("connected")[0]
-                        temp     = temp.split("connected with")[1]
-                        serverIP = temp.split("port")[0]
-                        temp     = temp.split("port")[1]
-                        serverPort=temp.split("\n")[0]
-                        self.this_PingThreads.append(
-                            PingThread(threadNumber,localIP,localPort,serverIP,serverPort)
-                            );
+                        self.this_PingThreads.append(PingThread(threadNumber, temp));
                         #print("Local")
                     elif "-" in temp:
                         if "datagrams" in temp:
                             #error with the test (datagrams received out-of-order)
-                            a = dataStream.readline() 
+                            #
+                            # NOTE! This will probably need to be handled correctly later
+                            # for new kinds of analysis. i.e., they may want to know
+                            # how many datagrams were lost
+                            #
+                            dataLine = dataStream.readline()
                             continue
-                        start = temp.split("-")[0].replace(" ","")
-                        temp  = temp.split("-")[1]
-                        end   = temp.split("sec")[0].replace(" ","")
-                        temp  = temp.split("sec")[1]
-                        size  = temp.split("KBytes")[0].replace(" ","")
-                        temp  = temp.split("KBytes")[1]
-                        speed = temp.split("Kbits/sec")[0].replace(" ","")
-
-                        self.this_PingThreads[0].addPing(
-                            Ping(start,end,size,speed)
-                            ) 
+                        self.this_PingThreads[0].addPing(Ping(temp))
                     elif "datagrams" in temp:
                         datagrams = temp.split("Sent")[1].split("datagrams")[0].replace(" ","")
                         self.this_PingThreads[0].datagrams = datagrams
                     elif "Server Report" in temp:
                         #the report is actually a line down
-                        temp = dataStream.readline() 
-                    #END IF/ELSE
+                        temp = dataStream.readline()
+                    #END IF/ELIFx3
                 else:
                     print("ERROR! NO CONNECTION TYPE")
                     return
-                #END IF/ELSE
+                #END IF/ELIF/ELSE
             #END IF/ELSE
-            a = dataStream.readline()
+            #This one line continues to the next line in the Test.
+            # If this is deleted, Brandon and I will find who deleted it
+            # and format their computer manually with a very large magnet.
+            dataLine = dataStream.readline()
         #END LOOP
     #END DEF
 
-    #Searches for the ping thread with the threadNumber provided
-    #Gets the LATTER one so that when new ones are created, we add to that one
+    # DESC: Searches for the ping thread with the threadNumber provided.
+    #       Gets the LATTER one so that when new ones are created, we add to that one
     def getPingThreadWithNumber(self,threadNumber):
         realPing = None
         for ping in self.this_PingThreads:
@@ -215,6 +216,7 @@ class SpeedTest():
     #END DEF
 
 
+    # DESC: Creating a string representation of our object
     def __str__(self):
         this_str = (pad + " Connection Type: " + self.ConnectionType + "\n" +
                     pad + " Connection Location: " + self.ConnectionLoc + "\n" +
@@ -223,10 +225,8 @@ class SpeedTest():
                    )
 
         for pingThread in self.this_PingThreads:
-            this_str = (
-                        this_str + 
-                        pad + pad+ str(pingThread) + "\n"
-                        )
+            this_str += str(pingThread) + "\n"
+        #END FOR
 
         return this_str
     #END DEF

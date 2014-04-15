@@ -12,7 +12,7 @@
 #                   delimiter:          String, the text that you are looking for
 #       OUTPUTS-    line:               String, containing the fully read line that contained the delimiter
 #
-#   checkMinVersion -  This version will check the current python build's version number
+#   isLessThanVersion -  This version will check the current python build's version number
 #                       against 2.7. If the version is left, exit the module
 #       INPUTS-     none
 #       OUTPUTS-    SystemExit:     Upon conditons being met, the program will terminiate
@@ -28,6 +28,7 @@
 # ------------------------------------------------------------------------
 
 #This is going to be a global variable used in the __str__ methods of all other modules
+# This way, when objects are outputted, they can be indented to create a tree looking output
 global_str_padding = "   "
 #END GLOBAL VARS
 
