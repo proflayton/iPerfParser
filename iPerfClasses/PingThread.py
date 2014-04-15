@@ -51,12 +51,32 @@ class PingThread():
 
     # ----------------
     #some tests are numbered 3, 4, 5, etc. There is also a test numbered SUM
-    numTest = 0
-
-    this_Pings = []
+    testNum   = 0
+    localIP   = 0
+    localPort = 0
+    serverIP  = 0
+    serverPort= 0
+    datagrams = None
     # ----------------
 
-    def __init__(self):
-        this_Pings.append(Ping())
+    def __init__(self,testNum,localIP,localPort,serverIP,serverPort):
+        self.this_Pings= []
+        self.testNum   = testNum
+        self.localIP   = localIP
+        self.localPort = localPort
+        self.serverIP  = serverIP
+        self.serverPort= serverPort
     #END DEF
+
+    def addPing(self,ping):
+        self.this_Pings.append(ping)
+    #END DEF
+
+
+    def __str__(self):
+        return (
+               "PingThread: " + str(self.testNum) + 
+               "     Pings: " + str(len(self.this_Pings))
+               )
+
 #END CLASS
