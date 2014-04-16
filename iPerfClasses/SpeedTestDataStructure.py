@@ -108,6 +108,8 @@ class SpeedTestDS():
         # use "python main.py -cs" to only test on 3 files (one of each type)
         # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
+            #This little boolean is so that our output are not a long
+            short_str_method = True
             #Alter this string to be the parent directory holding all of the data
             DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
             DataRootBrandon = "D:/CPUC/BB_results/"
@@ -119,7 +121,7 @@ class SpeedTestDS():
                         f = open(os.path.join(root, aFile),'r')
                         isItCPUC = f.readline()
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
-                            test_STFile = SpeedTestFile(os.path.join(root, aFile))
+                            test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
                             print(str(test_STFile))
                             self.addToStructure(test_STFile)
                         #END IF
@@ -135,9 +137,9 @@ class SpeedTestDS():
                 stfile1 = SpeedTestFile(file1)
                 stfile2 = SpeedTestFile(file2)
                 stfile3 = SpeedTestFile(file3)
-                self.addToStructure(stfile1)
-                self.addToStructure(stfile2)
-                self.addToStructure(stfile3)
+                self.addToStructure(stfile1, short_str_method)
+                self.addToStructure(stfile2, short_str_method)
+                self.addToStructure(stfile3, short_str_method)
                 print(str(stfile1))
                 print(str(stfile2))
                 print(str(stfile3))
@@ -145,7 +147,7 @@ class SpeedTestDS():
             elif (sysArgv[1] == "-css"):
                 #Alter this string to be an individual data file
                 file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
-                test_SpeedTest = SpeedTestFile(file1)
+                test_SpeedTest = SpeedTestFile(file1, short_str_method)
                 print( str(test_SpeedTest) )
             else:
                 print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")

@@ -92,10 +92,13 @@ class SpeedTestFile(object):
     LocationID = "UNKNOWN"
     Latitude = 0
     Longitude = 0
+
+    short_str = False
     # -------------------
 
     # DESC: init functions calls load using the given file path
-    def __init__(self,filePath):
+    def __init__(self, filePath, short=False):
+        self.short_str = short
         self.this_speedTests = []
         self.FileName = filePath.split("/")[-1]
         self.load(filePath)
@@ -267,7 +270,7 @@ class SpeedTestFile(object):
                 continueLoop = False
             else:
                 fs.seek(self.FileStreamLoc - len(iPerfLine)-1)
-                aSpeedTest = SpeedTest(fs)
+                aSpeedTest = SpeedTest(fs, self.short_str)
                 self.this_speedTests.append(aSpeedTest)
             #END IF/ELSE
         #END WHILE
@@ -292,17 +295,17 @@ class SpeedTestFile(object):
     # DESC: Returns a string representation of the object
     def __str__(self):
         return (pad + "Filename: " + self.FileName + "\n" +
-                pad + " DateTime of Speed Test - " + self.DateTime + "\n" +
-                pad + " OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
-                pad + " Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
-                pad + " Network Type: " + self.NetworkType + "\n" +
-                pad + " Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
-                pad + " Network: Provider = " + self.NetworkProvider +
+                pad + "DateTime of Speed Test - " + self.DateTime + "\n" +
+                pad + "OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
+                pad + "Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
+                pad + "Network Type: " + self.NetworkType + "\n" +
+                pad + "Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
+                pad + "Network: Provider = " + self.NetworkProvider +
                       ", Operator = " + self.NetworkOperator + "\n" +
-                pad + " Device: ID = " + self.DeviceID +
+                pad + "Device: ID = " + self.DeviceID +
                       ", Connection Type = " + self.ConnectionType + "\n" +
-                pad + " Location ID: " + self.LocationID + "\n" +
-                pad + " Latitude:" + str(self.Latitude) +
+                pad + "Location ID: " + self.LocationID + "\n" +
+                pad + "Latitude:" + str(self.Latitude) +
                       " Longitude:" + str(self.Longitude) + "\n" +
                 self.printSpeedTests() +
                 "\n"

@@ -58,29 +58,65 @@ class Ping():
 
     size             = 0
     speed            = 0
+
+    size_string      = ""
+    speed_string     = ""
     # ------------------
 
     # DESC: Initializing class
     def __init__(self, data):
         #This takes the given data String and parses the object information
-        start = data.split("-")[0].replace(" ","")
-        data  = data.split("-")[1]
-        end   = data.split("sec")[0].replace(" ","")
-        data  = data.split("sec")[1]
-        size  = data.split("KBytes")[0].replace(" ","")
-        data  = data.split("KBytes")[1]
-        speed = data.split("Kbits/sec")[0].replace(" ","")
-        self.secIntervalStart = start
-        self.secIntervalEnd = end
-        self.size = size
-        self.speed = speed
+        data_start = data.split("-")[0].strip()
+        data       = data.split("-")[1]
+        data_end   = data.split("sec", 1)[0].strip()
+        data       = data.split("sec", 1)[1]
+        data_size  = data.split("KBytes")[0].strip()
+        data       = data.split("KBytes")[1]
+        data_speed = data.split("Kbits")[0].strip()
+        self.secIntervalStart = float(data_start)
+        self.secIntervalEnd = float(data_end)
+        self.size = float(data_size)
+        self.speed = float(data_speed)
+
+
+        if ("." in data_size):
+            if (len(data_size.split(".")[1]) == 1):
+                data_size += "0"
+        else:
+            data_size += ".00"
+        self.size_string = data_size
+        if ("." in data_speed):
+            if (len(data_speed.split(".")[1]) == 1):
+                data_speed += "0"
+        else:
+            data_speed += ".00"
+        self.speed_string = data_speed
     #END DEF
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        return (pad + self.secIntervalStart + "-" + self.secIntervalEnd +
-                " " + self.size + "Kbytes, " +
-                " " + self.speed + "Kbytes/sec"
+        time_pad = ""
+        if self.secIntervalEnd < 10.0:
+            time_pad = "  "
+        elif self.secIntervalStart < 10.0 and self.secIntervalEnd >= 10.0:
+            time_pad = " "
+
+        size_pad = ""
+        if self.size < 10:
+            size_pad = "  "
+        elif self.size < 100:
+            size_pad = " "
+
+        speed_pad = ""
+        if self.speed < 10:
+            speed_pad = "  "
+        elif self.speed < 100:
+            speed_pad = " "
+
+        return (pad + str(self.secIntervalStart) + "-"
+                    + str(self.secIntervalEnd) + time_pad + "   " +
+                size_pad + str(self.size_string) + " Kbytes " + "   " +
+                speed_pad + str(self.speed_string) + " Kbytes/sec"
                )
     #END DEF
 #END CLASS
