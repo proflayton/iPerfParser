@@ -86,11 +86,14 @@ class SpeedTest():
 
     RecieverIP = "UNKNOWN"
     Port = 0000
+
+    short_str = False
     # ------------------------
 
 
     # DESC: Initializing class
-    def __init__(self, dataStream):
+    def __init__(self, dataStream, short=False):
+        self.short_str = short
         self.this_PingThreads = []
         self.loadHeaderInfo(readToAndGetLine(dataStream, "Iperf command line:"))
         self.createPingThreads(dataStream)
@@ -153,27 +156,28 @@ class SpeedTest():
                 if self.ConnectionType == "TCP":
                     #This section determines the pipe/thread number (i.e. 3, 4, 5, or 6)
                     temp = dataLine.split("[")[1]
-                    threadNumber = temp.split("]")[0].replace(" ","")
+                    threadNumber = temp.split("]")[0].strip()
                     temp = temp.split("]")[1]
                     #If the threadNumber is SUM, we ignore it (i.e. pass)
                     if threadNumber == "SUM":
                         pass
                     #If local is in the rest of the line, then we are starting a new thread
                     elif "local" in temp:
-                        self.this_PingThreads.append(PingThread(threadNumber, temp));
-                        #print("Local")
+                        if len(self.this_PingThreads) < 4:
+                            self.this_PingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str))
+                        else:
+                            self.this_PingThreads.append(PingThread(threadNumber, "Down", temp, self.short_str))
                     #Otherwise, we are adding a new ping to our ping thread
                     else:
                         currPingThread = self.getPingThreadWithNumber(threadNumber)
                         currPingThread.addPing(Ping(temp))
-                        #print("CURR: " + str(currPingThread))
                     #END IF/ELIF/ELSE
                 elif self.ConnectionType == "UDP":
                     temp = dataLine.split("[")[1]
-                    threadNumber = temp.split("]")[0]
+                    threadNumber = temp.split("]")[0].strip()
                     temp = temp.split("]")[1]
                     if "local" in temp:
-                        self.this_PingThreads.append(PingThread(threadNumber, temp));
+                        self.this_PingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str))
                         #print("Local")
                     elif "-" in temp:
                         if "datagrams" in temp:
@@ -209,25 +213,23 @@ class SpeedTest():
     #       Gets the LATTER one so that when new ones are created, we add to that one
     def getPingThreadWithNumber(self,threadNumber):
         realPing = None
-        for ping in self.this_PingThreads:
-            if ping.testNum == threadNumber:
-                realPing = ping
+        for pingThread in self.this_PingThreads:
+            if pingThread.PipeNumber == threadNumber:
+                realPing = pingThread
         return realPing
     #END DEF
 
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        this_str = (pad + " Connection Type: " + self.ConnectionType + "\n" +
-                    pad + " Connection Location: " + self.ConnectionLoc + "\n" +
-                    pad + " Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
-                    pad + " Test Interval:" + self.TestInterval + "\n"
+        this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
+                    pad + "Connection Location: " + self.ConnectionLoc + "\n" +
+                    pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
+                    pad + "Test Interval:" + self.TestInterval + "\n"
                    )
-
         for pingThread in self.this_PingThreads:
-            this_str += str(pingThread) + "\n"
+            this_str += str(pingThread)
         #END FOR
-
         return this_str
     #END DEF
 #END CLASS
