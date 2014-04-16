@@ -56,31 +56,39 @@ class PingThread():
 
     # ----------------
     # Initializing some class attributes
-    testNum    = 0
-    localIP    = 0
-    localPort  = 0
-    serverIP   = 0
-    serverPort = 0
-    datagrams  = None
+    PipeNumber    = 0
+    DataDirection = ""
+
+    LocalIP       = 0
+    LocalPort     = 0
+    ServerIP      = 0
+    ServerPort    = 0
+
+    Datagrams     = None
+    this_Pings    = []
+
+    short_str     = False
     # ----------------
 
     # DESC: Initializing class
-    def __init__(self, testNum, data):
+    def __init__(self, threadNum, direction, data, short=False):
         #This takes the given data String and parses the object information
-        data       = data.split("local")[1]
-        localIP    = data.split("port")[0].replace(" ","")
-        data       = data.split(localIP + " port")[1]
-        localPort  = data.split("connected")[0]
-        data       = data.split("connected with")[1]
-        serverIP   = data.split("port")[0]
-        data       = data.split("port")[1]
-        serverPort = data.split("\n")[0]
-        self.this_Pings = []
-        self.testNum    = testNum
-        self.localIP    = localIP
-        self.localPort  = localPort
-        self.serverIP   = serverIP
-        self.serverPort = serverPort
+        self.short_str = short
+        data            = data.split("local", 1)[1].strip()
+        data_localIP    = data.split("port")[0].strip()
+        data            = data.split("port", 1)[1].strip()
+        data_localPort  = data.split("connected")[0].strip()
+        data            = data.split("connected with", 1)[1].strip()
+        data_serverIP   = data.split("port", 1)[0].strip()
+        data            = data.split("port", 1)[1].strip()
+        data_serverPort = data.split("\n")[0].strip()
+        self.this_Pings    = []
+        self.PipeNumber    = threadNum
+        self.DataDirection = direction
+        self.LocalIP       = data_localIP
+        self.LocalPort     = data_localPort
+        self.ServerIP      = data_serverIP
+        self.ServerPort    = data_serverPort
     #END DEF
 
     # DESC: Adding a Ping object to this class' array of Ping objects
@@ -90,8 +98,17 @@ class PingThread():
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        return (pad + "PingThread: " + str(self.testNum)
-                    + "   Pings: " + str(len(self.this_Pings))
-               )
+        this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
+                    pad + "Data Direction: " + self.DataDirection + "\n" +
+                    pad + "Local: " + str(self.LocalIP) + ":" + str(self.LocalPort) + "\n" +
+                    pad + "Server: " + str(self.ServerIP) + ":" + str(self.ServerPort) + "\n"
+                   )
+        if self.short_str:
+            this_str += pad + "Number of Pings: " + str(len(self.this_Pings)) + "\n"
+        else:
+            for ping in self.this_Pings:
+                this_str += str(ping) + "\n"
+            #END FOR
+        return this_str
 
 #END CLASS
