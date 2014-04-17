@@ -98,14 +98,18 @@ class PingThread():
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
-                    pad + "Data Direction: " + self.DataDirection + "\n" +
-                    pad + "Local: " + str(self.LocalIP) + ":" + str(self.LocalPort) + "\n" +
-                    pad + "Server: " + str(self.ServerIP) + ":" + str(self.ServerPort) + "\n"
-                   )
+        this_str = ""
         if self.short_str:
+            this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
+                        pad + "Data Direction: " + self.DataDirection + "\n"
+                       )
             this_str += pad + "Number of Pings: " + str(len(self.this_Pings)) + "\n"
         else:
+            this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
+                        pad + "Data Direction: " + self.DataDirection + "\n" +
+                        pad + "Local: " + str(self.LocalIP) + ":" + str(self.LocalPort) + "\n" +
+                        pad + "Server: " + str(self.ServerIP) + ":" + str(self.ServerPort) + "\n"
+                       )
             for ping in self.this_Pings:
                 this_str += str(ping) + "\n"
             #END FOR

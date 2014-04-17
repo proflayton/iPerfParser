@@ -37,5 +37,6 @@ import sys
 MainSpeedTestDS = STDs()
 # Loading in the raw data, and passing in the system arguements
 MainSpeedTestDS.loadRawData(sys.argv)
-
-#print(str(MainSpeedTestDS))
+# Converting the structure of parsed raw data into a 2 dimensional array
+csvReady = MainSpeedTestDS.convertStructureTo2D()
+print(csvReady)

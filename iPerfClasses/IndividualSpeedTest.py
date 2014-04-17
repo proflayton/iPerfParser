@@ -222,14 +222,21 @@ class SpeedTest():
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
-                    pad + "Connection Location: " + self.ConnectionLoc + "\n" +
-                    pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
-                    pad + "Test Interval:" + self.TestInterval + "\n"
-                   )
-        for pingThread in self.this_PingThreads:
-            this_str += str(pingThread)
-        #END FOR
+        if self.short_str:
+            this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
+                        pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                       )
+            for pingThread in self.this_PingThreads:
+                this_str += str(pingThread)
+        else:
+            this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
+                        pad + "Connection Location: " + self.ConnectionLoc + "\n" +
+                        pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
+                        pad + "Test Interval:" + self.TestInterval + "\n"
+                       )
+            for pingThread in self.this_PingThreads:
+                this_str += str(pingThread)
+            #END FOR
         return this_str
     #END DEF
 #END CLASS

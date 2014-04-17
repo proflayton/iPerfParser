@@ -109,7 +109,7 @@ class SpeedTestDS():
         # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
             #This little boolean is so that our output are not a long
-            short_str_method = True
+            short_str_method = False
             #Alter this string to be the parent directory holding all of the data
             DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
             DataRootBrandon = "D:/CPUC/BB_results/"
@@ -134,12 +134,12 @@ class SpeedTestDS():
                 file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
                 file2 = DataRootPeter + "10_17_2013/356420059231100-10172013094856.txt"
                 file3 = DataRootPeter + "10_17_2013/WBBDTest2-10172013151943.txt"
-                stfile1 = SpeedTestFile(file1)
-                stfile2 = SpeedTestFile(file2)
-                stfile3 = SpeedTestFile(file3)
-                self.addToStructure(stfile1, short_str_method)
-                self.addToStructure(stfile2, short_str_method)
-                self.addToStructure(stfile3, short_str_method)
+                stfile1 = SpeedTestFile(file1, short_str_method)
+                stfile2 = SpeedTestFile(file2, short_str_method)
+                stfile3 = SpeedTestFile(file3, short_str_method)
+                self.addToStructure(stfile1)
+                self.addToStructure(stfile2)
+                self.addToStructure(stfile3)
                 print(str(stfile1))
                 print(str(stfile2))
                 print(str(stfile3))
@@ -214,6 +214,26 @@ class SpeedTestDS():
             #END IF/ELIF
             self.ignored_Files.append(STFileObj.FileName)
         #END IF/ELIF/ELSE
+    #END DEF
+
+
+    # DESC: Creating a csv file of the data structure. Starts by converting
+    #       the structure into a 2-dimensional array, then passes it to the
+    #       csv converter class, which returns the file
+    def convertStructureTo2D(self):
+        a = False
+        return {}
+    #END DEF
+
+
+    # DESC: This will take the objects structure of parsed data and return
+    #       an array of 2-dimensional arrays that can be passed into the
+    #       CSV converter class. Each 2-D array will be for one carrier and
+    #       one type of device. In the end, there will be 8 arrays to
+    #       pass to a converter
+    def calculateTCP_StandardDeviation(self):
+        a = False
+        return {}
     #END DEF
 
 

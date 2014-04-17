@@ -294,21 +294,32 @@ class SpeedTestFile(object):
 
     # DESC: Returns a string representation of the object
     def __str__(self):
-        return (pad + "Filename: " + self.FileName + "\n" +
-                pad + "DateTime of Speed Test - " + self.DateTime + "\n" +
-                pad + "OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
-                pad + "Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
-                pad + "Network Type: " + self.NetworkType + "\n" +
-                pad + "Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
-                pad + "Network: Provider = " + self.NetworkProvider +
-                      ", Operator = " + self.NetworkOperator + "\n" +
-                pad + "Device: ID = " + self.DeviceID +
-                      ", Connection Type = " + self.ConnectionType + "\n" +
-                pad + "Location ID: " + self.LocationID + "\n" +
-                pad + "Latitude:" + str(self.Latitude) +
-                      " Longitude:" + str(self.Longitude) + "\n" +
-                self.printSpeedTests() +
-                "\n"
-                )
+        if self.short_str:
+            return (pad + "Filename: " + self.FileName + "\n" +
+                    pad + "DateTime of Speed Test - " + self.DateTime + "\n" +
+                    pad + "Network Type: " + self.NetworkType + "\n" +
+                    pad + "Network: Provider = " + self.NetworkProvider +
+                          ", Operator = " + self.NetworkOperator + "\n" +
+                    pad + "Location ID: " + self.LocationID + "\n" +
+                    self.printSpeedTests() +
+                    "\n"
+                    )
+        else:
+            return (pad + "Filename: " + self.FileName + "\n" +
+                    pad + "DateTime of Speed Test - " + self.DateTime + "\n" +
+                    pad + "OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
+                    pad + "Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
+                    pad + "Network Type: " + self.NetworkType + "\n" +
+                    pad + "Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
+                    pad + "Network: Provider = " + self.NetworkProvider +
+                          ", Operator = " + self.NetworkOperator + "\n" +
+                    pad + "Device: ID = " + self.DeviceID +
+                          ", Connection Type = " + self.ConnectionType + "\n" +
+                    pad + "Location ID: " + self.LocationID + "\n" +
+                    pad + "Latitude:" + str(self.Latitude) +
+                          " Longitude:" + str(self.Longitude) + "\n" +
+                    self.printSpeedTests() +
+                    "\n"
+                    )
     #END DEF
 #END CLASS
