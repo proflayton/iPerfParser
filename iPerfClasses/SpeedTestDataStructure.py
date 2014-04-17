@@ -224,14 +224,18 @@ class SpeedTestDS():
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
-        toBeReturned = {}
-        toBeReturned = self.this_SpeedTestFiles.copy()
+        toBeReturned = {
+                        "mobile"  : {},
+                        "netbook" : {}
+                       }
+        for key in toBeReturned:
+            for elem in self.Carriers:
+                toBeReturned[key][elem] = []
 
-        for devType in toBeReturned:
-            for carrier in toBeReturned[devType]:
-                for speedTest in toBeReturned[devType][carrier]:
-                    index = toBeReturned[devType][carrier].index(speedTest)
-                    toBeReturned[devType][carrier][index] = speedTest.convertTo2D()
+        for devType in self.this_SpeedTestFiles:
+            for carrier in self.this_SpeedTestFiles[devType]:
+                for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+                    toBeReturned[devType][carrier].append(speedTest.convertTo2D())
             #END FOR
         #END FOR
         return toBeReturned

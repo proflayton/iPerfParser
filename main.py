@@ -29,17 +29,54 @@ if not isLessThanVersion((2,6)):
 # ------------------------------------------------------------------------
 
 from iPerfClasses.SpeedTestDataStructure import SpeedTestDS as STDs
+from iPerfClasses.CSVExporter import export as csvExport
 import os
 import sys
-
-import pprint
+if not isLessThanVersion((3,0)):
+    import Tkinter as TK, tkFileDialog as TKFD
+else:
+    import tkinter as TK, tkinter.filedialog as TKFD
 
 # Here's where main actually starts
 # creating a Speed Test Data Structure
-MainSpeedTestDS = STDs()
+so_many_STDs = STDs()
 # Loading in the raw data, and passing in the system arguements
-MainSpeedTestDS.loadRawData(sys.argv)
-pprint.pprint(MainSpeedTestDS.this_SpeedTestFiles, depth=5)
+so_many_STDs.loadRawData(sys.argv)
+
+#import pprint
+#pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
+
 # Converting the structure of parsed raw data into a 2 dimensional array
-csvReady = MainSpeedTestDS.convertStructureTo2D()
-pprint.pprint(csvReady, depth=6)
+csvReady = so_many_STDs.convertStructureTo2D()
+
+#pprint.pprint(csvReady, depth=4)
+#pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
+
+"""
+print("Please select the folder you wish to hold the csv files that will be created")
+rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
+                                 title = "Select the Folder You Wish To Hold the CSV Files",
+                                 mustexist = True)
+"""
+rootOfFiles = os.path.expanduser("~") + "/Desktop"
+
+for devType in csvReady:
+    for carrier in csvReady[devType]:
+        for array in csvReady[devType][carrier]:
+            try: os.mkdir(rootOfFiles + "/" + devType)
+            except: pass
+            try: os.mkdir(rootOfFiles + "/" + devType + "/" + carrier)
+            except: pass
+
+            index = csvReady[devType][carrier].index(array)
+            csvExport(array, rootOfFiles + "/" +
+                             devType + "/" +
+                             carrier + "/" +
+                             so_many_STDs.this_SpeedTestFiles[devType][carrier][index].FileName[:-4] + ".csv")
+        #END FOR
+    #END FOR
+#END FOR
+
+
+
+#END MAIN

@@ -310,6 +310,7 @@ class SpeedTestFile(object):
             testnum += 1
             toBeReturned.append(["","",test.ConnectionType])
             toBeReturned.append(["","",test.ConnectionLoc])
+            toBeReturned.append(["","",""])
 
             #Append the threads to the array. If the array is not nothing,
             # it must then be holding the Test Header information, and so
@@ -322,6 +323,8 @@ class SpeedTestFile(object):
                     toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
                 counter += 1
             #END FOR
+            toBeReturned.append(["",""])
+            counter += 1
         #END FOR
         return toBeReturned
     #END DEF
