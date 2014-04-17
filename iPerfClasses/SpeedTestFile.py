@@ -299,7 +299,7 @@ class SpeedTestFile(object):
             test_length = int(test.getLongestThreadTime())
             toBeReturned.append(["","","","Thread Num","Data Direction"])
             for t in range(test_length):
-                toBeReturned[counter].append(str(t) + "-" + str(t+1))
+                toBeReturned[counter].append(str(float(t)) + "-" + str(float(t+1)))
                 toBeReturned[counter].append("")
             #END FOR
             toBeReturned[counter].append("END")
