@@ -84,6 +84,8 @@ class SpeedTest():
     #e.g. West, East
     ConnectionLoc = "UNKNOWN"
 
+    this_PingThreads = []
+
     RecieverIP = "UNKNOWN"
     Port = 0000
 
@@ -112,12 +114,7 @@ class SpeedTest():
             self.ConnectionType = "UDP"
 
         #Getting the Reciever IP address
-        c_opt_strt = iPerfCommand.find("-c")+3
-        c_opt_end = iPerfCommand.find(" ", c_opt_strt)+1
-        if (c_opt_end != 0):
-            self.RecieverIP = iPerfCommand[c_opt_strt:c_opt_end]
-        else:
-            self.RecieverIP = iPerfCommand[c_opt_strt:]
+        self.RecieverIP = iPerfCommand[iPerfCommand.find("-c"): ].split(" ")[1].strip()
 
         #Determining the Connection Location
         if self.RecieverIP == "184.72.222.65":
@@ -126,20 +123,10 @@ class SpeedTest():
             self.ConnectionLoc = "West"
 
         #Getting port number
-        p_opt_strt = iPerfCommand.find("-p")+3
-        p_opt_end = iPerfCommand.find(" ", p_opt_strt)+1
-        if (p_opt_end != 0):
-            self.Port = iPerfCommand[p_opt_strt:p_opt_end]
-        else:
-            self.Port = iPerfCommand[p_opt_strt:]
+        self.Port = iPerfCommand[iPerfCommand.find("-p"): ].split(" ")[1].strip()
 
         #Getting test time interval number
-        t_opt_strt = iPerfCommand.find("-t")+3
-        t_opt_end = iPerfCommand.find(" ", t_opt_strt)+1
-        if (t_opt_end != 0):
-            self.TestInterval = iPerfCommand[t_opt_strt:t_opt_end]
-        else:
-            self.TestInterval = iPerfCommand[t_opt_strt:]
+        self.TestInterval = iPerfCommand[iPerfCommand.find("-t"): ].split(" ")[1].strip()
         #END IF/ELSE
     #END DEF
 
@@ -169,7 +156,7 @@ class SpeedTest():
                             self.this_PingThreads.append(PingThread(threadNumber, "Down", temp, self.short_str))
                     #Otherwise, we are adding a new ping to our ping thread
                     else:
-                        currPingThread = self.getPingThreadWithNumber(threadNumber)
+                        currPingThread = self.getPingThreadWithNum(threadNumber)
                         currPingThread.addPing(Ping(temp))
                     #END IF/ELIF/ELSE
                 elif self.ConnectionType == "UDP":
@@ -211,25 +198,44 @@ class SpeedTest():
 
     # DESC: Searches for the ping thread with the threadNumber provided.
     #       Gets the LATTER one so that when new ones are created, we add to that one
-    def getPingThreadWithNumber(self,threadNumber):
-        realPing = None
+    def getPingThreadWithNum(self, threadNumber):
+        realPingThread = None
         for pingThread in self.this_PingThreads:
-            if pingThread.PipeNumber == threadNumber:
-                realPing = pingThread
-        return realPing
+            if (pingThread.PipeNumber == threadNumber):
+                realPingThread = pingThread
+        return realPingThread
+    #END DEF
+
+
+    # DESC:
+    def getLongestThreadTime(self):
+        time = 0
+        for thread in self.this_PingThreads:
+            time = (thread.this_Pings[-2].secIntervalEnd
+                    if (thread.this_Pings[-2].secIntervalEnd > time) else time)
+        if time == 0:
+            return 1
+        return time
     #END DEF
 
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
-                    pad + "Connection Location: " + self.ConnectionLoc + "\n" +
-                    pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
-                    pad + "Test Interval:" + self.TestInterval + "\n"
-                   )
-        for pingThread in self.this_PingThreads:
-            this_str += str(pingThread)
-        #END FOR
+        if self.short_str:
+            this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
+                        pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                       )
+            for pingThread in self.this_PingThreads:
+                this_str += str(pingThread)
+        else:
+            this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
+                        pad + "Connection Location: " + self.ConnectionLoc + "\n" +
+                        pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
+                        pad + "Test Interval:" + self.TestInterval + "\n"
+                       )
+            for pingThread in self.this_PingThreads:
+                this_str += str(pingThread)
+            #END FOR
         return this_str
     #END DEF
 #END CLASS

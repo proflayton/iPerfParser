@@ -122,7 +122,7 @@ class SpeedTestDS():
                         isItCPUC = f.readline()
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
                             test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                            print(str(test_STFile))
+                            #print(str(test_STFile))
                             self.addToStructure(test_STFile)
                         #END IF
                     #END FOR files
@@ -134,21 +134,22 @@ class SpeedTestDS():
                 file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
                 file2 = DataRootPeter + "10_17_2013/356420059231100-10172013094856.txt"
                 file3 = DataRootPeter + "10_17_2013/WBBDTest2-10172013151943.txt"
-                stfile1 = SpeedTestFile(file1)
-                stfile2 = SpeedTestFile(file2)
-                stfile3 = SpeedTestFile(file3)
-                self.addToStructure(stfile1, short_str_method)
-                self.addToStructure(stfile2, short_str_method)
-                self.addToStructure(stfile3, short_str_method)
-                print(str(stfile1))
-                print(str(stfile2))
-                print(str(stfile3))
+                stfile1 = SpeedTestFile(file1, short_str_method)
+                stfile2 = SpeedTestFile(file2, short_str_method)
+                stfile3 = SpeedTestFile(file3, short_str_method)
+                self.addToStructure(stfile1)
+                self.addToStructure(stfile2)
+                self.addToStructure(stfile3)
+                #print(str(stfile1))
+                #print(str(stfile2))
+                #print(str(stfile3))
 
             elif (sysArgv[1] == "-css"):
                 #Alter this string to be an individual data file
                 file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
                 test_SpeedTest = SpeedTestFile(file1, short_str_method)
-                print( str(test_SpeedTest) )
+                self.addToStructure(test_SpeedTest)
+                #print( str(test_SpeedTest) )
             else:
                 print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")
             #END IF/ELIF/ELIF/ELSE
@@ -179,7 +180,6 @@ class SpeedTestDS():
                     #END IF
                 #END FOR files
             #END FOR os.walk
-            print("Parsing completed. The data structure has been built.\nWhat analysis would you like to perform?")
         #END IF/ELSE
     #END DEF
 
@@ -214,6 +214,42 @@ class SpeedTestDS():
             #END IF/ELIF
             self.ignored_Files.append(STFileObj.FileName)
         #END IF/ELIF/ELSE
+    #END DEF
+
+
+    # DESC: Creating a csv file of the data structure. Starts by converting
+    #       the structure into a 2-dimensional array, then passes it to the
+    #       csv converter class, which returns the file
+    def convertStructureTo2D(self):
+        #Start by creating an empty dictionary. then copy the structure's
+        # dictionary into it, so that when the function is done editting things,
+        # the original is not lost
+        toBeReturned = {
+                        "mobile"  : {},
+                        "netbook" : {}
+                       }
+        for key in toBeReturned:
+            for elem in self.Carriers:
+                toBeReturned[key][elem] = []
+
+        for devType in self.this_SpeedTestFiles:
+            for carrier in self.this_SpeedTestFiles[devType]:
+                for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+                    toBeReturned[devType][carrier].append(speedTest.convertTo2D())
+            #END FOR
+        #END FOR
+        return toBeReturned
+    #END DEF
+
+
+    # DESC: This will take the objects structure of parsed data and return
+    #       an array of 2-dimensional arrays that can be passed into the
+    #       CSV converter class. Each 2-D array will be for one carrier and
+    #       one type of device. In the end, there will be 8 arrays to
+    #       pass to a converter
+    def calculateTCP_StandardDeviation(self):
+        a = False
+        return {}
     #END DEF
 
 
