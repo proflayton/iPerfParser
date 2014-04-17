@@ -99,7 +99,7 @@ class SpeedTestFile(object):
     # DESC: init functions calls load using the given file path
     def __init__(self, filePath, short=False):
         self.short_str = short
-        self.this_speedTests = []
+        self.this_SpeedTests = []
         self.FileName = filePath.split("/")[-1]
         self.load(filePath)
     #END INIT
@@ -108,11 +108,7 @@ class SpeedTestFile(object):
     # DESC: parses data and info in given file (location is filePath)
     #       and stores it in the object's attributes
     def load(self, filePath):
-
-        #Print will print out the bottom three levels of the path passed in
-        #print("Loading in data @ " + "\"/" + "/".join(filePath.split("/")[-3:]) + "\"" );
-
-        #open the file and read through the first line (which is "CPUC Beta .....")
+        #Open the file and read through the first line (which is "CPUC Beta .....")
         # save byte location to self.FileStreamLoc
         fs = open(filePath,'r')
         fs.readline()
@@ -271,7 +267,7 @@ class SpeedTestFile(object):
             else:
                 fs.seek(self.FileStreamLoc - len(iPerfLine)-1)
                 aSpeedTest = SpeedTest(fs, self.short_str)
-                self.this_speedTests.append(aSpeedTest)
+                self.this_SpeedTests.append(aSpeedTest)
             #END IF/ELSE
         #END WHILE
 
@@ -283,11 +279,59 @@ class SpeedTestFile(object):
     #END DEF
 
 
+    # DESC: Converts all of the individual test and ping threads and such
+    #       in this object and returns a 2D array of it all
+    def convertTo2D(self):
+        toBeReturned = []
+        toBeReturned.append(["Filename", self.FileName])
+        toBeReturned.append(["DateTime", self.DateTime])
+        toBeReturned.append(["Location ID", self.LocationID])
+        toBeReturned.append(["Network Type", self.NetworkType])
+        toBeReturned.append(["Provider", (self.NetworkProvider
+                                        if (self.NetworkProvider != "N/A")
+                                        else self.NetworkOperator)])
+        counter = 5
+        testnum = 1
+        for test in self.this_SpeedTests:
+            #This section sets up the column headers for the test. Each
+            # test will have column headers. The timing headers need
+            # to account for different length threads, hence getLongest
+            test_length = int(test.getLongestThreadTime())
+            toBeReturned.append(["","","","Thread Num","Data Direction"])
+            for t in range(test_length):
+                toBeReturned[counter].append(str(t) + "-" + str(t+1))
+                toBeReturned[counter].append("")
+            #END FOR
+            toBeReturned[counter].append("END")
+            counter += 1
+
+            #These three lines set up the Test information in the array
+            toBeReturned.append(["","","Test #" + str(testnum)])
+            testnum += 1
+            toBeReturned.append(["","",test.ConnectionType])
+            toBeReturned.append(["","",test.ConnectionLoc])
+
+            #Append the threads to the array. If the array is not nothing,
+            # it must then be holding the Test Header information, and so
+            # we don't need any padding
+            for thread in test.this_PingThreads:
+                try:
+                    toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                except:
+                    toBeReturned.append(["","",""])
+                    toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                counter += 1
+            #END FOR
+        #END FOR
+        return toBeReturned
+    #END DEF
+
+
     # DESC: Returns all of the sub tests for this file as a string
     def printSpeedTests(self):
         text = ""
-        for obj in self.this_speedTests:
-            text += pad*2 + "Speed Test #" + str(self.this_speedTests.index(obj)+1) + "\n" + str(obj)
+        for obj in self.this_SpeedTests:
+            text += pad*2 + "Speed Test #" + str(self.this_SpeedTests.index(obj)+1) + "\n" + str(obj)
         return text
     #END DEF
 

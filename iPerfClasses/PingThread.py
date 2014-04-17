@@ -91,10 +91,39 @@ class PingThread():
         self.ServerPort    = data_serverPort
     #END DEF
 
+
     # DESC: Adding a Ping object to this class' array of Ping objects
     def addPing(self,ping):
         self.this_Pings.append(ping)
     #END DEF
+
+
+    # DESC: Returns the Thread as an array of values. Spacers are added
+    #       between the 1 second intervals and the END such that the given
+    #       length is achieved
+    def array_itize(self, totalLength):
+        #Initialize the array with the thread num and direction
+        arrayed = [self.PipeNumber, self.DataDirection]
+        #For each ping, minus the last one, add the size and speed
+        # to the array above
+        for ping in self.this_Pings:
+            if (int(ping.secIntervalEnd - ping.secIntervalStart) == 1):
+                arrayed.append(ping.size)
+                arrayed.append(ping.speed)
+            #END IF
+        #END FOR
+        #Adding empty values to array to pad the values such that the
+        # last two values are the END values (0.0 -> XX.Y)
+        for iter in range(totalLength - len(arrayed) - 2):
+            arrayed.append("")
+        #END FOR
+        #Add the last two values, and return
+        arrayed.append(self.this_Pings[-1].size)
+        arrayed.append(self.this_Pings[-1].speed)
+        return arrayed
+    #END DEF
+
+
 
     # DESC: Creating a string representation of our object
     def __str__(self):

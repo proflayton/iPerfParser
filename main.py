@@ -32,11 +32,14 @@ from iPerfClasses.SpeedTestDataStructure import SpeedTestDS as STDs
 import os
 import sys
 
+import pprint
+
 # Here's where main actually starts
 # creating a Speed Test Data Structure
 MainSpeedTestDS = STDs()
 # Loading in the raw data, and passing in the system arguements
 MainSpeedTestDS.loadRawData(sys.argv)
+pprint.pprint(MainSpeedTestDS.this_SpeedTestFiles, depth=5)
 # Converting the structure of parsed raw data into a 2 dimensional array
 csvReady = MainSpeedTestDS.convertStructureTo2D()
-print(csvReady)
+pprint.pprint(csvReady, depth=6)

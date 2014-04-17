@@ -109,7 +109,7 @@ class SpeedTestDS():
         # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
             #This little boolean is so that our output are not a long
-            short_str_method = False
+            short_str_method = True
             #Alter this string to be the parent directory holding all of the data
             DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
             DataRootBrandon = "D:/CPUC/BB_results/"
@@ -122,7 +122,7 @@ class SpeedTestDS():
                         isItCPUC = f.readline()
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
                             test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                            print(str(test_STFile))
+                            #print(str(test_STFile))
                             self.addToStructure(test_STFile)
                         #END IF
                     #END FOR files
@@ -140,15 +140,16 @@ class SpeedTestDS():
                 self.addToStructure(stfile1)
                 self.addToStructure(stfile2)
                 self.addToStructure(stfile3)
-                print(str(stfile1))
-                print(str(stfile2))
-                print(str(stfile3))
+                #print(str(stfile1))
+                #print(str(stfile2))
+                #print(str(stfile3))
 
             elif (sysArgv[1] == "-css"):
                 #Alter this string to be an individual data file
                 file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
                 test_SpeedTest = SpeedTestFile(file1, short_str_method)
-                print( str(test_SpeedTest) )
+                self.addToStructure(test_SpeedTest)
+                #print( str(test_SpeedTest) )
             else:
                 print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")
             #END IF/ELIF/ELIF/ELSE
@@ -179,7 +180,6 @@ class SpeedTestDS():
                     #END IF
                 #END FOR files
             #END FOR os.walk
-            print("Parsing completed. The data structure has been built.\nWhat analysis would you like to perform?")
         #END IF/ELSE
     #END DEF
 
@@ -221,8 +221,20 @@ class SpeedTestDS():
     #       the structure into a 2-dimensional array, then passes it to the
     #       csv converter class, which returns the file
     def convertStructureTo2D(self):
-        a = False
-        return {}
+        #Start by creating an empty dictionary. then copy the structure's
+        # dictionary into it, so that when the function is done editting things,
+        # the original is not lost
+        toBeReturned = {}
+        toBeReturned = self.this_SpeedTestFiles.copy()
+
+        for devType in toBeReturned:
+            for carrier in toBeReturned[devType]:
+                for speedTest in toBeReturned[devType][carrier]:
+                    index = toBeReturned[devType][carrier].index(speedTest)
+                    toBeReturned[devType][carrier][index] = speedTest.convertTo2D()
+            #END FOR
+        #END FOR
+        return toBeReturned
     #END DEF
 
 
