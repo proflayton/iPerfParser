@@ -10,7 +10,8 @@ if not isLessThanVersion((2,6)):
 # ------------------------------------------------------------------------
 # MAIN.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  This program will initially ask the user to choose the folder
 #           that houses the raw data files from iPerf speed tests. It then
@@ -47,7 +48,10 @@ so_many_STDs.loadRawData(sys.argv)
 #pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
 
 # Converting the structure of parsed raw data into a 2 dimensional array
-csvReady = so_many_STDs.convertStructureTo2D()
+csvReady = so_many_STDs.convertTo_StructureTo2D()
+
+# Converting the structure of parsed raw data into a 2 dimensional array
+csvOfTCP = so_many_STDs.convertTo_StDevOf_TCP_Tests()
 
 #pprint.pprint(csvReady, depth=4)
 #pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
@@ -60,15 +64,38 @@ rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
 """
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 
+"""
 for devType in csvReady:
     for carrier in csvReady[devType]:
         for array in csvReady[devType][carrier]:
-            try: os.mkdir(rootOfFiles + "/" + devType)
+            try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
             except: pass
-            try: os.mkdir(rootOfFiles + "/" + devType + "/" + carrier)
+            try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType)
+            except: pass
+            try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType + "/" + carrier)
             except: pass
 
             index = csvReady[devType][carrier].index(array)
+            csvExport(array, rootOfFiles + "/" +
+                             devType + "/" +
+                             carrier + "/" +
+                             so_many_STDs.this_SpeedTestFiles[devType][carrier][index].FileName[:-4] + ".csv")
+        #END FOR
+    #END FOR
+#END FOR
+"""
+
+for devType in csvOfTCP:
+    for carrier in csvOfTCP[devType]:
+        for array in csvOfTCP[devType][carrier]:
+            try: os.mkdir(rootOfFiles + "/" + "TCP_StDev")
+            except: pass
+            try: os.mkdir(rootOfFiles + "/" + "TCP_StDev" + "/" + devType)
+            except: pass
+            try: os.mkdir(rootOfFiles + "/" + "TCP_StDev" + "/" + devType + "/" + carrier)
+            except: pass
+
+            index = csvOfTCP[devType][carrier].index(array)
             csvExport(array, rootOfFiles + "/" +
                              devType + "/" +
                              carrier + "/" +

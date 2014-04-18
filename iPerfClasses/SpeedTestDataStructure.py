@@ -34,7 +34,8 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 # SPEEDTESTDATASTRUCTURE.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  This is the parent object, which will hold all of the parsed data files in
 #           Speed Test File objects. The class will also be capable of creating and
@@ -220,7 +221,7 @@ class SpeedTestDS():
     # DESC: Creating a csv file of the data structure. Starts by converting
     #       the structure into a 2-dimensional array, then passes it to the
     #       csv converter class, which returns the file
-    def convertStructureTo2D(self):
+    def convertTo_StructureTo2D(self):
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
@@ -242,14 +243,112 @@ class SpeedTestDS():
     #END DEF
 
 
-    # DESC: This will take the objects structure of parsed data and return
+    # DESC: This will take the object's structure of parsed data and return
     #       an array of 2-dimensional arrays that can be passed into the
-    #       CSV converter class. Each 2-D array will be for one carrier and
-    #       one type of device. In the end, there will be 8 arrays to
-    #       pass to a converter
-    def calculateTCP_StandardDeviation(self):
-        a = False
-        return {}
+    #       CSV converter class. Each 2-D array will be placed into a specific
+    #       type, carrier, and direction.
+    def convertTo_ObjectToTCP(self, numRangeCols=3): #pingData="speed"
+        #Start by creating an empty dictionary. then copy the structure's
+        # dictionary into it, so that when the function is done editting things,
+        # the original is not lost
+        toBeReturned = {
+                        "mobile"  : {},
+                        "netbook" : {}
+                       }
+        for key in toBeReturned:
+            for elem in self.Carriers:
+                toBeReturned[key][elem] = {
+                                            "Up" : [] ,
+                                            "Down" : []
+                                          }
+            #END FOR
+        #END FOR
+
+        for devType in self.this_SpeedTestFiles:
+            for carrier in self.this_SpeedTestFiles[devType]:
+                for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+                    speedTest.calc_TestTCP_StDev(toBeReturned)
+            #END FOR
+        #END FOR
+        #After the FOR loops above, the structure toBeReturned should have Up and Down
+        # in each carrier populated with standard deviation values. A reference to this
+        # structure is then passed to the function that converts the Up and Down dictionaries
+        # into 2D arrays
+        realReturn = self.convertTo_TCP_to_2D(toBeReturned, numRangeCols)
+        return realReturn
+    #END DEF
+
+
+    # DESC: This will take the object's structure of parsed data and return
+    #       an array of 2-dimensional arrays that can be passed into the
+    #       CSV converter class. Each 2-D array will be placed into a specific
+    #       type, carrier, and direction.
+    def convertTo_TCP_to_2D(self, structure, numRangeCols=3):
+        if numRangeCols < 3:
+            numRangeCols = 3
+        #END IF
+        new_structure = {
+                          "mobile"  : {},
+                          "netbook" : {}
+                        }
+        for key in toBeReturned:
+            for elem in self.Carriers:
+                toBeReturned[key][elem] = []
+            #END FOR
+        #END FOR
+        #END new structure declaration
+        """
+        structure.append(["Filename", self.FileName])
+        structure.append(["DateTime", self.DateTime])
+        structure.append(["Location ID", self.LocationID])
+        structure.append(["Network Type", self.NetworkType])
+        structure.append(["Provider", (self.NetworkProvider
+                                        if (self.NetworkProvider != "N/A")
+                                        else self.NetworkOperator)])
+        counter = 5
+        testnum = 1
+        for test in self.this_SpeedTests:
+            #This section sets up the column headers for the test. Each
+            # test will have column headers. The timing headers need
+            # to account for different length threads, hence getLongest
+            test_length = int(test.getLongestThreadTime())
+            structure.append(["","","","Thread Num","Data Direction"])
+            for t in range(test_length):
+                structure[counter].append(str(float(t)) + "-" + str(float(t+1)))
+                structure[counter].append("")
+            #END FOR
+            structure[counter].append("END")
+            counter += 1
+
+            #These three lines set up the Test information in the array
+            structure.append(["","","Test #" + str(testnum)])
+            testnum += 1
+            structure.append(["","",test.ConnectionType])
+            structure.append(["","",test.ConnectionLoc])
+
+            #Append the threads to the array. If the array is not nothing,
+            # it must then be holding the Test Header information, and so
+            # we don't need any padding
+            for thread in test.this_PingThreads:
+                try:
+                    structure[counter].extend(thread.array_itize((test_length*2)+4))
+                except:
+                    structure.append(["","",""])
+                    structure[counter].extend(thread.array_itize((test_length*2)+4))
+                counter += 1
+            #END FOR
+            nextLine = True
+            while nextLine:
+                try:
+                    aThing = structure[counter][2]
+                    counter +=1
+                except:
+                    nextLine = False
+            structure.append(["",""])
+            counter += 1
+        #END FOR
+        """
+        return new_structure
     #END DEF
 
 

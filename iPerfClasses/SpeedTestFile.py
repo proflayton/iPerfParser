@@ -34,7 +34,8 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 # SPEEDTEST.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  ..
 #
@@ -333,6 +334,17 @@ class SpeedTestFile(object):
             counter += 1
         #END FOR
         return toBeReturned
+    #END DEF
+
+
+    # DESC: Looping through each Test, if the test if of type TCP, then
+    #       call it's thread sum standard deviation function.
+    def calc_TestTCP_StDev(self, structRef):
+        for indivTest in self.this_SpeedTests:
+            if (indivTest.ConnectionType == "TCP"):
+                indivTest.calc_StDev_ofThreadSumsByDirection(structRef)
+            #END IF
+        #END FOR
     #END DEF
 
 

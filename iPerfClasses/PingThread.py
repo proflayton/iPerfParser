@@ -34,7 +34,8 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 # PINGTHREAD.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  This object will represent a single thread, or pipe, in a network
 #           speed test. It will hold an array of
