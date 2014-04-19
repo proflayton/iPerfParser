@@ -287,67 +287,58 @@ class SpeedTestDS():
         if numRangeCols < 3:
             numRangeCols = 3
         #END IF
-        new_structure = {
-                          "mobile"  : {},
-                          "netbook" : {}
-                        }
-        for key in toBeReturned:
-            for elem in self.Carriers:
-                toBeReturned[key][elem] = []
+        new_structure = []
+
+        StDevMax = 0
+        for key in structure:
+            for elem in structure[key]:
+                for direction in structure[key][elem]:
+                    if (StDevMax < max(structure[key][elem][direction])):
+                        StDevMax = max(structure[key][elem][direction])
+                    #END IF
             #END FOR
         #END FOR
-        #END new structure declaration
-        """
-        structure.append(["Filename", self.FileName])
-        structure.append(["DateTime", self.DateTime])
-        structure.append(["Location ID", self.LocationID])
-        structure.append(["Network Type", self.NetworkType])
-        structure.append(["Provider", (self.NetworkProvider
-                                        if (self.NetworkProvider != "N/A")
-                                        else self.NetworkOperator)])
-        counter = 5
-        testnum = 1
-        for test in self.this_SpeedTests:
-            #This section sets up the column headers for the test. Each
-            # test will have column headers. The timing headers need
-            # to account for different length threads, hence getLongest
-            test_length = int(test.getLongestThreadTime())
-            structure.append(["","","","Thread Num","Data Direction"])
-            for t in range(test_length):
-                structure[counter].append(str(float(t)) + "-" + str(float(t+1)))
-                structure[counter].append("")
-            #END FOR
-            structure[counter].append("END")
-            counter += 1
-
-            #These three lines set up the Test information in the array
-            structure.append(["","","Test #" + str(testnum)])
-            testnum += 1
-            structure.append(["","",test.ConnectionType])
-            structure.append(["","",test.ConnectionLoc])
-
-            #Append the threads to the array. If the array is not nothing,
-            # it must then be holding the Test Header information, and so
-            # we don't need any padding
-            for thread in test.this_PingThreads:
-                try:
-                    structure[counter].extend(thread.array_itize((test_length*2)+4))
-                except:
-                    structure.append(["","",""])
-                    structure[counter].extend(thread.array_itize((test_length*2)+4))
-                counter += 1
-            #END FOR
-            nextLine = True
-            while nextLine:
-                try:
-                    aThing = structure[counter][2]
-                    counter +=1
-                except:
-                    nextLine = False
-            structure.append(["",""])
-            counter += 1
+        val_ranges = []
+        for i in range(numRangeCols):
+            val_ranges.append(StDevMax*(float(i+1)/numRangeCols))
         #END FOR
-        """
+
+        new_structure.append(["Standard Deviation Distribution"])
+        new_structure.append(["Data: Sum of TCP thread speeds in 1.0 second intervals"])
+        new_structure.append(["Separated by direction, carrier, and type"])
+        new_structure.append(["",""])
+        new_structure.append(["Network Type:", "Carrier & Direction:"])
+
+        for key in structure:
+            new_structure.append([key])
+            for elem in structure[key]:
+                for direction in structure[key][elem]:
+                    line = ["", elem, "", "StDev Range:"]
+                    line.extend(val_ranges)
+                    new_structure.append(line)
+
+                    range_totals = []
+                    for i in range(numRangeCols):
+                        range_totals.append(0)
+                    #END FOR
+
+                    for value in structure[key][elem][direction]:
+                        for i in range(numRangeCols):
+                            if value <= val_ranges[i]:
+                                range_totals[i] += 1
+                                break
+                            #END IF
+                        #END FOR
+                    #END FOR
+
+                    line = ["", direction, "", "Totals:"]
+                    line.extend(range_totals)
+                    new_structure.append(line)
+                    new_structure.append(["",""])
+                #END FOR
+            #END FOR
+            new_structure.append(["",""])
+        #END FOR
         return new_structure
     #END DEF
 
