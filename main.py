@@ -30,7 +30,7 @@ if not isLessThanVersion((2,6)):
 # ------------------------------------------------------------------------
 
 from iPerfClasses.SpeedTestDataStructure import SpeedTestDS as STDs
-from iPerfClasses.CSVExporter import export as csvExport
+from iPerfClasses.CSVExporter import csvExport
 import os
 import sys
 if not isLessThanVersion((3,0)):
@@ -51,7 +51,9 @@ so_many_STDs.loadRawData(sys.argv)
 csvReady = so_many_STDs.convertTo_StructureTo2D()
 
 # Converting the structure of parsed raw data into a 2 dimensional array
-csvOfTCP = so_many_STDs.convertTo_StDevOf_TCP_Tests()
+csvOfTCP = so_many_STDs.convertTo_StDevOf_TCP_Tests(10)
+rootOfFiles = os.path.expanduser("~") + "/Desktop"
+csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads.csv")
 
 #pprint.pprint(csvReady, depth=4)
 #pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
@@ -85,25 +87,33 @@ for devType in csvReady:
 #END FOR
 """
 
-for devType in csvOfTCP:
-    for carrier in csvOfTCP[devType]:
-        for array in csvOfTCP[devType][carrier]:
-            try: os.mkdir(rootOfFiles + "/" + "TCP_StDev")
-            except: pass
-            try: os.mkdir(rootOfFiles + "/" + "TCP_StDev" + "/" + devType)
-            except: pass
-            try: os.mkdir(rootOfFiles + "/" + "TCP_StDev" + "/" + devType + "/" + carrier)
-            except: pass
 
-            index = csvOfTCP[devType][carrier].index(array)
-            csvExport(array, rootOfFiles + "/" +
-                             devType + "/" +
-                             carrier + "/" +
-                             so_many_STDs.this_SpeedTestFiles[devType][carrier][index].FileName[:-4] + ".csv")
-        #END FOR
+
+#Used this section to test that the conversion done in the
+# STDs class was working correctly
+"""
+import random
+x = {
+     "mobile"  : {},
+     "netbook" : {}
+    }
+for key in x:
+    for elem in ["A", "B", "C", "D"]:
+        x[key][elem] = {
+                        "Up" : [random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
+                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
+                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
+                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30)] ,
+                        "Down" : [random.randint(0, 15),random.randint(0, 15),random.randint(0, 15),
+                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30),
+                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30),
+                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30)]
+                       }
     #END FOR
 #END FOR
-
+x = so_many_STDs.convertTo_TCP_to_2D(x, 10)
+csvExport(x, rootOfFiles + "/testing_convert.csv")
+"""
 
 
 #END MAIN

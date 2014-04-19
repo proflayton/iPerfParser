@@ -62,6 +62,5 @@ def csvExport(a_2D_Array, fileNameToSave):
         for col in row:
             rowOfText += ('"' + str(col) + '",')
         f.write(rowOfText[:-1]+"\n")
-    f.clse()
+    f.close()
 #END DEF
-
