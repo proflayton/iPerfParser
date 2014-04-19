@@ -51,7 +51,7 @@ so_many_STDs.loadRawData(sys.argv)
 csvReady = so_many_STDs.convertTo_StructureTo2D()
 
 # Converting the structure of parsed raw data into a 2 dimensional array
-csvOfTCP = so_many_STDs.convertTo_StDevOf_TCP_Tests(10)
+csvOfTCP = so_many_STDs.convertTo_ObjectToTCP(10)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads.csv")
 
