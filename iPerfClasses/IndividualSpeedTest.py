@@ -195,6 +195,26 @@ class SpeedTest():
             # and format their computer manually with a very large magnet.
             dataLine = dataStream.readline()
         #END LOOP
+
+        #Checking for empty or 1 Ping TCP threads
+        for thread in self.this_PingThreads:
+            if self.ConnectionType == "TCP":
+                if len(thread.this_Pings) < 2:
+                    index = self.this_PingThreads.index(thread)
+                    self.this_PingThreads[index] = None
+                else:
+                    final_ping = thread.this_Pings.pop()
+                    thread.final_secIntervalStart = final_ping.secIntervalStart
+                    thread.final_secIntervalEnd   = final_ping.secIntervalEnd
+                    thread.final_size             = final_ping.size
+                    thread.final_speed            = final_ping.speed
+                #END IF/ELSE
+            #END IF
+        #END FOR
+        #This needs to be outside of the FOR loop so that the element
+        # after the removed one is not skipped
+        while None in self.this_PingThreads:
+            self.this_PingThreads.remove(None)
     #END DEF
 
     # DESC: Searches for the ping thread with the threadNumber provided.
@@ -210,13 +230,11 @@ class SpeedTest():
 
     # DESC: In this test, find the longest thread time among all of the threads
     def getLongestThreadTime(self):
-        time = 1
+        time = 0
         for thread in self.this_PingThreads:
-            if (len(thread.this_Pings) > 1):
-                time = (thread.this_Pings[-2].secIntervalEnd
-                    if (thread.this_Pings[-2].secIntervalEnd > time) else time)
-            else:
-                time = 1
+            for ping in thread.this_Pings:
+                new_time = ping.secIntervalEnd
+                time = new_time if new_time > time else time
         return time
     #END DEF
 
@@ -240,14 +258,14 @@ class SpeedTest():
         max_up_length = 0
         max_down_length = 0
         for thread in Up_threads:
-            if ((len(thread.this_Pings) > 1)
-                and max_up_length < thread.this_Pings[-2].secIntervalEnd):
-                max_up_length = thread.this_Pings[-2].secIntervalEnd
+            for ping in thread.this_Pings:
+                new_max = ping.secIntervalEnd
+                max_up_length = new_max if new_max > max_up_length else max_up_length
         #END FOR
         for thread in Down_threads:
-            if  ((len(thread.this_Pings) > 1)
-                and max_down_length < thread.this_Pings[-2].secIntervalEnd):
-                max_down_length = thread.this_Pings[-2].secIntervalEnd
+            for ping in thread.this_Pings:
+                new_max = ping.secIntervalEnd
+                max_down_length = new_max if new_max > max_down_length else max_down_length
         #END FOR
 
         for step in range(int(max_up_length)):

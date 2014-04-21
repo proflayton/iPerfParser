@@ -65,6 +65,11 @@ class PingThread():
     ServerIP      = 0
     ServerPort    = 0
 
+    final_secIntervalStart = 0
+    final_secIntervalEnd   = 0
+    final_size             = 0
+    final_speed            = 0
+
     Datagrams     = None
     this_Pings    = []
 
@@ -119,12 +124,15 @@ class PingThread():
             arrayed.append("")
         #END FOR
         #Add the last two values, and return
-
-        #
-        #print(len(self.this_Pings))
-        #
-        arrayed.append(self.this_Pings[-1].size)
-        arrayed.append(self.this_Pings[-1].speed)
+        if (self.final_secIntervalStart == 0
+            and self.final_secIntervalEnd == 0
+            and self.final_size == 0
+            and self.final_speed == 0):
+            arrayed.append(self.this_Pings[-1].size)
+            arrayed.append(self.this_Pings[-1].speed)
+        else:
+            arrayed.append(self.final_size)
+            arrayed.append(self.final_speed)
         return arrayed
     #END DEF
 
@@ -134,7 +142,11 @@ class PingThread():
         this_str = ""
         if self.short_str:
             this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
-                        pad + "Data Direction: " + self.DataDirection + "\n"
+                        pad + "Data Direction: " + self.DataDirection + "\n" +
+                        pad + "Final Ping: " + str(self.final_secIntervalStart) + "-" +
+                                               str(self.final_secIntervalEnd) + " " +
+                                               str(self.final_size) + "KBytes " +
+                                               str(self.final_speed) + "Kbits/sec" + "\n"
                        )
             this_str += pad + "Number of Pings: " + str(len(self.this_Pings)) + "\n"
         else:
@@ -145,6 +157,11 @@ class PingThread():
                        )
             for ping in self.this_Pings:
                 this_str += str(ping) + "\n"
+            this_str += (pad + "Final Ping: " + str(self.final_secIntervalStart) + "-" +
+                                                str(self.final_secIntervalEnd) + " " +
+                                                str(self.final_size) + "KBytes " +
+                                                str(self.final_speed) + "Kbits/sec" + "\n"
+                        )
             #END FOR
         return this_str
 
