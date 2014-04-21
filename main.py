@@ -49,15 +49,6 @@ so_many_STDs.loadRawData(sys.argv)
 
 # Converting the structure of parsed raw data into a 2 dimensional array
 csvReady = so_many_STDs.convertTo_StructureTo2D()
-
-# Converting the structure of parsed raw data into a 2 dimensional array
-csvOfTCP = so_many_STDs.convertTo_ObjectToTCP(10)
-rootOfFiles = os.path.expanduser("~") + "/Desktop"
-csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads.csv")
-
-#pprint.pprint(csvReady, depth=4)
-#pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
-
 """
 print("Please select the folder you wish to hold the csv files that will be created")
 rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
@@ -65,8 +56,7 @@ rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                  mustexist = True)
 """
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
-
-"""
+""
 for devType in csvReady:
     for carrier in csvReady[devType]:
         for array in csvReady[devType][carrier]:
@@ -78,42 +68,22 @@ for devType in csvReady:
             except: pass
 
             index = csvReady[devType][carrier].index(array)
-            csvExport(array, rootOfFiles + "/" +
+            csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
                              devType + "/" +
                              carrier + "/" +
                              so_many_STDs.this_SpeedTestFiles[devType][carrier][index].FileName[:-4] + ".csv")
         #END FOR
     #END FOR
 #END FOR
-"""
+""
 
 
+# Converting the structure of parsed raw data into a 2 dimensional array
+csvOfTCP = so_many_STDs.convertTo_ObjectToTCP(10)
+rootOfFiles = os.path.expanduser("~") + "/Desktop"
+csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads.csv")
 
-#Used this section to test that the conversion done in the
-# STDs class was working correctly
-"""
-import random
-x = {
-     "mobile"  : {},
-     "netbook" : {}
-    }
-for key in x:
-    for elem in ["A", "B", "C", "D"]:
-        x[key][elem] = {
-                        "Up" : [random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
-                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
-                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
-                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30)] ,
-                        "Down" : [random.randint(0, 15),random.randint(0, 15),random.randint(0, 15),
-                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30),
-                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30),
-                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30)]
-                       }
-    #END FOR
-#END FOR
-x = so_many_STDs.convertTo_TCP_to_2D(x, 10)
-csvExport(x, rootOfFiles + "/testing_convert.csv")
-"""
+
 
 
 #END MAIN

@@ -321,13 +321,12 @@ class SpeedTestFile(object):
             # it must then be holding the Test Header information, and so
             # we don't need any padding
             for thread in test.this_PingThreads:
-                if (len(thread.this_Pings) != 0):
-                    try:
-                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                    except:
-                        toBeReturned.append(["","",""])
-                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                    counter += 1
+                try:
+                    toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                except:
+                    toBeReturned.append(["","",""])
+                    toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                counter += 1
             #END FOR
             nextLine = True
             while nextLine:
