@@ -297,6 +297,11 @@ class SpeedTestFile(object):
             #This section sets up the column headers for the test. Each
             # test will have column headers. The timing headers need
             # to account for different length threads, hence getLongest
+
+            #
+            #print(self.FileName)
+            #
+
             test_length = int(test.getLongestThreadTime())
             toBeReturned.append(["","","","Thread Num","Data Direction"])
             for t in range(test_length):
@@ -316,12 +321,13 @@ class SpeedTestFile(object):
             # it must then be holding the Test Header information, and so
             # we don't need any padding
             for thread in test.this_PingThreads:
-                try:
-                    toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                except:
-                    toBeReturned.append(["","",""])
-                    toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                counter += 1
+                if (len(thread.this_Pings) != 0):
+                    try:
+                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    except:
+                        toBeReturned.append(["","",""])
+                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    counter += 1
             #END FOR
             nextLine = True
             while nextLine:
@@ -340,9 +346,16 @@ class SpeedTestFile(object):
     # DESC: Looping through each Test, if the test if of type TCP, then
     #       call it's thread sum standard deviation function.
     def calc_TestTCP_StDev(self, structRef):
+        list_carriers = list(structRef[self.NetworkType])
         for indivTest in self.this_SpeedTests:
             if (indivTest.ConnectionType == "TCP"):
-                indivTest.calc_StDev_ofThreadSumsByDirection(structRef)
+                if (self.NetworkOperator in list_carriers):
+                    indivTest.calc_StDev_ofTCPThreadSumsByDirection\
+                        (structRef, self.NetworkType, self.NetworkOperator)
+                elif (self.NetworkProvider in list_carriers):
+                    indivTest.calc_StDev_ofTCPThreadSumsByDirection\
+                        (structRef, self.NetworkType, self.NetworkProvider)
+                #END IF/ELIF
             #END IF
         #END FOR
     #END DEF

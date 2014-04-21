@@ -66,7 +66,7 @@ if __name__ == '__main__':
 global_str_padding = "   "
 #END GLOBAL VARS
 
-
+# DESC: ..
 def readToAndGetLine(fileStream, delimiter):
     line = fileStream.readline()
     while delimiter not in line:
@@ -77,6 +77,7 @@ def readToAndGetLine(fileStream, delimiter):
     return line
 #END DEF
 
+# DESC: ..
 def isLessThanVersion(minVer):
     if type(minVer) is tuple:
         import sys
@@ -118,4 +119,17 @@ def monthNumToAbbr(num):
             11: 'Nov',
             12: 'Dec'
             }[num]
+#END DEF
+
+# DESC: Returns the population standard deviation of the given array of values
+def StDevP(array):
+    avg = float(0)
+    for elem in array:
+        avg += elem
+    avg = avg / len(array)
+    dev = float(0)
+    for elem in array:
+        dev += (elem - avg)**2
+    dev = (dev / len(array))**(1.0/2.0)
+    return dev
 #END DEF

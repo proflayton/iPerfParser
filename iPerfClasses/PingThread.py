@@ -119,11 +119,14 @@ class PingThread():
             arrayed.append("")
         #END FOR
         #Add the last two values, and return
+
+        #
+        #print(len(self.this_Pings))
+        #
         arrayed.append(self.this_Pings[-1].size)
         arrayed.append(self.this_Pings[-1].speed)
         return arrayed
     #END DEF
-
 
 
     # DESC: Creating a string representation of our object
