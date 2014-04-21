@@ -74,6 +74,8 @@ class PingThread():
     this_Pings    = []
 
     short_str     = False
+
+    ERROR         = False
     # ----------------
 
     # DESC: Initializing class

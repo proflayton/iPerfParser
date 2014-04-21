@@ -114,7 +114,11 @@ class SpeedTestDS():
             #Alter this string to be the parent directory holding all of the data
             DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
             DataRootBrandon = "D:/CPUC/BB_results/"
-            if (sysArgv[1] == "-c"):
+            if (sysArgv[1] == "-tf"):
+                file1 = DataRootBrandon + "10_18_2013/WBBDTest2-10182013113755.txt"
+                test_SpeedTest = SpeedTestFile(file1, short_str_method)
+                self.addToStructure(test_SpeedTest)
+            elif (sysArgv[1] == "-c"):
                 for root, dirs, files in os.walk(DataRootPeter+"10_18_2013/"):
                     for aFile in files:
                         #Seeing if the file given is, in fact, a data file
@@ -294,8 +298,12 @@ class SpeedTestDS():
         for key in structure:
             for elem in structure[key]:
                 for direction in structure[key][elem]:
-                    if (StDevMax < max(structure[key][elem][direction])):
-                        StDevMax = max(structure[key][elem][direction])
+                    try:
+                        if (StDevMax < max(structure[key][elem][direction])):
+                            StDevMax = max(structure[key][elem][direction])
+                    except:
+                        #empty sequence passed into max
+                        pass;
                     #END IF
             #END FOR
         #END FOR
