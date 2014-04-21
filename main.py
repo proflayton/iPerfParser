@@ -10,7 +10,8 @@ if not isLessThanVersion((2,6)):
 # ------------------------------------------------------------------------
 # MAIN.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  This program will initially ask the user to choose the folder
 #           that houses the raw data files from iPerf speed tests. It then
@@ -29,7 +30,7 @@ if not isLessThanVersion((2,6)):
 # ------------------------------------------------------------------------
 
 from iPerfClasses.SpeedTestDataStructure import SpeedTestDS as STDs
-from iPerfClasses.CSVExporter import export as csvExport
+from iPerfClasses.CSVExporter import csvExport
 import os
 import sys
 if not isLessThanVersion((3,0)):
@@ -47,7 +48,12 @@ so_many_STDs.loadRawData(sys.argv)
 #pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
 
 # Converting the structure of parsed raw data into a 2 dimensional array
-csvReady = so_many_STDs.convertStructureTo2D()
+csvReady = so_many_STDs.convertTo_StructureTo2D()
+
+# Converting the structure of parsed raw data into a 2 dimensional array
+csvOfTCP = so_many_STDs.convertTo_ObjectToTCP(10)
+rootOfFiles = os.path.expanduser("~") + "/Desktop"
+csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads.csv")
 
 #pprint.pprint(csvReady, depth=4)
 #pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
@@ -60,12 +66,15 @@ rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
 """
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 
+"""
 for devType in csvReady:
     for carrier in csvReady[devType]:
         for array in csvReady[devType][carrier]:
-            try: os.mkdir(rootOfFiles + "/" + devType)
+            try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
             except: pass
-            try: os.mkdir(rootOfFiles + "/" + devType + "/" + carrier)
+            try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType)
+            except: pass
+            try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType + "/" + carrier)
             except: pass
 
             index = csvReady[devType][carrier].index(array)
@@ -76,7 +85,35 @@ for devType in csvReady:
         #END FOR
     #END FOR
 #END FOR
+"""
 
+
+
+#Used this section to test that the conversion done in the
+# STDs class was working correctly
+"""
+import random
+x = {
+     "mobile"  : {},
+     "netbook" : {}
+    }
+for key in x:
+    for elem in ["A", "B", "C", "D"]:
+        x[key][elem] = {
+                        "Up" : [random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
+                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
+                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30),
+                                random.randint(0, 30),random.randint(0, 30),random.randint(0, 30)] ,
+                        "Down" : [random.randint(0, 15),random.randint(0, 15),random.randint(0, 15),
+                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30),
+                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30),
+                                  random.randint(0, 15),random.randint(0, 15),random.randint(0, 30)]
+                       }
+    #END FOR
+#END FOR
+x = so_many_STDs.convertTo_TCP_to_2D(x, 10)
+csvExport(x, rootOfFiles + "/testing_convert.csv")
+"""
 
 
 #END MAIN

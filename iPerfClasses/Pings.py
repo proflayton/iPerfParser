@@ -34,7 +34,8 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 # PINGS.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  Holds a single measurement of data transfer speed in a single test
 #           (i.e. This object represent one line of text in a speed test)

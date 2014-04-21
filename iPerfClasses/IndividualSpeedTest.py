@@ -34,7 +34,8 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 # INDIVIDUALSPEEDTEST.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  This class will hold just an individual speed test (be it either a TCP or UDP test).
 #           This will be where we have functions that do a lot of data analysis functions (like
@@ -207,7 +208,7 @@ class SpeedTest():
     #END DEF
 
 
-    # DESC:
+    # DESC: In this test, find the longest thread time among all of the threads
     def getLongestThreadTime(self):
         time = 0
         for thread in self.this_PingThreads:
@@ -216,6 +217,19 @@ class SpeedTest():
         if time == 0:
             return 1
         return time
+    #END DEF
+
+
+    # DESC: ...
+    def calc_StDev_ofThreadSumsByDirection(self, structRef):
+        if (self.ConnectionType != "TCP"):
+            raise StandardError("This function cannot be run by a non-TCP type Test")
+        #
+
+        # HERE! Start looping through threads, determining direction,
+        #  calculating StDev and such.
+
+        #
     #END DEF
 
 

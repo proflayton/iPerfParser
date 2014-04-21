@@ -34,7 +34,8 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 # SPEEDTEST.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  ..
 #
@@ -299,7 +300,7 @@ class SpeedTestFile(object):
             test_length = int(test.getLongestThreadTime())
             toBeReturned.append(["","","","Thread Num","Data Direction"])
             for t in range(test_length):
-                toBeReturned[counter].append(str(t) + "-" + str(t+1))
+                toBeReturned[counter].append(str(float(t)) + "-" + str(float(t+1)))
                 toBeReturned[counter].append("")
             #END FOR
             toBeReturned[counter].append("END")
@@ -310,7 +311,6 @@ class SpeedTestFile(object):
             testnum += 1
             toBeReturned.append(["","",test.ConnectionType])
             toBeReturned.append(["","",test.ConnectionLoc])
-            toBeReturned.append(["","",""])
 
             #Append the threads to the array. If the array is not nothing,
             # it must then be holding the Test Header information, and so
@@ -323,10 +323,28 @@ class SpeedTestFile(object):
                     toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
                 counter += 1
             #END FOR
+            nextLine = True
+            while nextLine:
+                try:
+                    aThing = toBeReturned[counter][2]
+                    counter +=1
+                except:
+                    nextLine = False
             toBeReturned.append(["",""])
             counter += 1
         #END FOR
         return toBeReturned
+    #END DEF
+
+
+    # DESC: Looping through each Test, if the test if of type TCP, then
+    #       call it's thread sum standard deviation function.
+    def calc_TestTCP_StDev(self, structRef):
+        for indivTest in self.this_SpeedTests:
+            if (indivTest.ConnectionType == "TCP"):
+                indivTest.calc_StDev_ofThreadSumsByDirection(structRef)
+            #END IF
+        #END FOR
     #END DEF
 
 

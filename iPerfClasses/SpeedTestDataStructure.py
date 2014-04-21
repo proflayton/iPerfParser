@@ -34,7 +34,8 @@ if __name__ == '__main__':
 # ------------------------------------------------------------------------
 # SPEEDTESTDATASTRUCTURE.PY
 #
-# AUTHOR(S):   Peter Walker, Brandon Layton
+# AUTHOR(S):    Peter Walker    pwalker@csumb.edu
+#               Brandon Layton  blayton@csumb.edu
 #
 # PURPOSE-  This is the parent object, which will hold all of the parsed data files in
 #           Speed Test File objects. The class will also be capable of creating and
@@ -220,7 +221,7 @@ class SpeedTestDS():
     # DESC: Creating a csv file of the data structure. Starts by converting
     #       the structure into a 2-dimensional array, then passes it to the
     #       csv converter class, which returns the file
-    def convertStructureTo2D(self):
+    def convertTo_StructureTo2D(self):
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
@@ -242,14 +243,103 @@ class SpeedTestDS():
     #END DEF
 
 
-    # DESC: This will take the objects structure of parsed data and return
+    # DESC: This will take the object's structure of parsed data and return
     #       an array of 2-dimensional arrays that can be passed into the
-    #       CSV converter class. Each 2-D array will be for one carrier and
-    #       one type of device. In the end, there will be 8 arrays to
-    #       pass to a converter
-    def calculateTCP_StandardDeviation(self):
-        a = False
-        return {}
+    #       CSV converter class. Each 2-D array will be placed into a specific
+    #       type, carrier, and direction.
+    def convertTo_ObjectToTCP(self, numRangeCols=3): #pingData="speed"
+        #Start by creating an empty dictionary. then copy the structure's
+        # dictionary into it, so that when the function is done editting things,
+        # the original is not lost
+        toBeReturned = {
+                        "mobile"  : {},
+                        "netbook" : {}
+                       }
+        for key in toBeReturned:
+            for elem in self.Carriers:
+                toBeReturned[key][elem] = {
+                                            "Up" : [] ,
+                                            "Down" : []
+                                          }
+            #END FOR
+        #END FOR
+
+        for devType in self.this_SpeedTestFiles:
+            for carrier in self.this_SpeedTestFiles[devType]:
+                for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+                    speedTest.calc_TestTCP_StDev(toBeReturned)
+            #END FOR
+        #END FOR
+        #After the FOR loops above, the structure toBeReturned should have Up and Down
+        # in each carrier populated with standard deviation values. A reference to this
+        # structure is then passed to the function that converts the Up and Down dictionaries
+        # into 2D arrays
+        realReturn = self.convertTo_TCP_to_2D(toBeReturned, numRangeCols)
+        return realReturn
+    #END DEF
+
+
+    # DESC: This will take the object's structure of parsed data and return
+    #       an array of 2-dimensional arrays that can be passed into the
+    #       CSV converter class. Each 2-D array will be placed into a specific
+    #       type, carrier, and direction.
+    def convertTo_TCP_to_2D(self, structure, numRangeCols=3):
+        if numRangeCols < 3:
+            numRangeCols = 3
+        #END IF
+        new_structure = []
+
+        StDevMax = 0
+        for key in structure:
+            for elem in structure[key]:
+                for direction in structure[key][elem]:
+                    if (StDevMax < max(structure[key][elem][direction])):
+                        StDevMax = max(structure[key][elem][direction])
+                    #END IF
+            #END FOR
+        #END FOR
+        val_ranges = []
+        for i in range(numRangeCols):
+            val_ranges.append(StDevMax*(float(i+1)/numRangeCols))
+        #END FOR
+
+        new_structure.append(["Standard Deviation Distribution"])
+        new_structure.append(["Data: Sum of TCP thread speeds in 1.0 second intervals"])
+        new_structure.append(["Separated by direction, carrier, and type"])
+        new_structure.append(["",""])
+        new_structure.append(["Network Type:", "Carrier & Direction:"])
+
+        for key in structure:
+            new_structure.append([key])
+            for elem in structure[key]:
+                for direction in structure[key][elem]:
+                    line = ["", elem, "", "StDev Range:"]
+                    line.extend(val_ranges)
+                    new_structure.append(line)
+
+                    range_totals = []
+                    for i in range(numRangeCols):
+                        range_totals.append(0)
+                    #END FOR
+
+                    for value in structure[key][elem][direction]:
+                        for i in range(numRangeCols):
+                            if value <= val_ranges[i]:
+                                range_totals[i] += 1
+                                break
+                            #END IF
+                        #END FOR
+                    #END FOR
+
+                    line = ["", direction, "", "Totals:"]
+                    line.extend(range_totals)
+                    new_structure.append(line)
+                    new_structure.append(["",""])
+                #END FOR
+            #END FOR
+            new_structure.append(["",""])
+        #END FOR
+        return new_structure
     #END DEF
 
 
