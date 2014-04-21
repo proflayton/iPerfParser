@@ -163,8 +163,11 @@ class SpeedTest():
                 elif self.ConnectionType == "UDP":
                     temp = dataLine.split("[")[1]
                     threadNumber = temp.split("]")[0].strip()
+                    currPingThread = self.getPingThreadWithNum(threadNumber)
                     temp = temp.split("]")[1]
-                    if "local" in temp:
+                    if "WARNING" in temp:
+                        currPingThread.ERROR = True
+                    elif "local" in temp:
                         self.this_PingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str))
                         #print("Local")
                     elif "-" in temp:
@@ -177,10 +180,10 @@ class SpeedTest():
                             #
                             dataLine = dataStream.readline()
                             continue
-                        self.this_PingThreads[0].addPing(Ping(temp))
+                        currPingThread.addPing(Ping(temp))
                     elif "datagrams" in temp:
                         datagrams = temp.split("Sent")[1].split("datagrams")[0].replace(" ","")
-                        self.this_PingThreads[0].datagrams = datagrams
+                        currPingThread.datagrams = datagrams
                     elif "Server Report" in temp:
                         #the report is actually a line down
                         temp = dataStream.readline()
