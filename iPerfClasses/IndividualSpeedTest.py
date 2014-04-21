@@ -70,7 +70,7 @@ if __name__ == '__main__':
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
 import io
-from .utils import readToAndGetLine
+from .utils import readToAndGetLine, StDevP
 from .utils import global_str_padding as pad
 pad = pad*2
 from .PingThread import PingThread
@@ -210,26 +210,65 @@ class SpeedTest():
 
     # DESC: In this test, find the longest thread time among all of the threads
     def getLongestThreadTime(self):
-        time = 0
+        time = 1
         for thread in self.this_PingThreads:
-            time = (thread.this_Pings[-2].secIntervalEnd
+            if (len(thread.this_Pings) > 1):
+                time = (thread.this_Pings[-2].secIntervalEnd
                     if (thread.this_Pings[-2].secIntervalEnd > time) else time)
-        if time == 0:
-            return 1
+            else:
+                time = 1
         return time
     #END DEF
 
 
     # DESC: ...
-    def calc_StDev_ofThreadSumsByDirection(self, structRef):
+    def calc_StDev_ofTCPThreadSumsByDirection(self, structRef, netType, carrier):
         if (self.ConnectionType != "TCP"):
             raise StandardError("This function cannot be run by a non-TCP type Test")
-        #
 
-        # HERE! Start looping through threads, determining direction,
-        #  calculating StDev and such.
+        Up_threads = []; Up_threads_sum = []
+        Down_threads = []; Down_threads_sum = []
+        for thread in self.this_PingThreads:
+            if (thread.DataDirection == "Up"):
+                Up_threads.append(thread)
+            else:
+                Down_threads.append(thread)
+            #END IF/ELSE
+        #END FOR
 
-        #
+        #Calculating max thread length by direction
+        max_up_length = 0
+        max_down_length = 0
+        for thread in Up_threads:
+            if ((len(thread.this_Pings) > 1)
+                and max_up_length < thread.this_Pings[-2].secIntervalEnd):
+                max_up_length = thread.this_Pings[-2].secIntervalEnd
+        #END FOR
+        for thread in Down_threads:
+            if  ((len(thread.this_Pings) > 1)
+                and max_down_length < thread.this_Pings[-2].secIntervalEnd):
+                max_down_length = thread.this_Pings[-2].secIntervalEnd
+        #END FOR
+
+        for step in range(int(max_up_length)):
+            temp = 0
+            for itr in range(len(Up_threads)):
+                try: temp += Up_threads[itr].this_Pings[step].speed
+                except: pass
+            #END FOR
+            Up_threads_sum.append(temp)
+        #END FOR
+        for step in range(int(max_down_length)):
+            temp = 0
+            for itr in range(len(Down_threads)):
+                try: temp += Down_threads[itr].this_Pings[step].speed
+                except: pass
+            #END FOR
+            Down_threads_sum.append(temp)
+        #END FOR
+
+        structRef[netType][carrier]["Up"].append(StDevP(Up_threads_sum))
+        structRef[netType][carrier]["Down"].append(StDevP(Down_threads_sum))
     #END DEF
 
 
