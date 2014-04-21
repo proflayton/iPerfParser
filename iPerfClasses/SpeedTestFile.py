@@ -299,7 +299,7 @@ class SpeedTestFile(object):
             # to account for different length threads, hence getLongest
 
             #
-            print(self.FileName)
+            #print(self.FileName)
             #
 
             test_length = int(test.getLongestThreadTime())
