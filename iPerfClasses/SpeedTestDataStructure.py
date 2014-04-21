@@ -268,6 +268,7 @@ class SpeedTestDS():
             for carrier in self.this_SpeedTestFiles[devType]:
                 for speedTest in self.this_SpeedTestFiles[devType][carrier]:
                     speedTest.calc_TestTCP_StDev(toBeReturned)
+                #END FOR
             #END FOR
         #END FOR
         #After the FOR loops above, the structure toBeReturned should have Up and Down
@@ -314,7 +315,7 @@ class SpeedTestDS():
             for elem in structure[key]:
                 for direction in structure[key][elem]:
                     line = ["", elem, "", "StDev Range:"]
-                    line.extend(val_ranges)
+                    line.extend(map(int, val_ranges))
                     new_structure.append(line)
 
                     range_totals = []
