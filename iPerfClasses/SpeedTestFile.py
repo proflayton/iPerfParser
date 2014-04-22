@@ -39,6 +39,9 @@ if __name__ == '__main__':
 #
 # PURPOSE-  ..
 #
+# VARIABLES:
+#   ..
+#
 # FUNCTIONS:
 #   __init__ - initializes the object by parsing the data in the given file path. calls load()
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
@@ -50,9 +53,21 @@ if __name__ == '__main__':
 #                   filePath:   String, containing absolute path to raw data file
 #       OUTPUTS-    none
 #
-#   printSpeedTests - ..
-#       INPUTS-     ..
-#       OUTPUTS-    ..
+#   convertTo2D - Converts this SpeedTestFile object into a 2D array, and returns the result
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    tobeReturned:   the 2D array that will be returned
+#
+#   calc_TestTCP_StDev - For each test in this object, if the test is a TCP test, calculate the
+#                        standard deviation of the sum of thread speeds at each 1 second interval.
+#                        The IndivSpeedTest object will handle putting the value into the structure
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   structRef:  reference to the structure created in STDs.convertTo_ObjectToTCP()
+#       OUTPUTS-    none
+#
+#   printSpeedTests - Return a string that has the information of each speed test in the object
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    text:   String, a representation of the IndividualSpeedTests held in
+#                           this objects this_SpeedTests
 #
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -282,6 +297,7 @@ class SpeedTestFile(object):
     #       in this object and returns a 2D array of it all
     def convertTo2D(self):
         toBeReturned = []
+        #Setting up the basic information at the top of the 2D array/.csv file
         toBeReturned.append(["Filename", self.FileName])
         toBeReturned.append(["DateTime", self.DateTime])
         toBeReturned.append(["Location ID", self.LocationID])
@@ -295,10 +311,6 @@ class SpeedTestFile(object):
             #This section sets up the column headers for the test. Each
             # test will have column headers. The timing headers need
             # to account for different length threads, hence getLongest
-
-            #
-            #print(self.FileName)
-            #
 
             test_length = int(test.getLongestThreadTime())
             toBeReturned.append(["","","","Thread Num","Data Direction"])
@@ -326,6 +338,10 @@ class SpeedTestFile(object):
                     toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
                 counter += 1
             #END FOR
+
+            #Incrementing the counter so that the next IndivTest that is converted is put below
+            # the previous one (sometimes, there is one thread per test, and just moving to the next
+            # iteration messed up the spacing)
             nextLine = True
             while nextLine:
                 try:
@@ -345,7 +361,7 @@ class SpeedTestFile(object):
     def calc_TestTCP_StDev(self, structRef):
         list_carriers = list(structRef[self.NetworkType])
 
-        #Calculate all of the threads' sums of pings
+        #Calculate all of the threads' sums of pings if the thread is TCP
         for indivTest in self.this_SpeedTests:
             if (indivTest.ConnectionType == "TCP"):
                 if (self.NetworkOperator in list_carriers):

@@ -40,6 +40,10 @@ if __name__ == '__main__':
 #
 # PURPOSE-  Provide a few functions that will be used in multiple modules
 #
+# VARIABLES:
+#   global_str_padding: A string with a set number of spaces. Used in the __str__
+#                       methods of all classes.
+#
 # FUNCTIONS:
 #   readToAndGetLine -  Given a file stream, reads the stream until the delimiter is found
 #       INPUTS-     fileStream:         FileStream object, called with open(FILEPATH, 'r')
@@ -58,6 +62,10 @@ if __name__ == '__main__':
 #   monthAbbrToNum -  This function takes a number index for a month and returns the name abbreviation
 #       INPUTS-     num:    Integer, representing the month index (from 1 to 12)
 #       OUTPUTS-    ..:     String, abbreviation for a month (e.g. Jun, Oct, etc.)
+#
+#   StDevP - Calculates the population standard deviation of the given array
+#       INPUTS-     array:  list of values that will be used in calculated StDev
+#       OUTPUTS-    dev:    Integer, the StDev of the given array
 #
 #   csvExport - Used to initialize an object of this class
 #       INPUTS-     a_2D_Array:     A 2-dimensional array with each sub array representing

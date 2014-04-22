@@ -40,6 +40,9 @@ if __name__ == '__main__':
 # PURPOSE-  This object will represent a single thread, or pipe, in a network
 #           speed test. It will hold an array of
 #
+# VARIABLES:
+#   ..
+#
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)

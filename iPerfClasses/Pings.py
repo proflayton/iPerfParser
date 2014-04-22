@@ -40,6 +40,9 @@ if __name__ == '__main__':
 # PURPOSE-  Holds a single measurement of data transfer speed in a single test
 #           (i.e. This object represent one line of text in a speed test)
 #
+# VARIABLES:
+#   ..
+#
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)

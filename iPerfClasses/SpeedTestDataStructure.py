@@ -41,6 +41,13 @@ if __name__ == '__main__':
 #           Speed Test File objects. The class will also be capable of creating and
 #           returning analyses of the parsed data in .csv files
 #
+# VARIABLES:
+#   Carriers:            List, all of the carriers that we wish to keep track of
+#   ignored_Carriers:    List, will be dynamically added to, if a file has a carrier that we are not tracking
+#   ignored_Files:       List, Strings that hold the file name of an ignored file (bad carrier, no carrier, etc.
+#   this_SpeedTestFiles: Structure, created in __init__, will hold parsed files, categorized by
+#                        Network Type and Carrier
+#
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -58,9 +65,43 @@ if __name__ == '__main__':
 #                   STFileObj:  SpeedTestFile object, holds the raw data that has been parsed
 #       OUTPUTS-    none
 #
+#   convertTo_StructureTo2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
+#                             array. Each array can be converted to a .csv file. Each array holds all of the
+#                             SpeedTestFile information, down to the Ping level
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    toBeReturned:   a structure similar to this object's this_SpeedTestFiles, except each
+#                                   SpeedTestFile is now a 2D array
+#
+#   convertTo_ObjectToTCP - Returns a 2D array that can be converted into a 2D array. The information
+#                           inside represents a distribution of the standard deviation of each SpeedTestFile's
+#                           TCP tests. The values used to calculate each StDev is the sum of all TCP threads' speed
+#                           in a specific direction (Up or Down)
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   numRangeCols:   Integer, the number of columns that the user would like in their distribution
+#                                   default is 3
+#       OUTPUTS-    realReturn: a 2D array with the ditribution data
+#
+#   convertTo_TCP_to_2D - Takes a STDs like structure, and returns it converted into a 2D array.
+#                         What was given was a structure like so:
+#                         { mobile:
+#                               { carrier1:
+#                                   { Up: [], Down: [] },
+#                                 carrier2:
+#                                   { Up: [], Down: [] },
+#                                 ..
+#                               }
+#                           netbook : { .. }
+#                         }
+#                         Each Up and Down array is a list of standard deviation values
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   structure:      a reference to the structure created in convert_objectToTCP
+#                   numRangeCols:   Integer, the number of columns that the user would like in their distribution
+#       OUTPUTS-    new_structure:  2D array, that will be converted into a .csv file
+#
 #   __str__ - Returns a string represenation of the object
-#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    String, representing the attributes of the object (THIS)
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    returnedString: String, prints out the number of tests in each nettype and carrier,
+#                                   as well as any ignored carriers and the number of ignored files (or their name)
 #
 # ------------------------------------------------------------------------
 
@@ -288,7 +329,7 @@ class SpeedTestDS():
     #       an array of 2-dimensional arrays that can be passed into the
     #       CSV converter class. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
-    def convertTo_TCP_to_2D(self, structure, numRangeCols=3):
+    def convertTo_TCP_to_2D(self, structure, numRangeCols):
         if numRangeCols < 3:
             numRangeCols = 3
         #END IF
@@ -308,39 +349,57 @@ class SpeedTestDS():
                     #END IF
             #END FOR
         #END FOR
-        val_ranges = []
+
+        #Creating the arrays of the upper and lower ranges of StDevs.
+        # index 2 with in val_ranges_lower is the lower bound of the column, and
+        # index 2 of val_ranges_upper is the upper bound
+        val_ranges_lower = []
+        val_ranges_upper = []
         for i in range(numRangeCols):
-            val_ranges.append(StDevMax*(float(i+1)/numRangeCols))
+            val_ranges_lower.append(StDevMax*(float(i)/numRangeCols))
+            val_ranges_upper.append(StDevMax*(float(i+1)/numRangeCols))
         #END FOR
 
+        #Setting up the first 4 lines of the csv (always the same)
         new_structure.append(["Standard Deviation Distribution"])
         new_structure.append(["Data: Sum of TCP thread speeds in 1.0 second intervals"])
         new_structure.append(["Separated by direction, carrier, and type"])
         new_structure.append(["",""])
         new_structure.append(["Network Type:", "Carrier & Direction:"])
-        
+
         for key in structure:
             new_structure.append([key])
             for elem in structure[key]:
                 for direction in structure[key][elem]:
+                    #Creating an array of the first four cells (doesn't change between section).
+                    # Then extend the array with the value ranges, and append to our final 2D array
                     line = ["", elem, "", "StDev Range:"]
-                    line.extend(map(int, val_ranges))
+                    true_val_ranges = []
+                    for i in range(numRangeCols):
+                        true_val_ranges.append(str(int(val_ranges_lower[i])) + "-" + str(int(val_ranges_upper[i])))
+                    line.extend(true_val_ranges)
                     new_structure.append(line)
 
+                    #Creating an empty array. Will hold the number of StDevs that fall within a range
                     range_totals = []
                     for i in range(numRangeCols):
                         range_totals.append(0)
                     #END FOR
 
+                    #This goes through each value in the specific nettype,carrier,direction that we
+                    # are currently looping through, and compares the value to the upper and lower
+                    # ranges at each step
                     for value in structure[key][elem][direction]:
                         for i in range(numRangeCols):
-                            if value <= val_ranges[i]:
+                            if (value <= val_ranges_upper[i]) and (value > val_ranges_lower[i]):
                                 range_totals[i] += 1
                                 break
                             #END IF
                         #END FOR
                     #END FOR
 
+                    #Creating an array of the first four cells (doesn't change between section).
+                    # Then extend the array with the range totals, and append to our final 2D array
                     line = ["", direction, "", "Totals:"]
                     line.extend(range_totals)
                     new_structure.append(line)

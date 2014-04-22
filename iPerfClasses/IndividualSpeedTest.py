@@ -41,6 +41,9 @@ if __name__ == '__main__':
 #           This will be where we have functions that do a lot of data analysis functions (like
 #           standard deviation of TCP upload and download speed tests).
 #
+# VARIABLES:
+#   ..
+#
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -168,11 +171,11 @@ class SpeedTest():
                     if "WARNING" in temp:
                         #An error with UDP happens here. Don't know how to handle yet
                         currPingThread.ERROR = True
-                    elif "local" in temp: 
+                    elif "local" in temp:
                         #new UDP pingThread
                         self.this_PingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str))
                         #print("Local")
-                    elif "-" in temp: 
+                    elif "-" in temp:
                         #Some actual Data we can use, as long as there is no error
                         if "datagrams" in temp:
                             #error with the test (datagrams received out-of-order)
