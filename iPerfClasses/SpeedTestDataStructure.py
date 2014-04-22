@@ -150,8 +150,10 @@ class SpeedTestDS():
         # use "python main.py -cs" to only test on 3 files (one of each type)
         # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
-            #This little boolean is so that our output are not a long
+
+            #This little boolean is so that our output are not as long
             short_str_method = True
+
             #Alter this string to be the parent directory holding all of the data
             DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
             DataRootBrandon = "D:/CPUC/BB_results/"

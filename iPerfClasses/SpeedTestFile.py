@@ -37,10 +37,35 @@ if __name__ == '__main__':
 # AUTHOR(S):    Peter Walker    pwalker@csumb.edu
 #               Brandon Layton  blayton@csumb.edu
 #
-# PURPOSE-  ..
+# PURPOSE-  This object will hold a raw data file's header information (see list of variables)
+#           and then parse individual test from the remaining text, storing them as a series of
+#           related objects
 #
 # VARIABLES:
-#   ..
+#   FileName        String, holding file name that is being parsed
+#   FileStreamLoc   Integer, representing byte location that the script is at in file stream
+#   DateTime        String, holding date and time test was taken
+#   OSName          String, holding OS name that this test was conducted with
+#   OSArchitecture  String, holding OS architecture that this test was conducted with
+#   OSVersion       String, holding OS version that this test was conducted with
+#   JavaVersion     String, holding Java version that this test was conducted with
+#   JavaVendor      String, holding Java vendor that this test was conducted with
+#   NetworkType     String, holding Network Type that this test was conducted with
+#   Server          String, holding Server that this test was conducted with
+#   Host            String, holding Host that this test was conducted with
+#   NetworkProvider String, holding Network Provider that this test was conducted with (i.e. the Carrier)
+#   NetworkOperator String, holding Network Operator that this test was conducted with (i.e. the Carrier)
+#           note: Sometimes, the carrier name is in Network Provider, other times it is in Network Operator
+#   DeviceID        String, the Device ID number
+#   ConnectionType  String, holding Connection type that this test was conducted with
+#   LocationID      Integer, the ID number of the location that this test was conducted at
+#   Latitude        Integer, the latitude given by the GPS that this test was conducted at.
+#                           Is 0 if no GPS data was available
+#   Longitude       Integer, the latitude given by the GPS that this test was conducted at.
+#                           Is 0 if no GPS data was available
+#   this_SpeedTests List, holding all of the Individual Speed tests that are contained in the given file being parsed
+#   short_str       Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
+#                           Default is False
 #
 # FUNCTIONS:
 #   __init__ - initializes the object by parsing the data in the given file path. calls load()
@@ -89,7 +114,7 @@ class SpeedTestFile(object):
     DateTime = "UNKNOWN"
 
     OSName = "UNKNOWN"
-    OSArchitectue ="UNKNOWN"
+    OSArchitecture = "UNKNOWN"
     OSVersion = "UNKNOWN"
 
     JavaVersion = "UNKNOWN"
@@ -156,15 +181,15 @@ class SpeedTestFile(object):
         temp = readToAndGetLine(fs,"OS: ")
         if temp:
             self.OSName = temp.split("Name = ")[1].split(",")[0]
-            self.OSArchitectue = temp.split("Architecture = ")[1].split(",")[0]
+            self.OSArchitecture = temp.split("Architecture = ")[1].split(",")[0]
             self.OSVersion = temp.split("Version = ")[1][:-1]
             # After parsing text, we need to check that there are no empty values
             if self.OSName == "": self.OSName = "N/A"
-            if self.OSArchitectue == "": self.OSArchitectue = "N/A"
+            if self.OSArchitecture == "": self.OSArchitecture = "N/A"
             if self.OSVersion == "": self.OSVersion = "N/A"
         else:
             self.OSName = "N/A"
-            self.OSArchitectue = "N/A"
+            self.OSArchitecture = "N/A"
             self.OSVersion = "N/A"
         fs.seek(self.FileStreamLoc)
         #END IF/ELSE
@@ -400,7 +425,7 @@ class SpeedTestFile(object):
         else:
             return (pad + "Filename: " + self.FileName + "\n" +
                     pad + "DateTime of Speed Test - " + self.DateTime + "\n" +
-                    pad + "OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
+                    pad + "OS: " + self.OSName + ", " + self.OSArchitecture + ", " + self.OSVersion + "\n" +
                     pad + "Java: " + self.JavaVersion + ", " + self.JavaVendor + "\n" +
                     pad + "Network Type: " + self.NetworkType + "\n" +
                     pad + "Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
