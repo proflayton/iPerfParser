@@ -1,6 +1,11 @@
-#Beyond these wall, there be bugs
+#Beyond these walls, there be bugs
+#Legend: - = bug
+#        + = fix
+
+
 Overall:
   - Not enough bacon being consumed. Increase consumption by at least 149%
+    + Fix: Acquired cast iron skillet for cooking more bacon
 
 SpeedTestDataStructure:
   -

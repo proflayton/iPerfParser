@@ -59,12 +59,19 @@ if __name__ == '__main__':
 #       INPUTS-     num:    Integer, representing the month index (from 1 to 12)
 #       OUTPUTS-    ..:     String, abbreviation for a month (e.g. Jun, Oct, etc.)
 #
+#   csvExport - Used to initialize an object of this class
+#       INPUTS-     a_2D_Array:     A 2-dimensional array with each sub array representing
+#                                   a line in the end csv file
+#                   fileNameToSave: The full path of the resulting csv file
+#       OUTPUTS-    none
+#
 # ------------------------------------------------------------------------
 
 #This is going to be a global variable used in the __str__ methods of all other modules
 # This way, when objects are outputted, they can be indented to create a tree looking output
 global_str_padding = "   "
 #END GLOBAL VARS
+
 
 # DESC: ..
 def readToAndGetLine(fileStream, delimiter):
@@ -77,6 +84,7 @@ def readToAndGetLine(fileStream, delimiter):
     return line
 #END DEF
 
+
 # DESC: ..
 def isLessThanVersion(minVer):
     if type(minVer) is tuple:
@@ -87,6 +95,7 @@ def isLessThanVersion(minVer):
         return True
     raise ValueError("You need to pass in a tuple the compare the current version to.")
 #END DEF
+
 
 # Found on http://stackoverflow.com/questions/3418050/month-name-to-month-number-and-vice-versa-in-python
 # Code written by user Gi0rgi0s
@@ -121,6 +130,7 @@ def monthNumToAbbr(num):
             }[num]
 #END DEF
 
+
 # DESC: Returns the population standard deviation of the given array of values
 def StDevP(array):
     avg = float(0)
@@ -132,4 +142,18 @@ def StDevP(array):
         dev += (elem - avg)**2
     dev = (dev / len(array))**(1.0/2.0)
     return dev
+#END DEF
+
+
+# DESC: This fuction takes in two values:
+#       The 2D representing the rows and columns in the CSV
+#       The fileName in which the CSV will be saved to
+def csvExport(a_2D_Array, fileNameToSave):
+    f = open(fileNameToSave,"w")
+    for row in a_2D_Array:
+        rowOfText = ''
+        for col in row:
+            rowOfText += ('"' + str(col) + '",')
+        f.write(rowOfText[:-1]+"\n")
+    f.close()
 #END DEF

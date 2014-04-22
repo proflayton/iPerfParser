@@ -30,7 +30,7 @@ if not isLessThanVersion((2,6)):
 # ------------------------------------------------------------------------
 
 from iPerfClasses.SpeedTestDataStructure import SpeedTestDS as STDs
-from iPerfClasses.CSVExporter import csvExport
+from iPerfClasses.utils import csvExport
 import os
 import sys
 if not isLessThanVersion((3,0)):
