@@ -4,6 +4,25 @@ iPerfParser
 iPerf Parser in Python
  - main.py is the starting script that will be run. It uses class files located in iPerfClasses, which are used to store speed test information. After choosing the starting folder (which houses all of the raw data files), the parser will interpret the raw data into objects, and then ask the user what kind of analysis they would like done.
 
+ - Current analyses:
+   + Distribution of the standard deviation of TCP connections. The speeds used
+     are the sum of all four threads’ speeds at each one second interval.
+     (e.g.) thread4(0-1)speed = 400KB/s
+            thread3(0-1)speed = 500KB/s
+            thread6(0-1)speed = 200KB/s
+            thread5(0-1)speed = 0KB/s
+            sum = 1100KB/s
+            sumThread = [1100KB/s, .. ]
+            StDev = population stdev of sumThread [speed1, speed2, speed3, .. ]
+     These StDevs are calculated for both directions (Up and Down) in all TCP tests,
+     in all files, and a distribution is calculated. The distribution is separated
+     by network type (mobile vs netbook), carrier, and direction
+   +
+
+
+
+
+
  - The top-level structure created is organized as such:
 Speed_Test_Data_Structure
  \__
@@ -22,9 +41,28 @@ Speed_Test_Data_Structure
 
  - The SpeedTestFile objects are structured as follows:
 SpeedTestFile
- \__
+ \__FileName, FileStreamLoc, DateTime, OSName, OSArchitecture, OSVersion
+  __JavaVersion, JavaVendor, NetworkType, Server, Host, NetworkProvider, NetworkOperator
+  __DeviceId, ConnectionType, LocationID, Latitude, Longitude 
  |
- \__
+ \__this_SpeedTests = [IndividualSpeedTest #1, IndividualSpeedTest #2, .. ]
+      \__
+         IndividualSpeedTest
+           \__ConnectionType, ConnectionLoc, ReceieverIP, Port
+           |
+           \__this_PingThreads = [PingThread #1, PingThread #2, .. ]
+                \__
+                   PingThread
+                     \__PipeNumber, DataDirection
+                      __LocalIP, LocalPort, ServerIP, ServerPort
+                      __final_secIntervalStart, final_secInteravalEnd
+                      __final_size, final_speed
+                      __Datagrams, ERROR
+                     |
+                     \__this_Pings = [Ping #1, Ping #2, Ping #3, .. ]
+                          \__Ping
+                               \__secIntervalStart, secIntervalEnd
+                                __size, speed
 
 
 

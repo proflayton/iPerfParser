@@ -78,7 +78,7 @@ class SpeedTestFile(object):
     OSVersion = "UNKNOWN"
 
     JavaVersion = "UNKNOWN"
-    JavaVender = "UNKNOWN"
+    JavaVendor = "UNKNOWN"
 
     NetworkType = "UNKNOWN"
 
@@ -93,6 +93,8 @@ class SpeedTestFile(object):
     LocationID = "UNKNOWN"
     Latitude = 0
     Longitude = 0
+
+    this_SpeedTests = []
 
     short_str = False
     # -------------------
@@ -156,12 +158,12 @@ class SpeedTestFile(object):
         temp = readToAndGetLine(fs,"Java: ")
         if temp:
             self.JavaVersion = temp.split("Version = ")[1].split(",")[0];
-            self.JavaVender  = temp.split("Vendor = ")[1][:-1]
+            self.JavaVendor  = temp.split("Vendor = ")[1][:-1]
             if self.JavaVersion == "": self.JavaVersion = "N/A"
-            if self.JavaVender == "": self.JavaVender = "N/A"
+            if self.JavaVendor == "": self.JavaVendor = "N/A"
         else:
             self.JavaVersion = "N/A"
-            self.JavaVender = "N/A"
+            self.JavaVendor = "N/A"
         fs.seek(self.FileStreamLoc)
         #END IF/ELSE
 
@@ -383,7 +385,7 @@ class SpeedTestFile(object):
             return (pad + "Filename: " + self.FileName + "\n" +
                     pad + "DateTime of Speed Test - " + self.DateTime + "\n" +
                     pad + "OS: " + self.OSName + ", " + self.OSArchitectue + ", " + self.OSVersion + "\n" +
-                    pad + "Java: " + self.JavaVersion + ", " + self.JavaVender + "\n" +
+                    pad + "Java: " + self.JavaVersion + ", " + self.JavaVendor + "\n" +
                     pad + "Network Type: " + self.NetworkType + "\n" +
                     pad + "Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
                     pad + "Network: Provider = " + self.NetworkProvider +
