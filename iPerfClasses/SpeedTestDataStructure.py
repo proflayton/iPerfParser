@@ -294,6 +294,10 @@ class SpeedTestDS():
         #END IF
         new_structure = []
 
+<<<<<<< HEAD
+=======
+        #Gets the max amount of columns we will need in our CSV file
+>>>>>>> origin/Brandon's-REAL-Test-Branch
         StDevMax = 0
         for key in structure:
             for elem in structure[key]:
@@ -318,6 +322,10 @@ class SpeedTestDS():
         new_structure.append(["",""])
         new_structure.append(["Network Type:", "Carrier & Direction:"])
 
+<<<<<<< HEAD
+=======
+        
+>>>>>>> origin/Brandon's-REAL-Test-Branch
         for key in structure:
             new_structure.append([key])
             for elem in structure[key]:

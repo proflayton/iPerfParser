@@ -165,12 +165,21 @@ class SpeedTest():
                     threadNumber = temp.split("]")[0].strip()
                     currPingThread = self.getPingThreadWithNum(threadNumber)
                     temp = temp.split("]")[1]
+<<<<<<< HEAD
                     if "WARNING" in temp:
                         currPingThread.ERROR = True
                     elif "local" in temp:
+=======
+                    if "WARNING" in temp: 
+                        #An error with UDP happens here. Don't know how to handle yet
+                        currPingThread.ERROR = True
+                    elif "local" in temp: 
+                        #new UDP pingThread
+>>>>>>> origin/Brandon's-REAL-Test-Branch
                         self.this_PingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str))
                         #print("Local")
-                    elif "-" in temp:
+                    elif "-" in temp: 
+                        #Some actual Data we can use, as long as there is no error
                         if "datagrams" in temp:
                             #error with the test (datagrams received out-of-order)
                             #
@@ -180,13 +189,19 @@ class SpeedTest():
                             #
                             dataLine = dataStream.readline()
                             continue
+<<<<<<< HEAD
+=======
+                        #if no error, go ahead and add the ping
+>>>>>>> origin/Brandon's-REAL-Test-Branch
                         currPingThread.addPing(Ping(temp))
                     elif "datagrams" in temp:
+                        #End of the test, just getting more info about what happened
                         datagrams = temp.split("Sent")[1].split("datagrams")[0].replace(" ","")
                         currPingThread.datagrams = datagrams
                     elif "Server Report" in temp:
                         #the report is actually a line down
                         temp = dataStream.readline()
+                        #Here we need to go ahead and parse the report
                     #END IF/ELIFx3
                 else:
                     print("ERROR! NO CONNECTION TYPE")
@@ -247,6 +262,11 @@ class SpeedTest():
         if (self.ConnectionType != "TCP"):
             raise StandardError("This function cannot be run by a non-TCP type Test")
 
+<<<<<<< HEAD
+=======
+        #Here we want to do two difference Standard deviations
+        #One with upload thread and one with download threads
+>>>>>>> origin/Brandon's-REAL-Test-Branch
         Up_threads = []; Up_threads_sum = []
         Down_threads = []; Down_threads_sum = []
         for thread in self.this_PingThreads:
@@ -264,13 +284,25 @@ class SpeedTest():
             for ping in thread.this_Pings:
                 new_max = ping.secIntervalEnd
                 max_up_length = new_max if new_max > max_up_length else max_up_length
+<<<<<<< HEAD
+=======
+            #END FOR
+>>>>>>> origin/Brandon's-REAL-Test-Branch
         #END FOR
         for thread in Down_threads:
             for ping in thread.this_Pings:
                 new_max = ping.secIntervalEnd
                 max_down_length = new_max if new_max > max_down_length else max_down_length
+<<<<<<< HEAD
         #END FOR
 
+=======
+            #END FOR
+        #END FOR
+
+        #Get the sums of the Up and Down threads
+
+>>>>>>> origin/Brandon's-REAL-Test-Branch
         for step in range(int(max_up_length)):
             temp = 0
             for itr in range(len(Up_threads)):
@@ -288,6 +320,10 @@ class SpeedTest():
             Down_threads_sum.append(temp)
         #END FOR
 
+<<<<<<< HEAD
+=======
+        #Append the sum arrays to the corresponding reference for use later in the actual computation of StdDev
+>>>>>>> origin/Brandon's-REAL-Test-Branch
         structRef[netType][carrier]["Up"].append(StDevP(Up_threads_sum))
         structRef[netType][carrier]["Down"].append(StDevP(Down_threads_sum))
     #END DEF
