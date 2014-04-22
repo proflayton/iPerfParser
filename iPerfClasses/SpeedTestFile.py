@@ -119,7 +119,7 @@ class SpeedTestFile(object):
         fs.seek(self.FileStreamLoc)
         datetime = fs.readline()
         self.FileStreamLoc = fs.tell()
-        if (self.FileName[:8] == "WBBDTest"):
+        if ("Testing started" not in datetime):
             self.DateTime = datetime[:-1]
         else:
             #Formatting the datetime as "mm/dd/yyyy hh:mm:ss" when not in this format
