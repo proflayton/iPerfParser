@@ -41,12 +41,33 @@ if __name__ == '__main__':
 #           speed test. It will hold an array of
 #
 # VARIABLES:
-#   ..
+#   PipeNumber              Integer, the number thread this is (is between 3 and 6
+#   DataDirection           String, is either Up or Down (depending on the order of the thread's read
+#   LocalIP                 The IP of this test's local machine
+#   LocalPort               The port of this test's local machine
+#   ServerIP                The IP of the server this thread was connected to
+#   ServerPort              The port of the server this thread was connected to
+#   final_secIntervalStart  The summation Ping start time. This should always be 0.0
+#   final_secIntervalEnd    The summation Ping end time. This should always be more than 1.0
+#   final_size              The summation Ping size (data sent).
+#   final_speed             The summation Ping speed (KB/s)
+#   Datagrams               String? Integer? holding some UDP information we don't understand yet
+#   this_Pings              List, holding all of the Pings in this specific thread
+#   short_str               Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
+#                               Default is False
+#   ERROR                   Boolean, is True if there was a in the UDP test
 #
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    none
+#
+#   array_itize - Returns an array of this thread's pings. Used when converting
+#                 STDs structure to a 2D array
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   totalLength:    The number of "rows", or elements, that the returned array needs to be,
+#                                   as there are threads of different length, and we need spacers
+#       OUTPUTS-    arrayed:        List, holding the necessary information for the 2D representation of this object
 #
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)

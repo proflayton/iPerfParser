@@ -42,7 +42,13 @@ if __name__ == '__main__':
 #           standard deviation of TCP upload and download speed tests).
 #
 # VARIABLES:
-#   ..
+#   ConnectionType      String, represents the type of connection (TCP or UDP)
+#   ConnectionLoc       String, represents where this test is connected to (East or West)
+#   this_PingThreads    list, holding all of the PingThreads in this test
+#   RecieverIP          String, IP of the server this test is connected to
+#   Port                Integer, the port this test is connected to
+#   short_str           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
+#                           Default is False
 #
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
@@ -63,10 +69,23 @@ if __name__ == '__main__':
 #                   dataStream: a data stream, with the rest of the Speed Test information
 #       OUTPUTS-    none
 #
-#   getPingThreadWithNumber - This returns the PingThread object with the thread number given
+#   getPingThreadWithNum - This returns the PingThread object with the thread number given
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #                   threadNumber:   Integer, representing the ping thread's pipe/thread number
-#       OUTPUTS-    realPing:       ...
+#       OUTPUTS-    realPingThread: A Ping thread object, which was the last thread whose thread number
+#                                   was given to the function
+#
+#   getLongestThreadTime - The looks through all of the threads in this function and
+#                          returns the longest thread time in seconds
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    time:   Integer, representing the longest thread time
+#
+#   calc_StDev_ofTCPThreadSumsByDirection
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   structRef:  reference to the structure that will hold the standard deviation values
+#                   netType:    String, the network type (mobile or netbook) that this test falls under
+#                   carrier:    String, the carrier (AT&T, Verizon, etc.) that this test falls under
+#       OUTPUTS-    none
 #
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -252,7 +271,9 @@ class SpeedTest():
     #END DEF
 
 
-    # DESC: ...
+    # DESC: This calculates the standard deviation for this test's threads summed. There should be
+    #       4 threads in each direction (4 UP, 4 DOWN). Once the standard deviation is calculated for
+    #       both directions, it is appended to the correct array, based on the given nettype and carrier
     def calc_StDev_ofTCPThreadSumsByDirection(self, structRef, netType, carrier):
         if (self.ConnectionType != "TCP"):
             raise StandardError("This function cannot be run by a non-TCP type Test")

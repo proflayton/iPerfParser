@@ -41,7 +41,12 @@ if __name__ == '__main__':
 #           (i.e. This object represent one line of text in a speed test)
 #
 # VARIABLES:
-#   ..
+#   secIntervalStart    Float, represents the start time of this Ping
+#   secIntervalEnd      Float, represents the end time of this Ping (should always be start + 1)
+#   size                Float, represents this Ping's size in Kbits sent
+#   speed               Float, represents this Ping's speed in KBytes/sec
+#   size_string         String, converted from size, used in __str__
+#   speed_string        String, converted from speed, used in __str__
 #
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
