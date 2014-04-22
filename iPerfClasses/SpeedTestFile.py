@@ -342,10 +342,8 @@ class SpeedTestFile(object):
     #       call it's thread sum standard deviation function.
     def calc_TestTCP_StDev(self, structRef):
         list_carriers = list(structRef[self.NetworkType])
-<<<<<<< HEAD
-=======
+
         #Calculate all of the threads' sums of pings
->>>>>>> origin/Brandon's-REAL-Test-Branch
         for indivTest in self.this_SpeedTests:
             if (indivTest.ConnectionType == "TCP"):
                 if (self.NetworkOperator in list_carriers):
