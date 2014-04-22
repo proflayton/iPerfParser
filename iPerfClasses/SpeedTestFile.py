@@ -116,12 +116,15 @@ class SpeedTestFile(object):
         self.FileStreamLoc = fs.tell()
 
         #Reading in the DateTime of the test
+        #Also setting the network type, as this is where the file types start to differ
         fs.seek(self.FileStreamLoc)
         datetime = fs.readline()
         self.FileStreamLoc = fs.tell()
         if ("Testing started" not in datetime):
+            self.NetworkType = "netbook"
             self.DateTime = datetime[:-1]
         else:
+            self.NetworkType = "mobile"
             #Formatting the datetime as "mm/dd/yyyy hh:mm:ss" when not in this format
             datetime = datetime.split("at ")[1][4:-1]
             month = str(monthAbbrToNum(datetime[:3]))
@@ -160,13 +163,6 @@ class SpeedTestFile(object):
             self.JavaVersion = "N/A"
             self.JavaVender = "N/A"
         fs.seek(self.FileStreamLoc)
-        #END IF/ELSE
-
-        #Set the Network Type Information
-        if (self.FileName[:8] == "WBBDTest"):
-            self.NetworkType = "netbook"
-        else:
-            self.NetworkType = "mobile"
         #END IF/ELSE
 
         #Read in Server Header Information
