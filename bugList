@@ -8,16 +8,19 @@ Overall:
     + Fix: Acquired cast iron skillet for cooking more bacon
 
 SpeedTestDataStructure:
-  -
+  - 
 
 SpeedTestFile:
-  -
+  - Creation of Individual Speeds Tests (and therefore Ping Threads and Pings)
+    might work better when parsing a String rather than a FileStream
 
 IndividualSpeedTest:
-  -
+  - UDP information needs to be explored and better quantified. What needs
+    to be saved?
 
 PingThread:
-  -
+  - Work on handling of cases where a PingThread was started, but has no Pings.
+    i.e. should it be a thread with one Ping, 0.0-1.0 with size and speed of 0?
 
 Ping:
   -

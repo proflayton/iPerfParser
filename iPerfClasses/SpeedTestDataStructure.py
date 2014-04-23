@@ -361,6 +361,10 @@ class SpeedTestDS():
             val_ranges_lower.append(StDevMax*(float(i)/numRangeCols))
             val_ranges_upper.append(StDevMax*(float(i+1)/numRangeCols))
         #END FOR
+        true_val_ranges = []
+        for i in range(numRangeCols):
+            true_val_ranges.append(str(int(val_ranges_lower[i])) + "-" + str(int(val_ranges_upper[i])))
+        #END FOR
 
         #Setting up the first 4 lines of the csv (always the same)
         new_structure.append(["Standard Deviation Distribution"])
@@ -376,9 +380,6 @@ class SpeedTestDS():
                     #Creating an array of the first four cells (doesn't change between section).
                     # Then extend the array with the value ranges, and append to our final 2D array
                     line = ["", elem, "", "StDev Range:"]
-                    true_val_ranges = []
-                    for i in range(numRangeCols):
-                        true_val_ranges.append(str(int(val_ranges_lower[i])) + "-" + str(int(val_ranges_upper[i])))
                     line.extend(true_val_ranges)
                     new_structure.append(line)
 

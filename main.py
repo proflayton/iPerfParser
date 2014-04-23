@@ -44,8 +44,6 @@ so_many_STDs = STDs()
 # Loading in the raw data, and passing in the system arguements
 so_many_STDs.loadRawData(sys.argv)
 
-#import pprint
-#pprint.pprint(so_many_STDs.this_SpeedTestFiles, depth=4)
 
 # Converting the structure of parsed raw data into a 2 dimensional array
 csvReady = so_many_STDs.convertTo_StructureTo2D()
