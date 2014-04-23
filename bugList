@@ -21,6 +21,9 @@ IndividualSpeedTest:
 PingThread:
   - Work on handling of cases where a PingThread was started, but has no Pings.
     i.e. should it be a thread with one Ping, 0.0-1.0 with size and speed of 0?
+  - When converting 1 second UDP threads into an array (for SpeedTestFile function
+    convertTo_StructureTo2D()), the test has two 0.0-1.0 measurements. How should
+    this be handled?
 
 Ping:
   -
