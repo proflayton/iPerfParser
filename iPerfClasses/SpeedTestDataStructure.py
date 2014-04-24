@@ -155,19 +155,27 @@ class SpeedTestDS():
             short_str_method = True
 
             #Alter this string to be the parent directory holding all of the data
-            DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/bb results/"
-            DataRootBrandon = "D:/CPUC/BB_results/"
+            DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
+            DataRootBrandon = "D:/CPUC/"
+            PeterBBResults = "bb results/"
+            PeterSamples = "sampleTests/"
+            BrandonBBResults = "BB_results/"
+            BrandonSamples = ""  #see if statement at the bottom. option "-sb"
+            #Below are the actual sys arg options
             if (sysArgv[1] == "-tf"):
-                file1 = DataRootBrandon + "10_18_2013/WBBDTest2-10182013113755.txt"
+                file1 = DataRootBrandon + BrandonBBResults + "10_18_2013/WBBDTest2-10182013113755.txt"
                 test_SpeedTest = SpeedTestFile(file1, short_str_method)
                 self.addToStructure(test_SpeedTest)
             elif (sysArgv[1] == "-c"):
-                for root, dirs, files in os.walk(DataRootPeter+"10_18_2013/"):
+                for root, dirs, files in os.walk(DataRootPeter+PeterBBResults+"10_18_2013/"):
                     for aFile in files:
                         #Seeing if the file given is, in fact, a data file
                         #If not, the script will exit and display the message below
                         f = open(os.path.join(root, aFile),'r')
-                        isItCPUC = f.readline()
+                        try:
+                            isItCPUC = f.readline()
+                        except:
+                            pass
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
                             test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
                             #print(str(test_STFile))
@@ -175,13 +183,11 @@ class SpeedTestDS():
                         #END IF
                     #END FOR files
                 #END FOR os.walk
-            #END IF
-
             elif (sysArgv[1] == "-cs"):
                 #Alter these strings to be individual data files
-                file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
-                file2 = DataRootPeter + "10_17_2013/356420059231100-10172013094856.txt"
-                file3 = DataRootPeter + "10_17_2013/WBBDTest2-10172013151943.txt"
+                file1 = DataRootPeter + PeterBBResults + "10_17_2013/99000344556962-10172013151027.txt"
+                file2 = DataRootPeter + PeterBBResults + "10_17_2013/356420059231100-10172013094856.txt"
+                file3 = DataRootPeter + PeterBBResults + "10_17_2013/WBBDTest2-10172013151943.txt"
                 stfile1 = SpeedTestFile(file1, short_str_method)
                 stfile2 = SpeedTestFile(file2, short_str_method)
                 stfile3 = SpeedTestFile(file3, short_str_method)
@@ -191,13 +197,46 @@ class SpeedTestDS():
                 #print(str(stfile1))
                 #print(str(stfile2))
                 #print(str(stfile3))
-
             elif (sysArgv[1] == "-css"):
                 #Alter this string to be an individual data file
-                file1 = DataRootPeter + "10_17_2013/99000344556962-10172013151027.txt"
+                file1 = DataRootPeter + PeterBBResults + "10_17_2013/99000344556962-10172013151027.txt"
                 test_SpeedTest = SpeedTestFile(file1, short_str_method)
                 self.addToStructure(test_SpeedTest)
                 #print( str(test_SpeedTest) )
+            elif (sysArgv[1] == "-sp"):
+                for root, dirs, files in os.walk(DataRootPeter + PeterSamples):
+                    for aFile in files:
+                        #Seeing if the file given is, in fact, a data file
+                        #If not, the script will exit and display the message below
+                        f = open(os.path.join(root, aFile),'r')
+                        try:
+                            isItCPUC = f.readline()
+                        except:
+                            pass
+                        if ("CPUC Tester Beta v2.0" in isItCPUC):
+                            test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
+                            #print(str(test_STFile))
+                            self.addToStructure(test_STFile)
+                        #END IF
+                    #END FOR files
+                #END FOR os.walk
+            elif (sysArgv[1] == "-sb"):
+                for root, dirs, files in os.walk(DataRootBrandon + BrandonSamples):
+                    for aFile in files:
+                        #Seeing if the file given is, in fact, a data file
+                        #If not, the script will exit and display the message below
+                        f = open(os.path.join(root, aFile),'r')
+                        try:
+                            isItCPUC = f.readline()
+                        except:
+                            pass
+                        if ("CPUC Tester Beta v2.0" in isItCPUC):
+                            test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
+                            #print(str(test_STFile))
+                            self.addToStructure(test_STFile)
+                        #END IF
+                    #END FOR files
+                #END FOR os.walk
             else:
                 print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")
             #END IF/ELIF/ELIF/ELSE
@@ -221,7 +260,10 @@ class SpeedTestDS():
                     #Seeing if the file given is, in fact, a data file
                     #If not, the script will exit and display the message below
                     f = open(os.path.join(root, aFile),'r')
-                    isItCPUC = f.readline()
+                    try:
+                        isItCPUC = f.readline()
+                    except:
+                        pass
                     if ("CPUC Tester Beta v2.0" in isItCPUC):
                         test_STFile = SpeedTestFile(os.path.join(root, aFile))
                         self.addToStructure(test_STFile)

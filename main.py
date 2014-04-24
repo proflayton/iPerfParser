@@ -44,7 +44,6 @@ so_many_STDs = STDs()
 # Loading in the raw data, and passing in the system arguements
 so_many_STDs.loadRawData(sys.argv)
 
-
 # Converting the structure of parsed raw data into a 2 dimensional array
 csvReady = so_many_STDs.convertTo_StructureTo2D()
 """
@@ -52,7 +51,7 @@ print("Please select the folder you wish to hold the csv files that will be crea
 rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                  title = "Select the Folder You Wish To Hold the CSV Files",
                                  mustexist = True)
-"""
+""
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 ""
 for devType in csvReady:
@@ -73,7 +72,7 @@ for devType in csvReady:
         #END FOR
     #END FOR
 #END FOR
-""
+"""
 
 
 # Converting the structure of parsed raw data into a 2 dimensional array
