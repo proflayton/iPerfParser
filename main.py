@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------
 # Making sure that the version of python being used is at least 2.7
 # ------------------------------------------------------------------------
-from iPerfClasses.utils import isLessThanVersion
+from ParserStructure.utils import isLessThanVersion
 if not isLessThanVersion((2,6)):
     raise SystemExit
 
@@ -29,8 +29,8 @@ if not isLessThanVersion((2,6)):
 #
 # ------------------------------------------------------------------------
 
-from iPerfClasses.SpeedTestDataStructure import SpeedTestDS as STDs
-from iPerfClasses.utils import csvExport
+from ParserStructure.SpeedTestDataStructure import SpeedTestDS as STDs
+from ParserStructure.utils import csvExport
 import os
 import sys
 if not isLessThanVersion((3,0)):
