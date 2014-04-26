@@ -325,8 +325,12 @@ class SpeedTest():
         #END FOR
 
         #Append the sum arrays to the corresponding reference for use later in the actual computation of StdDev
-        structRef[netType][carrier]["Up"].append(StDevP(Up_threads_sum))
-        structRef[netType][carrier]["Down"].append(StDevP(Down_threads_sum))
+        up_stdev = StDevP(Up_threads_sum)
+        if up_stdev is not None:
+            structRef[netType][carrier]["Up"].append(up_stdev)
+        down_stdev = StDevP(Down_threads_sum)
+        if down_stdev is not None:
+            structRef[netType][carrier]["Down"].append(down_stdev)
     #END DEF
 
 

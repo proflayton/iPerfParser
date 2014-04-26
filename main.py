@@ -29,14 +29,20 @@ if not isLessThanVersion((2,6)):
 #
 # ------------------------------------------------------------------------
 
+#Importing the necessary classes in the sub-directory
 from ParserStructure.SpeedTestDataStructure import SpeedTestDS as STDs
 from ParserStructure.utils import csvExport
-import os
-import sys
+import os, sys, datetime
 if not isLessThanVersion((3,0)):
     import Tkinter as TK, tkFileDialog as TKFD
 else:
     import tkinter as TK, tkinter.filedialog as TKFD
+#Setting up some files to use for checking data.
+this_dir, this_filename = os.path.split(__file__)
+DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
+DATA_HEADERS = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_HeaderIndexTable.txt")
+#print(open(DATA_HEADERS).read())
+
 
 # Here's where main actually starts
 # creating a Speed Test Data Structure
@@ -78,7 +84,7 @@ for devType in csvReady:
 # Converting the structure of parsed raw data into a 2 dimensional array
 csvOfTCP = so_many_STDs.convertTo_ObjectToTCP(10)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
-csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads.csv")
+csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads "+str(datetime.datetime.now())+".csv")
 
 
 

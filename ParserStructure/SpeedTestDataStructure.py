@@ -211,13 +211,13 @@ class SpeedTestDS():
                         f = open(os.path.join(root, aFile),'r')
                         try:
                             isItCPUC = f.readline()
+                            if ("CPUC Tester Beta v2.0" in isItCPUC):
+                                test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
+                                #print(str(test_STFile))
+                                self.addToStructure(test_STFile)
                         except:
                             pass
-                        if ("CPUC Tester Beta v2.0" in isItCPUC):
-                            test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                            #print(str(test_STFile))
-                            self.addToStructure(test_STFile)
-                        #END IF
+                        #END TRY/EXCEPT
                     #END FOR files
                 #END FOR os.walk
             elif (sysArgv[1] == "-sb"):

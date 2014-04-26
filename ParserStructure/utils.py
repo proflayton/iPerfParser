@@ -139,8 +139,11 @@ def monthNumToAbbr(num):
 #END DEF
 
 
-# DESC: Returns the population standard deviation of the given array of values
+# DESC: Returns the population standard deviation of the given array of values.
+#       If an empty array is given, it returns None, which should be ignored
 def StDevP(array):
+    if not array:
+        return None
     avg = float(0)
     for elem in array:
         avg += elem
