@@ -436,6 +436,28 @@ class SpeedTestFile(object):
     #END DEF
 
 
+    # DESC: ..
+    def calc_and_append_StDev_and_Median(self, origRef):
+        """
+        list_carriers = list(structRef[self.NetworkType])
+
+        #Calculate all of the threads' sums of pings if the thread is TCP
+        for indivTest in self.this_SpeedTests:
+            if (indivTest.ConnectionType == "TCP"):
+                if (self.NetworkOperator in list_carriers):
+                    indivTest.calc_StDev_ofTCPThreadSumsByDirection\
+                        (structRef, self.NetworkType, self.NetworkOperator)
+                elif (self.NetworkProvider in list_carriers):
+                    indivTest.calc_StDev_ofTCPThreadSumsByDirection\
+                        (structRef, self.NetworkType, self.NetworkProvider)
+                #END IF/ELIF
+            #END IF
+        #END FOR
+        """
+        return False
+    #END DEF
+
+
     # DESC: Returns all of the sub tests for this file as a string
     def printSpeedTests(self):
         text = ""

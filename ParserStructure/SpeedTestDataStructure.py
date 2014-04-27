@@ -477,6 +477,18 @@ class SpeedTestDS():
     #END DEF
 
 
+    # DESC: ..
+    def add_StDev_and_Median_to_Master(self, origRef):
+        for devType in self.this_SpeedTestFiles:
+            for carrier in self.this_SpeedTestFiles[devType]:
+                for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+                    speedTest.calc_and_append_StDev_and_Median(origRef)
+            #END FOR
+        #END FOR
+        return origRef
+    #END DEF
+
+
     # DESC: Creating a string representation of our object
     def __str__(self):
         returnedString = ""
