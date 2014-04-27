@@ -168,3 +168,11 @@ def csvExport(a_2D_Array, fileNameToSave):
         f.write(rowOfText[:-1]+"\n")
     f.close()
 #END DEF
+
+
+# DESC: This function takes in an array
+#       And returns the median of the array
+def getMedian(vals):
+    sortedVals = sorted(vals)
+    mid = int(len(sortedVals)/2)
+    return sortedVals[mid]
