@@ -65,14 +65,14 @@ if __name__ == '__main__':
 #                   STFileObj:  SpeedTestFile object, holds the raw data that has been parsed
 #       OUTPUTS-    none
 #
-#   convertTo_StructureTo2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
+#   convertTo_Structure_To_2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
 #                             array. Each array can be converted to a .csv file. Each array holds all of the
 #                             SpeedTestFile information, down to the Ping level
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    toBeReturned:   a structure similar to this object's this_SpeedTestFiles, except each
 #                                   SpeedTestFile is now a 2D array
 #
-#   convertTo_ObjectToTCP - Returns a 2D array that can be converted into a 2D array. The information
+#   convertTo_Object_To_TCPStDev - Returns a 2D array that can be converted into a 2D array. The information
 #                           inside represents a distribution of the standard deviation of each SpeedTestFile's
 #                           TCP tests. The values used to calculate each StDev is the sum of all TCP threads' speed
 #                           in a specific direction (Up or Down)
@@ -239,7 +239,7 @@ class SpeedTestDS():
                 #END FOR os.walk
             else:
                 print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")
-            #END IF/ELIF/ELIF/ELSE
+            #END IF/ELIF/ELSE
 
         # ----------------------------------------------------------
         else:
@@ -310,7 +310,7 @@ class SpeedTestDS():
     # DESC: Creating a csv file of the data structure. Starts by converting
     #       the structure into a 2-dimensional array, then passes it to the
     #       csv converter class, which returns the file
-    def convertTo_StructureTo2D(self):
+    def convertTo_Structure_To_2D(self):
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
@@ -336,7 +336,7 @@ class SpeedTestDS():
     #       an array of 2-dimensional arrays that can be passed into the
     #       CSV converter class. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
-    def convertTo_ObjectToTCP(self, numRangeCols=3): #pingData="speed"
+    def convertTo_Object_To_TCPStDev(self, numRangeCols=3): #pingData="speed"
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost

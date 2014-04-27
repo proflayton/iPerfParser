@@ -73,7 +73,7 @@ if __name__ == '__main__':
 #                   filePath:   String, containing absolute path to raw data file
 #       OUTPUTS-    none
 #
-#   load - initializes the object by parsing the data in the given file path.
+#   loadHeaderInfo - initializes the object by parsing the data in the given file path.
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #                   filePath:   String, containing absolute path to raw data file
 #       OUTPUTS-    none
@@ -111,7 +111,8 @@ class SpeedTestFile(object):
     FileName = "UNKNOWN"
     FileStreamLoc = 0
 
-    DateTime = "UNKNOWN"
+    Date = "UNKNOWN"
+    Time = "UNKNOWN"
 
     OSName = "UNKNOWN"
     OSArchitecture = "UNKNOWN"
@@ -144,13 +145,14 @@ class SpeedTestFile(object):
         self.short_str = short
         self.this_SpeedTests = []
         self.FileName = filePath.split("/")[-1]
-        self.load(filePath)
+        self.loadHeaderInfo(filePath)
+        #self.parseIndivTests()
     #END INIT
 
 
     # DESC: parses data and info in given file (location is filePath)
     #       and stores it in the object's attributes
-    def load(self, filePath):
+    def loadHeaderInfo(self, filePath):
         #Open the file and read through the first line (which is "CPUC Beta .....")
         # save byte location to self.FileStreamLoc
         fs = open(filePath,'r')
@@ -164,7 +166,8 @@ class SpeedTestFile(object):
         self.FileStreamLoc = fs.tell()
         if ("Testing started" not in datetime):
             self.NetworkType = "netbook"
-            self.DateTime = datetime[:-1]
+            self.Date = datetime.split(" ")[0]
+            self.Time = datetime.split(" ")[1][:-1]
         else:
             self.NetworkType = "mobile"
             #Formatting the datetime as "mm/dd/yyyy hh:mm:ss" when not in this format
@@ -173,7 +176,8 @@ class SpeedTestFile(object):
             day = str(datetime[4:6])
             year = str(datetime[-5:-1])
             time = str(datetime[7:9]) + ":" + str(datetime[10:12]) + ":" + str(datetime[13:15])
-            self.DateTime = month + "/" + day + "/" + year + " " + time
+            self.Date = month + "/" + day + "/" + year
+            self.Time = time
         fs.seek(self.FileStreamLoc)
         #END IF/ELSE
 
@@ -249,7 +253,12 @@ class SpeedTestFile(object):
             self.DeviceID = readToAndGetLine(fs,"Device ID: ").split("Device ID: ")[1][:-1]
             if self.DeviceID == "": self.DeviceID = "N/A"
         except:
-            self.DeviceID = "N/A"
+            fs.seek(self.FileStreamLoc)
+            try:
+                self.DeviceID = readToAndGetLine(fs,"Host name: ").split("Host name: ")[1][:-1]
+                if self.DeviceID == "": self.DeviceID = "N/A"
+            except:
+                self.DeviceID = "N/A"
         fs.seek(self.FileStreamLoc)
         #Get Device ConnectionType
         try:
@@ -318,13 +327,39 @@ class SpeedTestFile(object):
     #END DEF
 
 
+    # DESC: ..
+    def parseIndivTests(self):
+
+        #Set the file stream to the line after "Checking Connectivity"
+        readToAndGetLine(fs, "Checking Connectivity..")
+        self.FileStreamLoc = fs.tell()
+
+        # Loop through the rest of the file, creating individual
+        # Speed Test objects, which will hold an array of all of the actual data
+        continueLoop = True
+        while continueLoop:
+            fs.seek(self.FileStreamLoc)
+            iPerfLine = readToAndGetLine(fs, "Iperf command line:")
+            self.FileStreamLoc = fs.tell()
+            if not iPerfLine:
+                continueLoop = False
+            else:
+                fs.seek(self.FileStreamLoc - len(iPerfLine)-1)
+                aSpeedTest = SpeedTest(fs, self.short_str)
+                self.this_SpeedTests.append(aSpeedTest)
+            #END IF/ELSE
+        #END WHILE
+
+        return False
+    #END DEf
+
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
     def convertTo2D(self):
         toBeReturned = []
         #Setting up the basic information at the top of the 2D array/.csv file
         toBeReturned.append(["Filename", self.FileName])
-        toBeReturned.append(["DateTime", self.DateTime])
+        toBeReturned.append(["DateTime", self.Date + " " + self.Time])
         toBeReturned.append(["Location ID", self.LocationID])
         toBeReturned.append(["Network Type", self.NetworkType])
         toBeReturned.append(["Provider", (self.NetworkProvider
@@ -414,17 +449,18 @@ class SpeedTestFile(object):
     def __str__(self):
         if self.short_str:
             return (pad + "Filename: " + self.FileName + "\n" +
-                    pad + "DateTime of Speed Test - " + self.DateTime + "\n" +
+                    pad + "DateTime of Speed Test: " + self.Date + " " + self.Time + "\n" +
                     pad + "Network Type: " + self.NetworkType + "\n" +
                     pad + "Network: Provider = " + self.NetworkProvider +
                           ", Operator = " + self.NetworkOperator + "\n" +
+                    pad + "Device ID: " + self.DeviceID + "\n" +
                     pad + "Location ID: " + self.LocationID + "\n" +
                     self.printSpeedTests() +
                     "\n"
                     )
         else:
             return (pad + "Filename: " + self.FileName + "\n" +
-                    pad + "DateTime of Speed Test - " + self.DateTime + "\n" +
+                    pad + "DateTime of Speed Test: " + self.Date + " " + self.Time + "\n" +
                     pad + "OS: " + self.OSName + ", " + self.OSArchitecture + ", " + self.OSVersion + "\n" +
                     pad + "Java: " + self.JavaVersion + ", " + self.JavaVendor + "\n" +
                     pad + "Network Type: " + self.NetworkType + "\n" +

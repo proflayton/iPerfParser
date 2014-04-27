@@ -156,6 +156,15 @@ def StDevP(array):
 #END DEF
 
 
+# DESC: This function takes in an array
+#       And returns the median of the array
+def getMedian(vals):
+    sortedVals = sorted(vals)
+    mid = int(len(sortedVals)/2)
+    return sortedVals[mid]
+#END DEF
+
+
 # DESC: This fuction takes in two values:
 #       The 2D representing the rows and columns in the CSV
 #       The fileName in which the CSV will be saved to
@@ -169,24 +178,21 @@ def csvExport(a_2D_Array, fileNameToSave):
     f.close()
 #END DEF
 
+
+# DESC: This function takes the path to a .csv file
+#       and imports it as a 2-D array
 def csvImport(fileNameToImport):
     a_2D_Array = []
     f = open(fileNameToImport,"r")
-    while (line = f.readline()):
+    line = f.readline()
+    while line:
         a_1D_Array = []
         cols = line.split(",")
         for c in cols:
             a_1D_Array.append(c)
-        #END LOOP
+        #END FOR
         a_2D_Array.append(a_1D_Array)
-    #END LOOP
+        line = f.readline()
+    #END WHILe
     return a_2D_Array
-
-
-# DESC: This function takes in an array
-#       And returns the median of the array
-def getMedian(vals):
-    sortedVals = sorted(vals)
-    mid = int(len(sortedVals)/2)
-    return sortedVals[mid]
 #END DEF

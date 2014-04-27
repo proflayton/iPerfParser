@@ -31,7 +31,7 @@ if not isLessThanVersion((2,6)):
 
 #Importing the necessary classes in the sub-directory
 from ParserStructure.SpeedTestDataStructure import SpeedTestDS as STDs
-from ParserStructure.utils import csvExport
+import ParserStructure.utils as utils
 import os, sys, datetime
 if not isLessThanVersion((3,0)):
     import Tkinter as TK, tkFileDialog as TKFD
@@ -40,8 +40,7 @@ else:
 #Setting up some files to use for checking data.
 this_dir, this_filename = os.path.split(__file__)
 DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
-DATA_HEADERS = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_HeaderIndexTable.txt")
-#print(open(DATA_HEADERS).read())
+#DATA_HEADERS = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_HeaderIndexTable.txt")
 
 
 # Here's where main actually starts
@@ -51,7 +50,7 @@ so_many_STDs = STDs()
 so_many_STDs.loadRawData(sys.argv)
 
 # Converting the structure of parsed raw data into a 2 dimensional array
-csvReady = so_many_STDs.convertTo_StructureTo2D()
+csvReady = so_many_STDs.convertTo_Structure_To_2D()
 """
 print("Please select the folder you wish to hold the csv files that will be created")
 rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
@@ -82,9 +81,9 @@ for devType in csvReady:
 
 
 # Converting the structure of parsed raw data into a 2 dimensional array
-csvOfTCP = so_many_STDs.convertTo_ObjectToTCP(10)
+csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(10)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
-csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads "+str(datetime.datetime.now())+".csv")
+utils.csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads "+str(datetime.datetime.now())+".csv")
 
 
 

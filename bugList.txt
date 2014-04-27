@@ -13,10 +13,21 @@ SpeedTestDataStructure:
 SpeedTestFile:
   - Creation of Individual Speeds Tests (and therefore Ping Threads and Pings)
     might work better when parsing a String rather than a FileStream
+  - Alter structure of array storing Tests (separate by TCP/UDP, E/W)
+  - Pass a string of information to IndivSpeedTest, not a stream. What we can do
+    is read in the whole of the file (stream.read()), split the string by “\n\n”,
+    and then combine elements that are connected (ie. there may be a test that
+    has an error, and so the next element in the array has this error info.
+    Essentially, we combine the split elements until we hit one that has the
+    String “Starting Test” in it)
 
 IndividualSpeedTest:
   - UDP information needs to be explored and better quantified. What needs
     to be saved?
+  - Store which order it was (first one = 1, second = 2). Don’t use 
+    “Starting Test __”, we don’t want that number. We want which one it was in terms
+    of when the test was executed. Was it the first or second one run?
+  - 
 
 PingThread:
   - Work on handling of cases where a PingThread was started, but has no Pings.
