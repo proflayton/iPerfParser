@@ -77,7 +77,7 @@ for devType in csvReady:
 
 
 # Converting the structure of parsed raw data into a 2 dimensional array
-csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(10)
+csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(20)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 utils.csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads ("+str(datetime.datetime.now())+").csv")
 
