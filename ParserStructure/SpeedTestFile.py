@@ -163,7 +163,7 @@ class SpeedTestFile(object):
         #Reading in the DateTime of the test
         #Also setting the network type, as this is where the file types start to differ
         fs.seek(self.FileStreamLoc)
-        datetime = fs.readline()[:-2]+"\n"
+        datetime = fs.readline()
         self.FileStreamLoc = fs.tell()
         if ("Testing started" not in datetime):
             self.NetworkType = "netbook"
@@ -422,10 +422,7 @@ class SpeedTestFile(object):
     # DESC: Looping through each Test, if the test if of type TCP, then
     #       call it's thread sum function, and append the standard deviation to
     #       the passed structure reference.
-    def calc_TCP_StDev_and_append_to_Distribution(self, structRef):
-        list_carriers = list(structRef[self.NetworkType])
-
-        #Calculate all of the threads' sums of pings if the thread is TCP
+    def calc_TCP_StDev_and_append_to_Distribution(self, structRef, list_carriers):
         for indivTest in self.this_SpeedTests:
             if (indivTest.ConnectionType == "TCP"):
                 if (self.NetworkOperator in list_carriers):
@@ -451,16 +448,10 @@ class SpeedTestFile(object):
     # DESC: ..
     def this_File_Index_in_MasterCSV(self, masterCSVRef):
         index = None
-        print(masterCSVRef)
         for row in masterCSVRef:
-            strs = ""
-            if row[5] == self.Date:
-                strs += "found2"
-            if row[6] == self.Time:
-                strs += "found3"
-            if strs != "":
-                print(strs)
-            if ((row[13] == self.DeviceID) and (row[5] == self.Date) and (row[6] == self.Time)):
+            if ((row[13].strip() == self.DeviceID) and
+                (row[5].strip() == self.Date) and
+                (row[6].strip() == self.Time)):
                 index = masterCSVRef.index(row)
                 break
         return index
@@ -468,39 +459,35 @@ class SpeedTestFile(object):
 
 
     # DESC: ..
-    def calc_StDev_and_Median_and_append_to_MasterCSV(self, origRef):
+    def calc_StDev_and_Median_and_append_to_MasterCSV(self, origRef, list_carriers):
         thisFile = self.this_File_Index_in_MasterCSV(origRef)
         if thisFile is not None:
             westCount = 0
             eastCount = 0
             toAppend = [0]*16
             for indivTest in self.this_SpeedTests:
-                if (self.NetworkOperator in list_carriers):
-                    if (indivTest.ConnectionType == "TCP"):
-                        upThread = indivTest.sum_UpThreads()
-                        downThread = indivTest.sum_DownThreads()
-                        up_stdev = StDevP(upThread)
-                        up_median = getMedian(upThread)
-                        down_stdev = StDevP(downThread)
-                        down_median = getMedian(downThread)
-                        if (indivTest.ConnectionLoc == "West"):
-                            westCount += 1
-                            toAppend[(westCount*8)-8] = up_stdev
-                            toAppend[(westCount*8)-7] = up_median
-                            toAppend[(westCount*8)-6] = down_stdev
-                            toAppend[(westCount*8)-5] = down_stdev
-                        else:
-                            eastCount += 1
-                            toAppend[(eastCount*8)-4] = up_stdev
-                            toAppend[(eastCount*8)-3] = up_median
-                            toAppend[(eastCount*8)-2] = down_stdev
-                            toAppend[(eastCount*8)-1] = down_stdev
-                    #END IF
+                if (indivTest.ConnectionType == "TCP"):
+                    upThread = indivTest.sum_UpThreads()
+                    downThread = indivTest.sum_DownThreads()
+                    up_stdev = StDevP(upThread)
+                    up_median = getMedian(upThread)
+                    down_stdev = StDevP(downThread)
+                    down_median = getMedian(downThread)
+                    if (indivTest.ConnectionLoc == "West"):
+                        westCount += 1
+                        toAppend[(westCount*8)-8] = up_stdev
+                        toAppend[(westCount*8)-7] = up_median
+                        toAppend[(westCount*8)-6] = down_stdev
+                        toAppend[(westCount*8)-5] = down_stdev
+                    else:
+                        eastCount += 1
+                        toAppend[(eastCount*8)-4] = up_stdev
+                        toAppend[(eastCount*8)-3] = up_median
+                        toAppend[(eastCount*8)-2] = down_stdev
+                        toAppend[(eastCount*8)-1] = down_stdev
                 #END IF
             #END FOR
-            print(toAppend)
             origRef[thisFile].extend(toAppend)
-            print(origRef[thisFile])
         #END IF
     #END DEF
 

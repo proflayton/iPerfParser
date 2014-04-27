@@ -112,6 +112,8 @@ class SpeedTest():
     RecieverIP = "UNKNOWN"
     Port = 0000
 
+    TestInterval = 0
+
     short_str = False
     # ------------------------
 
@@ -304,7 +306,7 @@ class SpeedTest():
     def sum_DownThreads(self):
         Down_threads = []; Down_threads_sum = []
         for thread in self.this_PingThreads:
-            if (thread.DataDirection == "Up"):
+            if (thread.DataDirection == "Down"):
                 Down_threads.append(thread)
             #END IF
         #END FOR

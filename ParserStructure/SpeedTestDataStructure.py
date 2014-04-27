@@ -196,7 +196,7 @@ class SpeedTestDS():
                             isItCPUC = f.readline()
                             if ("CPUC Tester Beta v2.0" in isItCPUC):
                                 test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                                print(str(test_STFile))
+                                #print(str(test_STFile))
                                 self.addToStructure(test_STFile)
                             #END IF
                         except:
@@ -376,8 +376,7 @@ class SpeedTestDS():
         for devType in self.this_SpeedTestFiles:
             for carrier in self.this_SpeedTestFiles[devType]:
                 for speedTest in self.this_SpeedTestFiles[devType][carrier]:
-                    print(len(self.this_SpeedTestFiles[devType][carrier]))
-                    speedTest.calc_TCP_StDev_and_append_to_Distribution(toBeReturned)
+                    speedTest.calc_TCP_StDev_and_append_to_Distribution(toBeReturned, self.Carriers)
                 #END FOR
             #END FOR
         #END FOR
@@ -494,7 +493,7 @@ class SpeedTestDS():
         for devType in self.this_SpeedTestFiles:
             for carrier in self.this_SpeedTestFiles[devType]:
                 for speedTest in self.this_SpeedTestFiles[devType][carrier]:
-                    speedTest.calc_StDev_and_Median_and_append_to_MasterCSV(origRef)
+                    speedTest.calc_StDev_and_Median_and_append_to_MasterCSV(origRef, self.Carriers)
             #END FOR
         #END FOR
     #END DEF
