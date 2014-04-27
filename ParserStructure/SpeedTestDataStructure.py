@@ -187,20 +187,20 @@ class SpeedTestDS():
                 test_SpeedTest = SpeedTestFile(file1, short_str_method)
                 self.addToStructure(test_SpeedTest)
             elif (sysArgv[1] == "-c"):
-                for root, dirs, files in os.walk(DataRootPeter+PeterBBResults+"10_18_2013/"):
+                for root, dirs, files in os.walk(DataRootPeter+PeterBBResults+"10_17_2013/"):
                     for aFile in files:
                         #Seeing if the file given is, in fact, a data file
                         #If not, the script will exit and display the message below
                         f = open(os.path.join(root, aFile),'r')
                         try:
                             isItCPUC = f.readline()
+                            if ("CPUC Tester Beta v2.0" in isItCPUC):
+                                test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
+                                #print(str(test_STFile))
+                                self.addToStructure(test_STFile)
+                            #END IF
                         except:
                             pass
-                        if ("CPUC Tester Beta v2.0" in isItCPUC):
-                            test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                            #print(str(test_STFile))
-                            self.addToStructure(test_STFile)
-                        #END IF
                     #END FOR files
                 #END FOR os.walk
             elif (sysArgv[1] == "-cs"):
