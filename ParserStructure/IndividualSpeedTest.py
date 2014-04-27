@@ -92,7 +92,7 @@ if __name__ == '__main__':
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
 import io
-from .utils import readToAndGetLine, StDevP
+from .utils import readToAndGetLine
 from .utils import global_str_padding as pad
 pad = pad*2
 from .PingThread import PingThread
@@ -271,41 +271,22 @@ class SpeedTest():
     #END DEF
 
 
-    # DESC: This calculates the standard deviation for this test's threads summed. There should be
-    #       4 threads in each direction (4 UP, 4 DOWN). Once the standard deviation is calculated for
-    #       both directions, it is appended to the correct array, based on the given nettype and carrier
-    def calc_StDev_ofTCPThreadSumsByDirection(self, structRef, netType, carrier):
-        if (self.ConnectionType != "TCP"):
-            raise StandardError("This function cannot be run by a non-TCP type Test")
-
-        #Here we want to do two difference Standard deviations
-        #One with upload thread and one with download threads
+    # DESC: This returns the sum of the Up threads in this test
+    def sum_UpThreads(self):
         Up_threads = []; Up_threads_sum = []
-        Down_threads = []; Down_threads_sum = []
         for thread in self.this_PingThreads:
             if (thread.DataDirection == "Up"):
                 Up_threads.append(thread)
-            else:
-                Down_threads.append(thread)
-            #END IF/ELSE
+            #END IF
         #END FOR
-
         #Calculating max thread length by direction
         max_up_length = 0
-        max_down_length = 0
         for thread in Up_threads:
             for ping in thread.this_Pings:
                 new_max = ping.secIntervalEnd
                 max_up_length = new_max if new_max > max_up_length else max_up_length
             #END FOR
         #END FOR
-        for thread in Down_threads:
-            for ping in thread.this_Pings:
-                new_max = ping.secIntervalEnd
-                max_down_length = new_max if new_max > max_down_length else max_down_length
-            #END FOR
-        #END FOR
-
         #Get the sums of the Up and Down threads
         for step in range(int(max_up_length)):
             temp = 0
@@ -315,6 +296,27 @@ class SpeedTest():
             #END FOR
             Up_threads_sum.append(temp)
         #END FOR
+        return Up_threads_sum
+    #END DEF
+
+
+    # DESC: This returns the sum of the Down threads in this test
+    def sum_DownThreads(self):
+        Down_threads = []; Down_threads_sum = []
+        for thread in self.this_PingThreads:
+            if (thread.DataDirection == "Up"):
+                Down_threads.append(thread)
+            #END IF
+        #END FOR
+        #Calculating max thread length by direction
+        max_down_length = 0
+        for thread in Down_threads:
+            for ping in thread.this_Pings:
+                new_max = ping.secIntervalEnd
+                max_down_length = new_max if new_max > max_down_length else max_down_length
+            #END FOR
+        #END FOR
+        #Get the sums of the Up and Down threads
         for step in range(int(max_down_length)):
             temp = 0
             for itr in range(len(Down_threads)):
@@ -323,14 +325,7 @@ class SpeedTest():
             #END FOR
             Down_threads_sum.append(temp)
         #END FOR
-
-        #Append the sum arrays to the corresponding reference for use later in the actual computation of StdDev
-        up_stdev = StDevP(Up_threads_sum)
-        if up_stdev is not None:
-            structRef[netType][carrier]["Up"].append(up_stdev)
-        down_stdev = StDevP(Down_threads_sum)
-        if down_stdev is not None:
-            structRef[netType][carrier]["Down"].append(down_stdev)
+        return Down_threads_sum
     #END DEF
 
 

@@ -100,7 +100,7 @@ if __name__ == '__main__':
 #
 # ------------------------------------------------------------------------
 
-from .utils import readToAndGetLine, monthAbbrToNum, isLessThanVersion
+from .utils import readToAndGetLine, monthAbbrToNum, isLessThanVersion, StDevP
 from .utils import global_str_padding as pad
 pad = pad*1
 from .IndividualSpeedTest import SpeedTest
@@ -418,18 +418,22 @@ class SpeedTestFile(object):
 
     # DESC: Looping through each Test, if the test if of type TCP, then
     #       call it's thread sum standard deviation function.
-    def calc_TestTCP_StDev(self, structRef):
+    def calc_TCP_StDev_and_append_to_Distribution(self, structRef):
         list_carriers = list(structRef[self.NetworkType])
 
         #Calculate all of the threads' sums of pings if the thread is TCP
         for indivTest in self.this_SpeedTests:
             if (indivTest.ConnectionType == "TCP"):
                 if (self.NetworkOperator in list_carriers):
-                    indivTest.calc_StDev_ofTCPThreadSumsByDirection\
-                        (structRef, self.NetworkType, self.NetworkOperator)
+                    structRef[self.NetworkType][self.NetworkOperator]["Up"]\
+                            .append(StDevP(indivTest.sum_UpThreads()))
+                    structRef[self.NetworkType][self.NetworkOperator]["Down"]\
+                            .append(StDevP(indivTest.sum_DownThreads()))
                 elif (self.NetworkProvider in list_carriers):
-                    indivTest.calc_StDev_ofTCPThreadSumsByDirection\
-                        (structRef, self.NetworkType, self.NetworkProvider)
+                    structRef[self.NetworkType][self.NetworkProvider]["Up"]\
+                            .append(StDevP(indivTest.sum_UpThreads()))
+                    structRef[self.NetworkType][self.NetworkProvider]["Down"]\
+                            .append(StDevP(indivTest.sum_DownThreads()))
                 #END IF/ELIF
             #END IF
         #END FOR
@@ -437,24 +441,20 @@ class SpeedTestFile(object):
 
 
     # DESC: ..
-    def calc_and_append_StDev_and_Median(self, origRef):
-        """
+    def calc_StDev_and_Median_and_append_to_MasterCSV(self, origRef):
         list_carriers = list(structRef[self.NetworkType])
-
         #Calculate all of the threads' sums of pings if the thread is TCP
         for indivTest in self.this_SpeedTests:
             if (indivTest.ConnectionType == "TCP"):
                 if (self.NetworkOperator in list_carriers):
-                    indivTest.calc_StDev_ofTCPThreadSumsByDirection\
+                    indivTest.append_StDev_and_Median\
                         (structRef, self.NetworkType, self.NetworkOperator)
                 elif (self.NetworkProvider in list_carriers):
-                    indivTest.calc_StDev_ofTCPThreadSumsByDirection\
+                    indivTest.append_StDev_and_Median\
                         (structRef, self.NetworkType, self.NetworkProvider)
                 #END IF/ELIF
             #END IF
         #END FOR
-        """
-        return False
     #END DEF
 
 
