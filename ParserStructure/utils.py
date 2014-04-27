@@ -169,6 +169,19 @@ def csvExport(a_2D_Array, fileNameToSave):
     f.close()
 #END DEF
 
+def csvImport(fileNameToImport):
+    a_2D_Array = []
+    f = open(fileNameToImport,"r")
+    while (line = f.readline()):
+        a_1D_Array = []
+        cols = line.split(",")
+        for c in cols:
+            a_1D_Array.append(c)
+        #END LOOP
+        a_2D_Array.append(a_1D_Array)
+    #END LOOP
+    return a_2D_Array
+
 
 # DESC: This function takes in an array
 #       And returns the median of the array
@@ -176,3 +189,4 @@ def getMedian(vals):
     sortedVals = sorted(vals)
     mid = int(len(sortedVals)/2)
     return sortedVals[mid]
+#END DEF
