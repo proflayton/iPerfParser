@@ -123,6 +123,8 @@ class SpeedTestDS():
     ignored_Files = []
 
     this_SpeedTestFiles = {}
+
+    ignoreTests = []
     # ---------------------
 
     # DESC: Initializing class
@@ -139,6 +141,24 @@ class SpeedTestDS():
             for elem in self.Carriers:
                 self.this_SpeedTestFiles[key][elem] = []
         #END FORS
+    #END DEF
+
+    def findErrorTests(self,arrayRef):
+        data = file.open("../ReferenceData/CPUC_FieldTestResults_Q42013_Data.csv","r")
+        line = data.readline()
+        while line != b'':
+            splitLine = line.split(",")
+            for cell in splitLine:
+                if "no effective service" in cell:
+                    #ERROR!
+                    pass
+                elif "timeout" in cell:
+                    #ERROR!
+                    pass
+                #END BRANCH
+            #END LOOP
+            data.readline()
+        #END LOOP
     #END DEF
 
 
