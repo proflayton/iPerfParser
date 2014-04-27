@@ -83,7 +83,7 @@ for devType in csvReady:
 # Converting the structure of parsed raw data into a 2 dimensional array
 csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(10)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
-utils.csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads "+str(datetime.datetime.now())+".csv")
+utils.csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads ("+str(datetime.datetime.now())+").csv")
 
 # Adding the StDev and Median values to the csv of file information
 originalCSV = utils.csvImport(DATA_PATH)

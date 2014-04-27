@@ -282,12 +282,13 @@ class SpeedTestDS():
                     f = open(os.path.join(root, aFile),'r')
                     try:
                         isItCPUC = f.readline()
+                        if ("CPUC Tester Beta v2.0" in isItCPUC):
+                            test_STFile = SpeedTestFile(os.path.join(root, aFile))
+                            self.addToStructure(test_STFile)
+                        #END IF
                     except:
                         pass
-                    if ("CPUC Tester Beta v2.0" in isItCPUC):
-                        test_STFile = SpeedTestFile(os.path.join(root, aFile))
-                        self.addToStructure(test_STFile)
-                    #END IF
+
                 #END FOR files
             #END FOR os.walk
         #END IF/ELSE
@@ -376,7 +377,7 @@ class SpeedTestDS():
         for devType in self.this_SpeedTestFiles:
             for carrier in self.this_SpeedTestFiles[devType]:
                 for speedTest in self.this_SpeedTestFiles[devType][carrier]:
-                    speedTest.calc_TestTCP_StDev(toBeReturned)
+                    speedTest.calc_TCP_StDev_and_append_to_Distribution(toBeReturned)
                 #END FOR
             #END FOR
         #END FOR
@@ -479,10 +480,21 @@ class SpeedTestDS():
 
     # DESC: ..
     def add_StDev_and_Median_to_Master(self, origRef):
+        if (origRef[0][-1] != "eTCP_DOWN2_MEDIAN"):
+            newHeaders = ["wTCP_UP1_STDEV","wTCP_UP1_MEDIAN",
+                          "wTCP_DOWN1_STDEV","wTCP_DOWN1_MEDIAN",
+                          "eTCP_UP1_STDEV","eTCP_UP1_MEDIAN",
+                          "eTCP_DOWN1_STDEV","eTCP_DOWN1_MEDIAN",
+                          "wTCP_UP2_STDEV","wTCP_UP2_MEDIAN",
+                          "wTCP_DOWN2_STDEV","wTCP_DOWN2_MEDIAN",
+                          "eTCP_UP2_STDEV","eTCP_UP2_MEDIAN",
+                          "eTCP_DOWN2_STDEV","eTCP_DOWN2_MEDIAN"
+                         ]
+            origRef[0].extend(newHeaders)
         for devType in self.this_SpeedTestFiles:
             for carrier in self.this_SpeedTestFiles[devType]:
                 for speedTest in self.this_SpeedTestFiles[devType][carrier]:
-                    speedTest.calc_and_append_StDev_and_Median(origRef)
+                    speedTest.calc_StDev_and_Median_and_append_to_MasterCSV(origRef)
             #END FOR
         #END FOR
         return origRef

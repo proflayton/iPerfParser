@@ -44,7 +44,7 @@ if __name__ == '__main__':
 # VARIABLES:
 #   FileName        String, holding file name that is being parsed
 #   FileStreamLoc   Integer, representing byte location that the script is at in file stream
-#   DateTime        String, holding date and time test was taken
+# * DateTime        String, holding date and time test was taken
 #   OSName          String, holding OS name that this test was conducted with
 #   OSArchitecture  String, holding OS architecture that this test was conducted with
 #   OSVersion       String, holding OS version that this test was conducted with
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    tobeReturned:   the 2D array that will be returned
 #
-#   calc_TestTCP_StDev - For each test in this object, if the test is a TCP test, calculate the
+# * calc_TestTCP_StDev - For each test in this object, if the test is a TCP test, calculate the
 #                        standard deviation of the sum of thread speeds at each 1 second interval.
 #                        The IndivSpeedTest object will handle putting the value into the structure
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
@@ -100,7 +100,8 @@ if __name__ == '__main__':
 #
 # ------------------------------------------------------------------------
 
-from .utils import readToAndGetLine, monthAbbrToNum, isLessThanVersion, StDevP
+from .utils import readToAndGetLine, monthAbbrToNum, isLessThanVersion
+from .utils import StDevP, getMedian
 from .utils import global_str_padding as pad
 pad = pad*1
 from .IndividualSpeedTest import SpeedTest
@@ -328,6 +329,7 @@ class SpeedTestFile(object):
 
 
     # DESC: ..
+    """
     def parseIndivTests(self):
 
         #Set the file stream to the line after "Checking Connectivity"
@@ -351,6 +353,7 @@ class SpeedTestFile(object):
         #END WHILE
 
         return False
+    """
     #END DEf
 
     # DESC: Converts all of the individual test and ping threads and such
@@ -417,7 +420,8 @@ class SpeedTestFile(object):
 
 
     # DESC: Looping through each Test, if the test if of type TCP, then
-    #       call it's thread sum standard deviation function.
+    #       call it's thread sum function, and append the standard deviation to
+    #       the passed structure reference.
     def calc_TCP_StDev_and_append_to_Distribution(self, structRef):
         list_carriers = list(structRef[self.NetworkType])
 
@@ -441,20 +445,49 @@ class SpeedTestFile(object):
 
 
     # DESC: ..
+    def this_File_Index_in_MasterCSV(self, masterCSVRef):
+        index = None
+        for row in masterCSVRef:
+            if ((row[13] == self.DeviceID) and (row[5] == self.Date) and (row[6] == self.Time)):
+                index = masterCSVRef.index(row)
+                break
+        return index
+    #END DEF
+
+
+    # DESC: ..
     def calc_StDev_and_Median_and_append_to_MasterCSV(self, origRef):
-        list_carriers = list(structRef[self.NetworkType])
-        #Calculate all of the threads' sums of pings if the thread is TCP
-        for indivTest in self.this_SpeedTests:
-            if (indivTest.ConnectionType == "TCP"):
+        thisFile = self.this_File_Index_in_MasterCSV(origRef)
+        if thisFile is not None:
+            westCount = 0
+            eastCount = 0
+            toAppend = [0]*16
+            for indivTest in self.this_SpeedTests:
                 if (self.NetworkOperator in list_carriers):
-                    indivTest.append_StDev_and_Median\
-                        (structRef, self.NetworkType, self.NetworkOperator)
-                elif (self.NetworkProvider in list_carriers):
-                    indivTest.append_StDev_and_Median\
-                        (structRef, self.NetworkType, self.NetworkProvider)
-                #END IF/ELIF
-            #END IF
-        #END FOR
+                    if (indivTest.ConnectionType == "TCP"):
+                        upThread = indivTest.sum_UpThreads()
+                        downThread = indivTest.sum_DownThreads()
+                        up_stdev = StDevP(upThread)
+                        up_median = getMedian(upThread)
+                        down_stdev = StDevP(downThread)
+                        down_median = getMedian(downThread)
+                        if (indivTest.ConnectionLoc == "West"):
+                            westCount += 1
+                            toAppend[(westCount*8)-8] = up_stdev
+                            toAppend[(westCount*8)-7] = up_median
+                            toAppend[(westCount*8)-6] = down_stdev
+                            toAppend[(westCount*8)-5] = down_stdev
+                        else:
+                            eastCount += 1
+                            toAppend[(eastCount*8)-4] = up_stdev
+                            toAppend[(eastCount*8)-3] = up_median
+                            toAppend[(eastCount*8)-2] = down_stdev
+                            toAppend[(eastCount*8)-1] = down_stdev
+                    #END IF
+                #END IF
+            #END FOR
+            origRef[thisFile].extend(toAppend)
+        #END IF
     #END DEF
 
 
