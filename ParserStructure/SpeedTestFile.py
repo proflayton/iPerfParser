@@ -163,9 +163,7 @@ class SpeedTestFile(object):
         #Reading in the DateTime of the test
         #Also setting the network type, as this is where the file types start to differ
         fs.seek(self.FileStreamLoc)
-        datetime = fs.readline()
-        if isLessThanVersion((3,0)):
-            datetime = datetime[-2:]+"\n"
+        datetime = fs.readline()[:-2]+"\n"
         self.FileStreamLoc = fs.tell()
         if ("Testing started" not in datetime):
             self.NetworkType = "netbook"

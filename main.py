@@ -3,7 +3,7 @@
 # Making sure that the version of python being used is at least 2.7
 # ------------------------------------------------------------------------
 from ParserStructure.utils import isLessThanVersion
-if not isLessThanVersion((2,6)):
+if not isLessThanVersion((3,0)):
     raise SystemExit
 
 
@@ -33,14 +33,10 @@ if not isLessThanVersion((2,6)):
 from ParserStructure.SpeedTestDataStructure import SpeedTestDS as STDs
 import ParserStructure.utils as utils
 import os, sys, datetime
-if not isLessThanVersion((3,0)):
-    import Tkinter as TK, tkFileDialog as TKFD
-else:
-    import tkinter as TK, tkinter.filedialog as TKFD
+import tkinter as TK, tkinter.filedialog as TKFD
 #Setting up some files to use for checking data.
 this_dir, this_filename = os.path.split(__file__)
 DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
-#DATA_HEADERS = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_HeaderIndexTable.txt")
 
 
 # Here's where main actually starts
@@ -85,12 +81,12 @@ csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(10)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 utils.csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads ("+str(datetime.datetime.now())+").csv")
 
-"""
+
 # Adding the StDev and Median values to the csv of file information
 originalCSV = utils.csvImport(DATA_PATH)
 so_many_STDs.add_StDev_and_Median_to_Master(originalCSV)
 utils.csvExport(originalCSV, rootOfFiles + "CPUC_FieldTestResults_Q42013_Data_with_StDev_and_Median.csv")
-"""
+
 
 
 #END MAIN

@@ -196,7 +196,7 @@ class SpeedTestDS():
                             isItCPUC = f.readline()
                             if ("CPUC Tester Beta v2.0" in isItCPUC):
                                 test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                                #print(str(test_STFile))
+                                print(str(test_STFile))
                                 self.addToStructure(test_STFile)
                             #END IF
                         except:
@@ -258,7 +258,7 @@ class SpeedTestDS():
                     #END FOR files
                 #END FOR os.walk
             else:
-                print("I don't know that option. I'm just a silly computer. I know -c, -cs, and -css")
+                print("I don't know that option. I'm just a silly computer. I know -c, -cs, -css, -sp, and -sb")
             #END IF/ELIF/ELSE
 
         # ----------------------------------------------------------
