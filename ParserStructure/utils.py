@@ -195,6 +195,6 @@ def csvImport(fileNameToImport):
         #END FOR
         a_2D_Array.append(a_1D_Array)
         line = f.readline()
-    #END WHILe
+    #END WHILE
     return a_2D_Array
 #END DEF

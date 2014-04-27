@@ -376,6 +376,7 @@ class SpeedTestDS():
         for devType in self.this_SpeedTestFiles:
             for carrier in self.this_SpeedTestFiles[devType]:
                 for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+                    print(len(self.this_SpeedTestFiles[devType][carrier]))
                     speedTest.calc_TCP_StDev_and_append_to_Distribution(toBeReturned)
                 #END FOR
             #END FOR
@@ -496,7 +497,6 @@ class SpeedTestDS():
                     speedTest.calc_StDev_and_Median_and_append_to_MasterCSV(origRef)
             #END FOR
         #END FOR
-        return origRef
     #END DEF
 
 

@@ -164,6 +164,8 @@ class SpeedTestFile(object):
         #Also setting the network type, as this is where the file types start to differ
         fs.seek(self.FileStreamLoc)
         datetime = fs.readline()
+        if isLessThanVersion((3,0)):
+            datetime = datetime[-2:]+"\n"
         self.FileStreamLoc = fs.tell()
         if ("Testing started" not in datetime):
             self.NetworkType = "netbook"
@@ -451,7 +453,15 @@ class SpeedTestFile(object):
     # DESC: ..
     def this_File_Index_in_MasterCSV(self, masterCSVRef):
         index = None
+        print(masterCSVRef)
         for row in masterCSVRef:
+            strs = ""
+            if row[5] == self.Date:
+                strs += "found2"
+            if row[6] == self.Time:
+                strs += "found3"
+            if strs != "":
+                print(strs)
             if ((row[13] == self.DeviceID) and (row[5] == self.Date) and (row[6] == self.Time)):
                 index = masterCSVRef.index(row)
                 break
@@ -490,7 +500,9 @@ class SpeedTestFile(object):
                     #END IF
                 #END IF
             #END FOR
+            print(toAppend)
             origRef[thisFile].extend(toAppend)
+            print(origRef[thisFile])
         #END IF
     #END DEF
 
