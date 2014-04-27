@@ -159,6 +159,8 @@ def StDevP(array):
 # DESC: This function takes in an array
 #       And returns the median of the array
 def getMedian(vals):
+    if not array:
+        return None
     sortedVals = sorted(vals)
     mid = int(len(sortedVals)/2)
     return sortedVals[mid]

@@ -85,11 +85,12 @@ csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(10)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 utils.csvExport(csvOfTCP, rootOfFiles + "/Standard Deviation of TCP Sum Threads ("+str(datetime.datetime.now())+").csv")
 
+"""
 # Adding the StDev and Median values to the csv of file information
 originalCSV = utils.csvImport(DATA_PATH)
 so_many_STDs.add_StDev_and_Median_to_Master(originalCSV)
 utils.csvExport(originalCSV, rootOfFiles + "CPUC_FieldTestResults_Q42013_Data_with_StDev_and_Median.csv")
-
+"""
 
 
 #END MAIN
