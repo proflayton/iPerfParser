@@ -181,6 +181,7 @@ def csvImport(fileNameToImport):
         a_2D_Array.append(a_1D_Array)
     #END LOOP
     return a_2D_Array
+#END DEF
 
 
 # DESC: This function takes in an array
