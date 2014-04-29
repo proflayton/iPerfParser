@@ -191,10 +191,10 @@ def csvImport(fileNameToImport):
         a_1D_Array = []
         cols = line.split(",")
         for c in cols:
-            a_1D_Array.append(c)
+            a_1D_Array.append(c.replace("\n","").replace("\n\r",""))
         #END FOR
         a_2D_Array.append(a_1D_Array)
-        line = f.readline()
+        line = f.readline().replace("\n","").replace("\n\r","")
     #END WHILE
     return a_2D_Array
 #END DEF
