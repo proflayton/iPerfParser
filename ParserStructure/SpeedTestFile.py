@@ -175,7 +175,7 @@ class SpeedTestFile(object):
             datetime = datetime.split("at ")[1][4:-1]
             month = str(monthAbbrToNum(datetime[:3]))
             day = str(datetime[4:6])
-            year = str(datetime[-5:-1])
+            year = str(datetime[-4:])
             time = str(datetime[7:9]) + ":" + str(datetime[10:12]) + ":" + str(datetime[13:15])
             self.Date = month + "/" + day + "/" + year
             self.Time = time
@@ -449,9 +449,10 @@ class SpeedTestFile(object):
     def this_File_Index_in_MasterCSV(self, masterCSVRef):
         index = None
         for row in masterCSVRef:
-            if ((row[13].strip() == self.DeviceID) and
-                (row[5].strip() == self.Date) and
-                (row[6].strip() == self.Time)):
+            if ((self.DeviceID in str(row[13])) and
+                (self.Date in str(row[5])) and
+                (self.Time in str(row[6])) ):
+                #count[0]+=1
                 index = masterCSVRef.index(row)
                 break
         return index

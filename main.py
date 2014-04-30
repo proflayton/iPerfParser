@@ -78,14 +78,14 @@ for devType in csvReady:
 print("SD")
 # Converting the structure of parsed raw data into a 2 dimensional array
 csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(20)
-rootOfFiles = os.path.expanduser("~") + "\\Desktop"
-utils.csvExport(csvOfTCP, rootOfFiles + "\\StandardDeviationofTCPSumThreads.csv")
+rootOfFiles = os.path.expanduser("~") + "/Desktop"
+utils.csvExport(csvOfTCP, rootOfFiles + "/StandardDeviationofTCPSumThreads.csv")
 
 print("Full File")
 # Adding the StDev and Median values to the csv of file information
 originalCSV = utils.csvImport(DATA_PATH)
 so_many_STDs.add_StDev_and_Median_to_Master(originalCSV)
-utils.csvExport(originalCSV, rootOfFiles + "\\CPUC_FieldTestResults_Q42013_Data_with_StDev_and_Median.csv")
+utils.csvExport(originalCSV, rootOfFiles + "/CPUC_FieldTestResults_Q42013_Data_with_StDev_and_Median.csv")
 
 
 
