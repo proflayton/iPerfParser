@@ -479,13 +479,13 @@ class SpeedTestFile(object):
                         toAppend[(westCount*8)-8] = up_stdev
                         toAppend[(westCount*8)-7] = up_median
                         toAppend[(westCount*8)-6] = down_stdev
-                        toAppend[(westCount*8)-5] = down_stdev
+                        toAppend[(westCount*8)-5] = down_median
                     else:
                         eastCount += 1
                         toAppend[(eastCount*8)-4] = up_stdev
                         toAppend[(eastCount*8)-3] = up_median
                         toAppend[(eastCount*8)-2] = down_stdev
-                        toAppend[(eastCount*8)-1] = down_stdev
+                        toAppend[(eastCount*8)-1] = down_median
                 #END IF
             #END FOR
             origRef[thisFile].extend(toAppend)
