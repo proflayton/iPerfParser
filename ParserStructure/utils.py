@@ -20,7 +20,6 @@ if __name__ == '__main__':
         for name in files:
             if name == "main.py":
                 search.append(os.path.join(root, name))
-
     print("Your file seems to be located in one of these paths:")
     for link in search:
         print(link)

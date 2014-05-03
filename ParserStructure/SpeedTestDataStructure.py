@@ -356,7 +356,7 @@ class SpeedTestDS():
     #       an array of 2-dimensional arrays that can be passed into the
     #       CSV converter class. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
-    def convertTo_Object_To_TCPStDev(self, numRangeCols=3): #pingData="speed"
+    def convertTo_Object_To_TCPStDev(self, numRangeCols=3, maxRange=10000): #pingData="speed"
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
@@ -367,8 +367,14 @@ class SpeedTestDS():
         for key in toBeReturned:
             for elem in self.Carriers:
                 toBeReturned[key][elem] = {
-                                            "Up" : [] ,
-                                            "Down" : []
+                                            "East" : {
+                                                        "Up" : [] ,
+                                                        "Down" : []
+                                                     },
+                                            "West" : {
+                                                        "Up" : [] ,
+                                                        "Down" : []
+                                                     }
                                           }
             #END FOR
         #END FOR
@@ -384,7 +390,7 @@ class SpeedTestDS():
         # in each carrier populated with standard deviation values. A reference to this
         # structure is then passed to the function that converts the Up and Down dictionaries
         # into 2D arrays
-        realReturn = self.convertTo_TCP_to_2D(toBeReturned, numRangeCols)
+        realReturn = self.convertTo_TCP_to_2D(toBeReturned, numRangeCols, maxRange)
         return realReturn
     #END DEF
 
@@ -393,12 +399,13 @@ class SpeedTestDS():
     #       an array of 2-dimensional arrays that can be passed into the
     #       CSV converter class. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
-    def convertTo_TCP_to_2D(self, structure, numRangeCols):
+    def convertTo_TCP_to_2D(self, structure, numRangeCols, maxRange):
         if numRangeCols < 3:
             numRangeCols = 3
         #END IF
         new_structure = []
 
+        """
         #Gets the max amount of columns we will need in our CSV file
         StDevMax = 0
         for key in structure:
@@ -413,6 +420,7 @@ class SpeedTestDS():
                     #END IF
             #END FOR
         #END FOR
+        """
 
         #Creating the arrays of the upper and lower ranges of StDevs.
         # index 2 with in val_ranges_lower is the lower bound of the column, and
@@ -420,12 +428,13 @@ class SpeedTestDS():
         val_ranges_lower = []
         val_ranges_upper = []
         for i in range(numRangeCols):
-            val_ranges_lower.append(StDevMax*(float(i)/numRangeCols))
-            val_ranges_upper.append(StDevMax*(float(i+1)/numRangeCols))
+            val_ranges_lower.append(maxRange*(float(i)/numRangeCols))
+            val_ranges_upper.append(maxRange*(float(i+1)/numRangeCols))
         #END FOR
         true_val_ranges = []
         for i in range(numRangeCols):
             true_val_ranges.append(str(int(val_ranges_lower[i])) + "-" + str(int(val_ranges_upper[i])))
+        true_val_ranges.append(str(maxRange)+"+")
         #END FOR
 
         #Setting up the first 4 lines of the csv (always the same)
@@ -433,43 +442,47 @@ class SpeedTestDS():
         new_structure.append(["Data: Sum of TCP thread speeds in 1.0 second intervals"])
         new_structure.append(["Separated by direction, carrier, and type"])
         new_structure.append(["",""])
-        new_structure.append(["Network Type:", "Carrier & Direction:"])
+        new_structure.append(["Network Type:", "Carrier, Server, & Direction:"])
 
         for key in structure:
             new_structure.append([key])
             for elem in structure[key]:
-                for direction in structure[key][elem]:
-                    #Creating an array of the first four cells (doesn't change between section).
-                    # Then extend the array with the value ranges, and append to our final 2D array
-                    line = ["", elem, "", "StDev Range:"]
-                    line.extend(true_val_ranges)
-                    new_structure.append(line)
+                for server in structure[key][elem]:
+                    for direction in structure[key][elem][server]:
+                        #Creating an array of the first four cells (doesn't change between section).
+                        # Then extend the array with the value ranges, and append to our final 2D array
+                        line = ["", elem, "", "StDev Range:"]
+                        line.extend(true_val_ranges)
+                        new_structure.append(line)
 
-                    #Creating an empty array. Will hold the number of StDevs that fall within a range
-                    range_totals = []
-                    for i in range(numRangeCols):
-                        range_totals.append(0)
-                    #END FOR
-
-                    #This goes through each value in the specific nettype,carrier,direction that we
-                    # are currently looping through, and compares the value to the upper and lower
-                    # ranges at each step
-                    for value in structure[key][elem][direction]:
-                        for i in range(numRangeCols):
-                            if (value <= val_ranges_upper[i]) and (value > val_ranges_lower[i]):
-                                range_totals[i] += 1
-                                break
-                            #END IF
+                        #Creating an empty array. Will hold the number of StDevs that fall within a range
+                        range_totals = []
+                        for i in range(numRangeCols+1):
+                            range_totals.append(0)
                         #END FOR
-                    #END FOR
 
-                    #Creating an array of the first four cells (doesn't change between section).
-                    # Then extend the array with the range totals, and append to our final 2D array
-                    line = ["", direction, "", "Totals:"]
-                    line.extend(range_totals)
-                    new_structure.append(line)
-                    new_structure.append(["",""])
+                        #This goes through each value in the specific nettype,carrier,direction that we
+                        # are currently looping through, and compares the value to the upper and lower
+                        # ranges at each step
+                        for value in structure[key][elem][server][direction]:
+                            if value > maxRange:
+                                range_totals[-1] += 1
+                            for i in range(numRangeCols-1):
+                                if (value <= val_ranges_upper[i]) and (value > val_ranges_lower[i]):
+                                    range_totals[i] += 1
+                                    break
+                                #END IF
+                            #END FOR
+                        #END FOR
+
+                        #Creating an array of the first four cells (doesn't change between section).
+                        # Then extend the array with the range totals, and append to our final 2D array
+                        line = ["", server+" "+direction, "", "Totals:"]
+                        line.extend(range_totals)
+                        new_structure.append(line)
+                    #END FOR
                 #END FOR
+                new_structure.append(["",""])
             #END FOR
             new_structure.append(["",""])
         #END FOR

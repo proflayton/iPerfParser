@@ -426,20 +426,25 @@ class SpeedTestFile(object):
         for indivTest in self.this_SpeedTests:
             if (indivTest.ConnectionType == "TCP"):
                 if (self.NetworkOperator in list_carriers):
-                    up_stdev = StDevP(indivTest.sum_UpThreads())
-                    if up_stdev is not None:
-                        structRef[self.NetworkType][self.NetworkOperator]["Up"].append(up_stdev)
-                    down_stdev = StDevP(indivTest.sum_DownThreads())
-                    if down_stdev is not None:
-                        structRef[self.NetworkType][self.NetworkOperator]["Down"].append(down_stdev)
+                    this_carrier = self.NetworkOperator
                 elif (self.NetworkProvider in list_carriers):
-                    up_stdev = StDevP(indivTest.sum_UpThreads())
-                    if up_stdev is not None:
-                        structRef[self.NetworkType][self.NetworkProvider]["Up"].append(up_stdev)
-                    down_stdev = StDevP(indivTest.sum_DownThreads())
-                    if down_stdev is not None:
-                        structRef[self.NetworkType][self.NetworkProvider]["Down"].append(down_stdev)
+                    this_carrier = self.NetworkProvider
+                else:
+                    continue
                 #END IF/ELIF
+                up_stdev = StDevP(indivTest.sum_UpThreads())
+                if up_stdev is not None:
+                    structRef[self.NetworkType]\
+                             [this_carrier]\
+                             [indivTest.ConnectionLoc]\
+                             ["Up"].append(up_stdev)
+                down_stdev = StDevP(indivTest.sum_DownThreads())
+                if down_stdev is not None:
+                    structRef[self.NetworkType]\
+                             [this_carrier]\
+                             [indivTest.ConnectionLoc]\
+                             ["Down"].append(down_stdev)
+                
             #END IF
         #END FOR
     #END DEF
