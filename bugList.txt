@@ -8,7 +8,7 @@ Overall:
     + Fix: Acquired cast iron skillet for cooking more bacon
 
 SpeedTestDataStructure:
-  - 
+  - Adapt StDev function to be more modular
 
 SpeedTestFile:
   - Creation of Individual Speeds Tests (and therefore Ping Threads and Pings)
@@ -20,6 +20,7 @@ SpeedTestFile:
     has an error, and so the next element in the array has this error info.
     Essentially, we combine the split elements until we hit one that has the
     String “Starting Test” in it)
+  - Adapt StDev function to be more modular
 
 IndividualSpeedTest:
   - UDP information needs to be explored and better quantified. What needs

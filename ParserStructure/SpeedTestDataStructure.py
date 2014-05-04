@@ -108,11 +108,8 @@ if __name__ == '__main__':
 from .SpeedTestFile import SpeedTestFile
 import os
 import sys
-from .utils import isLessThanVersion
-if not isLessThanVersion((3,0)):
-    import Tkinter as TK, tkFileDialog as TKFD
-else:
-    import tkinter as TK, tkinter.filedialog as TKFD
+from .utils import isLessThanVersion, csvExport
+import Tkinter as TK, tkFileDialog as TKFD
 
 class SpeedTestDS():
 
@@ -124,12 +121,15 @@ class SpeedTestDS():
 
     this_SpeedTestFiles = {}
 
-    ignoreTests = []
+    recursively_print = False
+    short_str_method = True
     # ---------------------
 
     # DESC: Initializing class
-    def __init__(self):
+    def __init__(self, recurPrint=False, quickPrint=True):
         self.meaningOfLife = "bacon"
+        self.recursively_print = recurPrint
+        self.short_str_method = quickPrint
         #This bit creates the SpeedTest Files array. For each type of connection
         # (i.e., mobile or netbook), it will instantiate another dictionary, where
         # each key is the carrier name, and points to an array
@@ -170,10 +170,6 @@ class SpeedTestDS():
         # use "python main.py -cs" to only test on 3 files (one of each type)
         # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
-
-            #This little boolean is so that our output are not as long
-            short_str_method = True
-
             #Alter this string to be the parent directory holding all of the data
             DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
             DataRootBrandon = "D:/CPUC/"
@@ -184,8 +180,24 @@ class SpeedTestDS():
             #Below are the actual sys arg options
             if (sysArgv[1] == "-tf"):
                 file1 = DataRootBrandon + BrandonBBResults + "10_18_2013/WBBDTest2-10182013113755.txt"
-                test_SpeedTest = SpeedTestFile(file1, short_str_method)
+                test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
                 self.addToStructure(test_SpeedTest)
+            elif (sysArgv[1] == "-css"):
+                #Alter this string to be an individual data file
+                file1 = DataRootPeter + PeterBBResults + "10_17_2013/99000344556962-10172013151027.txt"
+                test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
+                self.addToStructure(test_SpeedTest)
+            elif (sysArgv[1] == "-cs"):
+                #Alter these strings to be individual data files
+                file1 = DataRootPeter + PeterBBResults + "10_17_2013/99000344556962-10172013151027.txt"
+                file2 = DataRootPeter + PeterBBResults + "10_17_2013/356420059231100-10172013094856.txt"
+                file3 = DataRootPeter + PeterBBResults + "10_17_2013/WBBDTest2-10172013151943.txt"
+                stfile1 = SpeedTestFile(file1, self.short_str_method)
+                stfile2 = SpeedTestFile(file2, self.short_str_method)
+                stfile3 = SpeedTestFile(file3, self.short_str_method)
+                self.addToStructure(stfile1)
+                self.addToStructure(stfile2)
+                self.addToStructure(stfile3)
             elif (sysArgv[1] == "-c"):
                 for root, dirs, files in os.walk(DataRootPeter+PeterBBResults+"10_17_2013/"):
                     for aFile in files:
@@ -195,34 +207,13 @@ class SpeedTestDS():
                         try:
                             isItCPUC = f.readline()
                             if ("CPUC Tester Beta v2.0" in isItCPUC):
-                                test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                                #print(str(test_STFile))
+                                test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
                                 self.addToStructure(test_STFile)
                             #END IF
                         except:
                             pass
                     #END FOR files
                 #END FOR os.walk
-            elif (sysArgv[1] == "-cs"):
-                #Alter these strings to be individual data files
-                file1 = DataRootPeter + PeterBBResults + "10_17_2013/99000344556962-10172013151027.txt"
-                file2 = DataRootPeter + PeterBBResults + "10_17_2013/356420059231100-10172013094856.txt"
-                file3 = DataRootPeter + PeterBBResults + "10_17_2013/WBBDTest2-10172013151943.txt"
-                stfile1 = SpeedTestFile(file1, short_str_method)
-                stfile2 = SpeedTestFile(file2, short_str_method)
-                stfile3 = SpeedTestFile(file3, short_str_method)
-                self.addToStructure(stfile1)
-                self.addToStructure(stfile2)
-                self.addToStructure(stfile3)
-                #print(str(stfile1))
-                #print(str(stfile2))
-                #print(str(stfile3))
-            elif (sysArgv[1] == "-css"):
-                #Alter this string to be an individual data file
-                file1 = DataRootPeter + PeterBBResults + "10_17_2013/99000344556962-10172013151027.txt"
-                test_SpeedTest = SpeedTestFile(file1, short_str_method)
-                self.addToStructure(test_SpeedTest)
-                #print( str(test_SpeedTest) )
             elif (sysArgv[1] == "-sp"):
                 for root, dirs, files in os.walk(DataRootPeter + PeterSamples):
                     for aFile in files:
@@ -232,8 +223,7 @@ class SpeedTestDS():
                         try:
                             isItCPUC = f.readline()
                             if ("CPUC Tester Beta v2.0" in isItCPUC):
-                                test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                                #print(str(test_STFile))
+                                test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
                                 self.addToStructure(test_STFile)
                         except:
                             pass
@@ -249,8 +239,7 @@ class SpeedTestDS():
                         try:
                             isItCPUC = f.readline()
                             if ("CPUC Tester Beta v2.0" in isItCPUC):
-                                test_STFile = SpeedTestFile(os.path.join(root, aFile), short_str_method)
-                                #print(str(test_STFile))
+                                test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
                                 self.addToStructure(test_STFile)
                             #END IF
                         except:
@@ -258,7 +247,7 @@ class SpeedTestDS():
                     #END FOR files
                 #END FOR os.walk
             else:
-                print("I don't know that option. I'm just a silly computer. I know -c, -cs, -css, -sp, and -sb")
+                print("I don't know that option. I'm just a silly computer. I know -tf, -css, -cs, -c, -sp, and -sb")
             #END IF/ELIF/ELSE
 
         # ----------------------------------------------------------
@@ -283,7 +272,7 @@ class SpeedTestDS():
                     try:
                         isItCPUC = f.readline()
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
-                            test_STFile = SpeedTestFile(os.path.join(root, aFile))
+                            test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
                             self.addToStructure(test_STFile)
                         #END IF
                     except:
@@ -334,21 +323,47 @@ class SpeedTestDS():
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
-        toBeReturned = {
+        csvReady = {
                         "mobile"  : {},
                         "netbook" : {}
                        }
-        for key in toBeReturned:
+        for key in csvReady:
             for elem in self.Carriers:
-                toBeReturned[key][elem] = []
+                csvReady[key][elem] = []
 
         for devType in self.this_SpeedTestFiles:
             for carrier in self.this_SpeedTestFiles[devType]:
                 for speedTest in self.this_SpeedTestFiles[devType][carrier]:
-                    toBeReturned[devType][carrier].append(speedTest.convertTo2D())
+                    csvReady[devType][carrier].append(speedTest.convertTo2D())
             #END FOR
         #END FOR
-        return toBeReturned
+        """
+        print("Please select the folder you wish to hold the csv files that will be created")
+        rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
+                                         title = "Select the Folder You Wish To Hold the CSV Files",
+                                         mustexist = True)
+        """
+        rootOfFiles = os.path.expanduser("~") + "/Desktop"
+        ""
+        for devType in csvReady:
+            for carrier in csvReady[devType]:
+                for array in csvReady[devType][carrier]:
+                    try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
+                    except: pass
+                    try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType)
+                    except: pass
+                    try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType + "/" + carrier)
+                    except: pass
+
+                    index = csvReady[devType][carrier].index(array)
+                    csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
+                                     devType + "/" +
+                                     carrier + "/" +
+                                     array[0][1][:-4] + ".csv")
+                #END FOR
+            #END FOR
+        #END FOR
+        return True
     #END DEF
 
 
@@ -405,23 +420,6 @@ class SpeedTestDS():
         #END IF
         new_structure = []
 
-        """
-        #Gets the max amount of columns we will need in our CSV file
-        StDevMax = 0
-        for key in structure:
-            for elem in structure[key]:
-                for direction in structure[key][elem]:
-                    try:
-                        if (StDevMax < max(structure[key][elem][direction])):
-                            StDevMax = max(structure[key][elem][direction])
-                    except:
-                        #empty sequence passed into max
-                        pass;
-                    #END IF
-            #END FOR
-        #END FOR
-        """
-
         #Creating the arrays of the upper and lower ranges of StDevs.
         # index 2 with in val_ranges_lower is the lower bound of the column, and
         # index 2 of val_ranges_upper is the upper bound
@@ -447,14 +445,13 @@ class SpeedTestDS():
         for key in structure:
             new_structure.append([key])
             for elem in structure[key]:
+                #Creating an array of the first four cells (doesn't change between section).
+                # Then extend the array with the value ranges, and append to our final 2D array
+                line = ["", elem, "StDev Range:"]
+                line.extend(true_val_ranges)
+                new_structure.append(line)
                 for server in structure[key][elem]:
                     for direction in structure[key][elem][server]:
-                        #Creating an array of the first four cells (doesn't change between section).
-                        # Then extend the array with the value ranges, and append to our final 2D array
-                        line = ["", elem, "", "StDev Range:"]
-                        line.extend(true_val_ranges)
-                        new_structure.append(line)
-
                         #Creating an empty array. Will hold the number of StDevs that fall within a range
                         range_totals = []
                         for i in range(numRangeCols+1):
@@ -477,7 +474,7 @@ class SpeedTestDS():
 
                         #Creating an array of the first four cells (doesn't change between section).
                         # Then extend the array with the range totals, and append to our final 2D array
-                        line = ["", server+" "+direction, "", "Totals:"]
+                        line = ["", server+" "+direction, "Totals:"]
                         line.extend(range_totals)
                         new_structure.append(line)
                     #END FOR
@@ -523,6 +520,7 @@ class SpeedTestDS():
                                    str(len(self.this_SpeedTestFiles[deviceType][carrier])) + "\n")
             #END FOR
         #END FOR
+
         #Also, print the carriers that were ignored
         for elem in self.ignored_Carriers:
             returnedString += elem + "; "
@@ -538,6 +536,17 @@ class SpeedTestDS():
         for elem in self.ignored_Files:
             returnedString += "\n" + elem
         """
+
+        #This section will print out all of the parsed files if the quickPrint option is False
+        if not self.recursively_print:
+            for deviceType in self.this_SpeedTestFiles:
+                for carrier in self.this_SpeedTestFiles[deviceType]:
+                    for aFile in self.this_SpeedTestFiles[deviceType][carrier]:
+                        returnedString += str(aFile)
+                    #END FOR
+                #END FOR
+            #END FOR
+
         return returnedString
     #END DEF
 #END CLASS
