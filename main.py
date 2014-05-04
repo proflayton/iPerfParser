@@ -41,10 +41,12 @@ DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q4201
 
 #Here's where main actually starts
 # creating a Speed Test Data Structure
-so_many_STDs = STDs()
+recusivlyPrintFiles = True
+printShortString = True
+so_many_STDs = STDs(recusivlyPrintFiles, printShortString)
 #Loading in the raw data, and passing in the system arguements
 # The two Trues are for the STDs recursive print and quick print options
-so_many_STDs.loadRawData(sys.argv, True, True)
+so_many_STDs.loadRawData(sys.argv)
 print(str(so_many_STDs))
 
 """
