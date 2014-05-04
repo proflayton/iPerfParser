@@ -109,7 +109,7 @@ from .SpeedTestFile import SpeedTestFile
 import os
 import sys
 from .utils import isLessThanVersion, csvExport
-import Tkinter as TK, tkFileDialog as TKFD
+import tkinter as TK, tkinter.filedialog as TKFD
 
 class SpeedTestDS():
 
@@ -538,7 +538,7 @@ class SpeedTestDS():
         """
 
         #This section will print out all of the parsed files if the quickPrint option is False
-        if not self.recursively_print:
+        if self.recursively_print:
             for deviceType in self.this_SpeedTestFiles:
                 for carrier in self.this_SpeedTestFiles[deviceType]:
                     for aFile in self.this_SpeedTestFiles[deviceType][carrier]:
