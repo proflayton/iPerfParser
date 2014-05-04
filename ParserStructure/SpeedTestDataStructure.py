@@ -215,6 +215,8 @@ class SpeedTestDS():
                     #END FOR files
                 #END FOR os.walk
             elif (sysArgv[1] == "-sp"):
+                self.recursively_print = False if sysArgv[2] == "False" else True
+                self.short_str_method = False if sysArgv[3] == "False" else True
                 for root, dirs, files in os.walk(DataRootPeter + PeterSamples):
                     for aFile in files:
                         #Seeing if the file given is, in fact, a data file
