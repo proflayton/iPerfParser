@@ -78,6 +78,10 @@ if __name__ == '__main__':
 #                   filePath:   String, containing absolute path to raw data file
 #       OUTPUTS-    none
 #
+#   parseIndivTests -   ..
+#       INPUTS-     ..
+#       OUTPUTS-    ..
+#
 #   convertTo2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    tobeReturned:   the 2D array that will be returned
@@ -136,15 +140,17 @@ class SpeedTestFile(object):
     Latitude = 0
     Longitude = 0
 
-    mySpeedTests = []
+    mySpeedTests = {}
 
+    ignored_text = []
     short_str = False
     # -------------------
 
     # DESC: init functions calls load using the given file path
     def __init__(self, filePath, short=False):
-        self.short_str = short
-        self.mySpeedTests = []
+        self.short_str = short; self.ignored_text = []
+        self.mySpeedTests = {  "TCP" : [],
+                               "UDP" : []   }
         self.FileName = filePath.split("/")[-1]
         self.loadHeaderInfo(filePath)
     #END INIT
@@ -315,7 +321,8 @@ class SpeedTestFile(object):
     #END DEF
 
 
-    # DESC: ..
+    # DESC: This takes the remaining contents of the file being parsed, splits the
+    #       content by test (to included any error messages) and the creates the Test objects
     def parseIndivTests(self, fileContents):
         fileContents = fileContents.split('\n\n')
         sortedFileContents = []
@@ -342,6 +349,7 @@ class SpeedTestFile(object):
             #END IF
         #END FOR
         for testText in sortedFileContents:
+            print(testText)
             testAsArray = testText.split('\n')
             command = ""
             for line in testAsArray:
@@ -349,17 +357,17 @@ class SpeedTestFile(object):
                     command = line; break
             #END FOR
             if " -e " in command:
-                """
-                t = testText.split('\n')
-                print(t[-1])
-                print(repr(t[-1]))
-                print("=========")
-                """
                 newTCP = TCPTest(testText, self.short_str)
+                self.mySpeedTests["TCP"].append(newTCP)
             elif " -u " in command:
                 newUDP = UDPTest(testText, self.short_str)
-        #test = SpeedTest(fileContents, self.short_str)
+                self.mySpeedTests["UDP"].append(newUDP)
+            else:
+                self.ignored_text.append(testText)
+            #END IF/ELIF/ELSE
+        #END FOR
     #END DEf
+
 
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all

@@ -110,6 +110,8 @@ class UDPTest(SpeedTest):
     DatagramSize = 0
     TargetBandwidth = None  #n[KM]
 
+    ERROR = False
+    ErrorMessage = None
     #---- Inherited Variables ----
     # ConnectionLoc = "UNKNOWN"
     # myPingThreads = []
@@ -120,7 +122,7 @@ class UDPTest(SpeedTest):
     # short_str = False
     # ------------------------
 
-
+"""
     # DESC: Initializing class
     def __init__(self, dataString, short=False):
         self.short_str = short
@@ -353,4 +355,5 @@ class UDPTest(SpeedTest):
             #END FOR
         return this_str
     #END DEF
+"""
 #END CLASS

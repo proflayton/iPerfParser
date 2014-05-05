@@ -94,7 +94,6 @@ if __name__ == '__main__':
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
-import io
 from .utils import global_str_padding as pad; pad = pad*2
 from .PingThread import PingThread
 from .Pings import Ping
@@ -108,6 +107,8 @@ class TCPTest(SpeedTest):
     ConnectionType = "TCP"
     WindowSize = 0
 
+    ERROR = False
+    ErrorMessage = None
     #---- Inherited Variables ----
     # ConnectionLoc = "UNKNOWN"
     # myPingThreads = []
@@ -121,23 +122,37 @@ class TCPTest(SpeedTest):
 
     # DESC: Initializing class
     def __init__(self, dataString, short=False):
+        self.text = dataString
+        if ("Test Timed Out" in dataString) or ("timed out" in dataString):
+            self.ERROR = True
+            self.ErrorMessage = "Test Timed Out"
+            return
+        elif "Quitting operations" in dataString:
+            self.ERROR = True
+            self.ErrorMessage = "Test quit by User"
+            return
+        elif "failed:" in dataString:
+            self.ERROR = True
+            self.ErrorMessage = "There was an error of some kind. Please investigate"
+            return
+        #END IF/ELIF
         self.short_str = short
         self.myPingThreads = { "Up" : [], "Down" : [] }
-        self.loadHeaderInfo(dataString)
-        self.createPingThreads(dataString)
+        self.MeasurementFormat = { "Speed" : None, "Size" : None}
+        #Calling the other initialization functions
+        self.text = dataString.split('\n')
+        self.loadHeaderInfo()
+        self.createPingThreads()
     #END DEF
 
 
-    # DESC:
-    def loadHeaderInfo(self, data):
-        #splitting the first line from the rest of the data
-        iPerfCommand = data.split("\n", 1)[0]
-
-        #Finding the connection type
-        if iPerfCommand.find("-e")>0:
-            self.ConnectionType = "TCP"
-        if iPerfCommand.find("-u")>0:
-            self.ConnectionType = "UDP"
+    # DESC: ..
+    def loadHeaderInfo(self):
+        iPerfCommand = ""
+        for line in self.text:
+            if "Iperf command line" in line:
+                iPerfCommand = line; break
+        #END FOR
 
         #Getting the Reciever IP address
         self.RecieverIP = iPerfCommand[iPerfCommand.find("-c"): ].split(" ")[1].strip()
@@ -153,12 +168,31 @@ class TCPTest(SpeedTest):
 
         #Getting test time interval number
         self.TestInterval = iPerfCommand[iPerfCommand.find("-t"): ].split(" ")[1].strip()
-        #END IF/ELSE
+
+        #Getting the window size
+        self.WindowSize = iPerfCommand[iPerfCommand.find("-w"): ].split(" ")[1].strip()
+
+        #Getting measurement format
+        mform = iPerfCommand[iPerfCommand.find("-f"): ].split(" ")[1].strip()
+        if mform = "k":
+            self.MeasurementFormat["Speed"] = "Kbits/sec"
+            self.MeasurementFormat["Size"] = "Kbytes"
+        elif mform = "K":
+            self.MeasurementFormat["Speed"] = "Kbytes/sec"
+            self.MeasurementFormat["Size"] = "Kbytes"
+        elif mform = "m":
+            self.MeasurementFormat["Speed"] = "Mbits/sec"
+            self.MeasurementFormat["Size"] = "Mbytes"
+        elif mform = "M":
+            self.MeasurementFormat["Speed"] = "Mbytes/sec"
+            self.MeasurementFormat["Size"] = "Mbytes"
     #END DEF
 
 
     # DESC: Given the data stream, parses the Speed Test streams into individual Ping Threads
-    def createPingThreads(self, dataStream):
+    def createPingThreads(self):
+        self.text = self.text
+        """
         dataLine = readToAndGetLine(dataStream,"[")
         while dataLine:
             if dataLine.strip() == '':
@@ -250,7 +284,9 @@ class TCPTest(SpeedTest):
         # after the removed one is not skipped
         while None in self.myPingThreads:
             self.myPingThreads.remove(None)
+        """
     #END DEF
+
 
     # DESC: Searches for the ping thread with the threadNumber provided.
     #       Gets the LATTER one so that when new ones are created, we add to that one
@@ -334,21 +370,26 @@ class TCPTest(SpeedTest):
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        if self.short_str:
-            this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
-                        pad + "Connection Location: " + self.ConnectionLoc + "\n"
-                       )
-            for pingThread in self.myPingThreads:
-                this_str += str(pingThread)
+        if self.ERROR:
+            return self.text
         else:
-            this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
-                        pad + "Connection Location: " + self.ConnectionLoc + "\n" +
-                        pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
-                        pad + "Test Interval:" + self.TestInterval + "\n"
-                       )
-            for pingThread in self.myPingThreads:
-                this_str += str(pingThread)
-            #END FOR
-        return this_str
+            if self.short_str:
+                this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
+                            pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                           )
+                for pingThread in self.myPingThreads:
+                    this_str += str(pingThread)
+            else:
+                this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
+                            pad + "Connection Location: " + self.ConnectionLoc + "\n" +
+                            pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
+                            pad + "Test Interval:" + self.TestInterval + "\n"
+                           )
+                for pingThread in self.myPingThreads:
+                    this_str += str(pingThread)
+                #END FOR
+            #END IF/ELSe
+            return this_str
+        #END IF/ELSE
     #END DEF
 #END CLASS

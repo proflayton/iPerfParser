@@ -170,36 +170,38 @@ class SpeedTestDS():
         # use "python main.py -cs" to only test on 3 files (one of each type)
         # use "python main.py -css" to only test on 1 file
         if (len(sysArgv) > 1):
-            #Alter this string to be the parent directory holding all of the data
-            DataRootPeter = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
-            DataRootBrandon = "D:/CPUC/"
-            PeterBBResults = "bb results/"
-            PeterSamples = "sampleTests/"
-            BrandonBBResults = "BB_results/"
-            BrandonSamples = ""  #see if statement at the bottom. option "-sb"
+            if (sysArgv[1] == "-b"):
+                DataRoot = "D:/CPUC/"
+                BBresults = "BB_results/"
+                Samples = ""   #see if statement at the bottom. option "-sb"
+            elif (sysArgv[1] == "-p"):
+                DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
+                BBresults = "bb results/"
+                Samples = "sampleTests/"
+            #END DECLARING STRINGS
+
             #Below are the actual sys arg options
-            if (sysArgv[1] == "-tf"):
-                file1 = DataRootBrandon + BrandonBBResults + "10_18_2013/WBBDTest2-10182013113755.txt"
+            if (sysArgv[2] == "-css1"):
+                file1 = DataRoot + BBresults + "10_18_2013/WBBDTest2-10182013113755.txt"
                 test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
                 self.addToStructure(test_SpeedTest)
-            elif (sysArgv[1] == "-css"):
-                #Alter this string to be an individual data file
-                file1 = DataRootPeter + PeterBBResults + "10_17_2013/99000344556962-10172013151027.txt"
+            elif (sysArgv[2] == "-css2"):
+                file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
                 test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
                 self.addToStructure(test_SpeedTest)
-            elif (sysArgv[1] == "-cs"):
+            elif (sysArgv[2] == "-cs"):
                 #Alter these strings to be individual data files
-                file1 = DataRootPeter + PeterBBResults + "10_17_2013/99000344556962-10172013151027.txt"
-                file2 = DataRootPeter + PeterBBResults + "10_17_2013/356420059231100-10172013094856.txt"
-                file3 = DataRootPeter + PeterBBResults + "10_17_2013/WBBDTest2-10172013151943.txt"
+                file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
+                file2 = DataRoot + BBresults + "10_17_2013/356420059231100-10172013094856.txt"
+                file3 = DataRoot + BBresults + "10_17_2013/WBBDTest2-10172013151943.txt"
                 stfile1 = SpeedTestFile(file1, self.short_str_method)
                 stfile2 = SpeedTestFile(file2, self.short_str_method)
                 stfile3 = SpeedTestFile(file3, self.short_str_method)
                 self.addToStructure(stfile1)
                 self.addToStructure(stfile2)
                 self.addToStructure(stfile3)
-            elif (sysArgv[1] == "-c"):
-                for root, dirs, files in os.walk(DataRootPeter+PeterBBResults+"10_17_2013/"):
+            elif (sysArgv[2] == "-c"):
+                for root, dirs, files in os.walk(DataRoot + BBresults + "10_17_2013/"):
                     for aFile in files:
                         #Seeing if the file given is, in fact, a data file
                         #If not, the script will exit and display the message below
@@ -214,10 +216,12 @@ class SpeedTestDS():
                             pass
                     #END FOR files
                 #END FOR os.walk
-            elif (sysArgv[1] == "-sp"):
-                self.recursively_print = False if sysArgv[2] == "False" else True
-                self.short_str_method = False if sysArgv[3] == "False" else True
-                for root, dirs, files in os.walk(DataRootPeter + PeterSamples):
+            #------------------------------------------------
+            elif (sysArgv[2] == "-s"):
+                if sysArgv[3]:
+                    self.recursively_print = False if sysArgv[3] == "False" else True
+                    self.short_str_method = False if sysArgv[4] == "False" else True
+                for root, dirs, files in os.walk(DataRoot + Samples):
                     for aFile in files:
                         #Seeing if the file given is, in fact, a data file
                         #If not, the script will exit and display the message below
@@ -232,31 +236,15 @@ class SpeedTestDS():
                         #END TRY/EXCEPT
                     #END FOR files
                 #END FOR os.walk
-            elif (sysArgv[1] == "-ssp"):
-                #Alter this string to be an individual data file
-                file1 = DataRootPeter + PeterSamples + "sample_test_1.txt"
+            elif (sysArgv[2] == "-ss"):
+                num = sysArgv[3] if (sysArgv[3]) else 1
+                file1 = DataRoot + Samples + "sample_test_"+num+".txt"
                 test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
                 self.addToStructure(test_SpeedTest)
-            elif (sysArgv[1] == "-sb"):
-                for root, dirs, files in os.walk(DataRootBrandon + BrandonSamples):
-                    for aFile in files:
-                        #Seeing if the file given is, in fact, a data file
-                        #If not, the script will exit and display the message below
-                        f = open(os.path.join(root, aFile),'r')
-                        try:
-                            isItCPUC = f.readline()
-                            if ("CPUC Tester Beta v2.0" in isItCPUC):
-                                test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
-                                self.addToStructure(test_STFile)
-                            #END IF
-                        except:
-                            pass
-                    #END FOR files
-                #END FOR os.walk
             else:
-                print("I don't know that option. I'm just a silly computer. I know -tf, -css, -cs, -c, -sp, -ssp, and -sb")
+                print("I don't know that option. I'm just a silly computer. I know -css1, -css2, -cs, -c, -s, and -ss")
             #END IF/ELIF/ELSE
-
+        # ----------------------------------------------------------
         # ----------------------------------------------------------
         else:
             #Asking for a directory from the user
