@@ -45,7 +45,7 @@ if __name__ == '__main__':
 #   Carriers:            List, all of the carriers that we wish to keep track of
 #   ignored_Carriers:    List, will be dynamically added to, if a file has a carrier that we are not tracking
 #   ignored_Files:       List, Strings that hold the file name of an ignored file (bad carrier, no carrier, etc.
-#   this_SpeedTestFiles: Structure, created in __init__, will hold parsed files, categorized by
+#   mySpeedTestFiles:    Structure, created in __init__, will hold parsed files, categorized by
 #                        Network Type and Carrier
 #
 # FUNCTIONS:
@@ -69,7 +69,7 @@ if __name__ == '__main__':
 #                             array. Each array can be converted to a .csv file. Each array holds all of the
 #                             SpeedTestFile information, down to the Ping level
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    toBeReturned:   a structure similar to this object's this_SpeedTestFiles, except each
+#       OUTPUTS-    toBeReturned:   a structure similar to this object's mySpeedTestFiles, except each
 #                                   SpeedTestFile is now a 2D array
 #
 #   convertTo_Object_To_TCPStDev - Returns a 2D array that can be converted into a 2D array. The information
@@ -119,7 +119,7 @@ class SpeedTestDS():
     ignored_Carriers = []
     ignored_Files = []
 
-    this_SpeedTestFiles = {}
+    mySpeedTestFiles = {}
 
     recursively_print = False
     short_str_method = True
@@ -133,13 +133,13 @@ class SpeedTestDS():
         #This bit creates the SpeedTest Files array. For each type of connection
         # (i.e., mobile or netbook), it will instantiate another dictionary, where
         # each key is the carrier name, and points to an array
-        self.this_SpeedTestFiles = {
+        self.mySpeedTestFiles = {
                                     "mobile"  : {},
                                     "netbook" : {}
                                    }
-        for key in self.this_SpeedTestFiles:
+        for key in self.mySpeedTestFiles:
             for elem in self.Carriers:
-                self.this_SpeedTestFiles[key][elem] = []
+                self.mySpeedTestFiles[key][elem] = []
         #END FORS
     #END DEF
 
@@ -232,6 +232,11 @@ class SpeedTestDS():
                         #END TRY/EXCEPT
                     #END FOR files
                 #END FOR os.walk
+            elif (sysArgv[1] == "-ssp"):
+                #Alter this string to be an individual data file
+                file1 = DataRootPeter + PeterSamples + "sample_test_1.txt"
+                test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
+                self.addToStructure(test_SpeedTest)
             elif (sysArgv[1] == "-sb"):
                 for root, dirs, files in os.walk(DataRootBrandon + BrandonSamples):
                     for aFile in files:
@@ -249,7 +254,7 @@ class SpeedTestDS():
                     #END FOR files
                 #END FOR os.walk
             else:
-                print("I don't know that option. I'm just a silly computer. I know -tf, -css, -cs, -c, -sp, and -sb")
+                print("I don't know that option. I'm just a silly computer. I know -tf, -css, -cs, -c, -sp, -ssp, and -sb")
             #END IF/ELIF/ELSE
 
         # ----------------------------------------------------------
@@ -291,14 +296,14 @@ class SpeedTestDS():
         # is in our list of Carriers. If it is, use the STFile's
         # network type and provider to add it to the correct dictionary
         if STFileObj.NetworkProvider in self.Carriers:
-            (self.this_SpeedTestFiles[STFileObj.NetworkType]
+            (self.mySpeedTestFiles[STFileObj.NetworkType]
                                      [STFileObj.NetworkProvider]
                                      .append(STFileObj) )
         #If the Network Provider was not in the list of carriers, try
         # using the Network Operator. If that variable is in the list of
         # carriers, use it and the network type to add it to the correct dict
         elif STFileObj.NetworkOperator in self.Carriers:
-            (self.this_SpeedTestFiles[STFileObj.NetworkType]
+            (self.mySpeedTestFiles[STFileObj.NetworkType]
                                      [STFileObj.NetworkOperator]
                                      .append(STFileObj) )
         #Otherwise, the File parsed does not have any useful information for us.
@@ -333,9 +338,9 @@ class SpeedTestDS():
             for elem in self.Carriers:
                 csvReady[key][elem] = []
 
-        for devType in self.this_SpeedTestFiles:
-            for carrier in self.this_SpeedTestFiles[devType]:
-                for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+        for devType in self.mySpeedTestFiles:
+            for carrier in self.mySpeedTestFiles[devType]:
+                for speedTest in self.mySpeedTestFiles[devType][carrier]:
                     csvReady[devType][carrier].append(speedTest.convertTo2D())
             #END FOR
         #END FOR
@@ -396,9 +401,9 @@ class SpeedTestDS():
             #END FOR
         #END FOR
 
-        for devType in self.this_SpeedTestFiles:
-            for carrier in self.this_SpeedTestFiles[devType]:
-                for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+        for devType in self.mySpeedTestFiles:
+            for carrier in self.mySpeedTestFiles[devType]:
+                for speedTest in self.mySpeedTestFiles[devType][carrier]:
                     speedTest.calc_TCP_StDev_and_append_to_Distribution(toBeReturned, self.Carriers)
                 #END FOR
             #END FOR
@@ -502,9 +507,9 @@ class SpeedTestDS():
                           "eTCP_DOWN2_STDEV","eTCP_DOWN2_MEDIAN"
                          ]
             origRef[0].extend(newHeaders)
-        for devType in self.this_SpeedTestFiles:
-            for carrier in self.this_SpeedTestFiles[devType]:
-                for speedTest in self.this_SpeedTestFiles[devType][carrier]:
+        for devType in self.mySpeedTestFiles:
+            for carrier in self.mySpeedTestFiles[devType]:
+                for speedTest in self.mySpeedTestFiles[devType][carrier]:
                     speedTest.calc_StDev_and_Median_and_append_to_MasterCSV(origRef, self.Carriers)
             #END FOR
         #END FOR
@@ -515,11 +520,11 @@ class SpeedTestDS():
     def __str__(self):
         returnedString = ""
         #For each type of carrier in each device type, print the number of object
-        for deviceType in self.this_SpeedTestFiles:
+        for deviceType in self.mySpeedTestFiles:
             returnedString += deviceType + "\n"
-            for carrier in self.this_SpeedTestFiles[deviceType]:
+            for carrier in self.mySpeedTestFiles[deviceType]:
                 returnedString += ("   "+ carrier + ": " +
-                                   str(len(self.this_SpeedTestFiles[deviceType][carrier])) + "\n")
+                                   str(len(self.mySpeedTestFiles[deviceType][carrier])) + "\n")
             #END FOR
         #END FOR
 
@@ -541,9 +546,9 @@ class SpeedTestDS():
 
         #This section will print out all of the parsed files if the quickPrint option is False
         if self.recursively_print:
-            for deviceType in self.this_SpeedTestFiles:
-                for carrier in self.this_SpeedTestFiles[deviceType]:
-                    for aFile in self.this_SpeedTestFiles[deviceType][carrier]:
+            for deviceType in self.mySpeedTestFiles:
+                for carrier in self.mySpeedTestFiles[deviceType]:
+                    for aFile in self.mySpeedTestFiles[deviceType][carrier]:
                         returnedString += str(aFile)
                     #END FOR
                 #END FOR

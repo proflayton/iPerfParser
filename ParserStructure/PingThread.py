@@ -52,7 +52,7 @@ if __name__ == '__main__':
 #   final_size              The summation Ping size (data sent).
 #   final_speed             The summation Ping speed (KB/s)
 #   Datagrams               String? Integer? holding some UDP information we don't understand yet
-#   this_Pings              List, holding all of the Pings in this specific thread
+#   myPings                 List, holding all of the Pings in this specific thread
 #   short_str               Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                               Default is False
 #   ERROR                   Boolean, is True if there was a in the UDP test
@@ -74,8 +74,7 @@ if __name__ == '__main__':
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
 from .utils import readToAndGetLine
-from .utils import global_str_padding as pad
-pad = pad*3
+from .utils import global_str_padding as pad; pad = pad*3
 from .Pings import Ping
 class PingThread():
 
@@ -95,7 +94,7 @@ class PingThread():
     final_speed            = 0
 
     Datagrams     = None
-    this_Pings    = []
+    myPings    = []
 
     short_str     = False
 
@@ -114,7 +113,7 @@ class PingThread():
         data_serverIP   = data.split("port", 1)[0].strip()
         data            = data.split("port", 1)[1].strip()
         data_serverPort = data.split("\n")[0].strip()
-        self.this_Pings    = []
+        self.myPings    = []
         self.PipeNumber    = threadNum
         self.DataDirection = direction
         self.LocalIP       = data_localIP
@@ -126,7 +125,7 @@ class PingThread():
 
     # DESC: Adding a Ping object to this class' array of Ping objects
     def addPing(self,ping):
-        self.this_Pings.append(ping)
+        self.myPings.append(ping)
     #END DEF
 
 
@@ -138,7 +137,7 @@ class PingThread():
         arrayed = [self.PipeNumber, self.DataDirection]
         #For each ping, minus the last one, add the size and speed
         # to the array above
-        for ping in self.this_Pings:
+        for ping in self.myPings:
             if (int(ping.secIntervalEnd - ping.secIntervalStart) == 1):
                 arrayed.append(ping.size)
                 arrayed.append(ping.speed)
@@ -154,8 +153,8 @@ class PingThread():
             and self.final_secIntervalEnd == 0
             and self.final_size == 0
             and self.final_speed == 0):
-            arrayed.append(self.this_Pings[-1].size)
-            arrayed.append(self.this_Pings[-1].speed)
+            arrayed.append(self.myPings[-1].size)
+            arrayed.append(self.myPings[-1].speed)
         else:
             arrayed.append(self.final_size)
             arrayed.append(self.final_speed)
@@ -174,14 +173,14 @@ class PingThread():
                                                str(self.final_size) + "KBytes " +
                                                str(self.final_speed) + "Kbits/sec" + "\n"
                        )
-            this_str += pad + "Number of Pings: " + str(len(self.this_Pings)) + "\n"
+            this_str += pad + "Number of Pings: " + str(len(self.myPings)) + "\n"
         else:
             this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
                         pad + "Data Direction: " + self.DataDirection + "\n" +
                         pad + "Local: " + str(self.LocalIP) + ":" + str(self.LocalPort) + "\n" +
                         pad + "Server: " + str(self.ServerIP) + ":" + str(self.ServerPort) + "\n"
                        )
-            for ping in self.this_Pings:
+            for ping in self.myPings:
                 this_str += str(ping) + "\n"
             this_str += (pad + "Final Ping: " + str(self.final_secIntervalStart) + "-" +
                                                 str(self.final_secIntervalEnd) + " " +

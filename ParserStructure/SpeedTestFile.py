@@ -63,7 +63,7 @@ if __name__ == '__main__':
 #                           Is 0 if no GPS data was available
 #   Longitude       Integer, the latitude given by the GPS that this test was conducted at.
 #                           Is 0 if no GPS data was available
-#   this_SpeedTests List, holding all of the Individual Speed tests that are contained in the given file being parsed
+#   mySpeedTests    List, holding all of the Individual Speed tests that are contained in the given file being parsed
 #   short_str       Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
@@ -92,7 +92,7 @@ if __name__ == '__main__':
 #   printSpeedTests - Return a string that has the information of each speed test in the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    text:   String, a representation of the IndividualSpeedTests held in
-#                           this objects this_SpeedTests
+#                           this objects mySpeedTests
 #
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -100,11 +100,11 @@ if __name__ == '__main__':
 #
 # ------------------------------------------------------------------------
 
-from .utils import readToAndGetLine, monthAbbrToNum, isLessThanVersion
+from .utils import readToAndGetLine, monthAbbrToNum
 from .utils import StDevP, getMedian
-from .utils import global_str_padding as pad
-pad = pad*1
-from .IndividualSpeedTest import SpeedTest
+from .utils import global_str_padding as pad; pad = pad*1
+from .TCP import TCPTest
+from .UDP import UDPTest
 class SpeedTestFile(object):
 
     # -------------------
@@ -136,7 +136,7 @@ class SpeedTestFile(object):
     Latitude = 0
     Longitude = 0
 
-    this_SpeedTests = []
+    mySpeedTests = []
 
     short_str = False
     # -------------------
@@ -144,10 +144,9 @@ class SpeedTestFile(object):
     # DESC: init functions calls load using the given file path
     def __init__(self, filePath, short=False):
         self.short_str = short
-        self.this_SpeedTests = []
+        self.mySpeedTests = []
         self.FileName = filePath.split("/")[-1]
         self.loadHeaderInfo(filePath)
-        #self.parseIndivTests()
     #END INIT
 
 
@@ -171,7 +170,7 @@ class SpeedTestFile(object):
             self.Time = datetime.split(" ")[1][:-1]
         else:
             self.NetworkType = "mobile"
-            #Formatting the datetime as "mm/dd/yyyy hh:mm:ss" when not in this format
+            #Formatting the date and time as "mm/dd/yyyy" and "hh:mm:ss" when not in this format
             datetime = datetime.split("at ")[1][4:-1]
             month = str(monthAbbrToNum(datetime[:3]))
             day = str(datetime[4:6])
@@ -304,56 +303,62 @@ class SpeedTestFile(object):
         readToAndGetLine(fs, "Checking Connectivity..")
         self.FileStreamLoc = fs.tell()
 
-        # Loop through the rest of the file, creating individual
-        # Speed Test objects, which will hold an array of all of the actual data
-        continueLoop = True
-        while continueLoop:
-            fs.seek(self.FileStreamLoc)
-            iPerfLine = readToAndGetLine(fs, "Iperf command line:")
-            self.FileStreamLoc = fs.tell()
-            if not iPerfLine:
-                continueLoop = False
-            else:
-                fs.seek(self.FileStreamLoc - len(iPerfLine)-1)
-                aSpeedTest = SpeedTest(fs, self.short_str)
-                self.this_SpeedTests.append(aSpeedTest)
-            #END IF/ELSE
-        #END WHILE
-
+        #Reading in the remaining contents of the file (the speed tests) and passing
+        # it to the function that will split it into test chunks and create the objects
+        remaingingFileContents = fs.read()
         # !!!!
         # SUPER IMPORTANT!! Otherwise, problems galore
         # !!!!
         # Don't want open streams o_O
         fs.close()
+        self.parseIndivTests(remaingingFileContents)
     #END DEF
 
 
     # DESC: ..
-    """
-    def parseIndivTests(self):
-
-        #Set the file stream to the line after "Checking Connectivity"
-        readToAndGetLine(fs, "Checking Connectivity..")
-        self.FileStreamLoc = fs.tell()
-
-        # Loop through the rest of the file, creating individual
-        # Speed Test objects, which will hold an array of all of the actual data
-        continueLoop = True
-        while continueLoop:
-            fs.seek(self.FileStreamLoc)
-            iPerfLine = readToAndGetLine(fs, "Iperf command line:")
-            self.FileStreamLoc = fs.tell()
-            if not iPerfLine:
-                continueLoop = False
+    def parseIndivTests(self, fileContents):
+        fileContents = fileContents.split('\n\n')
+        sortedFileContents = []
+        appending = False
+        for chunk in fileContents:
+            if not appending:
+                if ("Starting Test " in chunk) or ("Starting UDP" in chunk):
+                    aTest =  chunk + "\n"
+                    appending = True
+                else:
+                    continue
+                #END IF/ELSE
             else:
-                fs.seek(self.FileStreamLoc - len(iPerfLine)-1)
-                aSpeedTest = SpeedTest(fs, self.short_str)
-                self.this_SpeedTests.append(aSpeedTest)
+                if ("Starting Test " not in chunk) and ("Starting UDP" not in chunk):
+                    aTest += chunk + "\n"
+                else:
+                    sortedFileContents.append(aTest)
+                    aTest =  chunk + "\n"
+                #END IF/ELSE
             #END IF/ELSE
-        #END WHILE
-
-        return False
-    """
+            #This is so that the last test is appended, as it will not be
+            if chunk == fileContents[-1]:
+                sortedFileContents.append(aTest)
+            #END IF
+        #END FOR
+        for testText in sortedFileContents:
+            testAsArray = testText.split('\n')
+            command = ""
+            for line in testAsArray:
+                if "Iperf command line" in line:
+                    command = line; break
+            #END FOR
+            if " -e " in command:
+                """
+                t = testText.split('\n')
+                print(t[-1])
+                print(repr(t[-1]))
+                print("=========")
+                """
+                newTCP = TCPTest(testText, self.short_str)
+            elif " -u " in command:
+                newUDP = UDPTest(testText, self.short_str)
+        #test = SpeedTest(fileContents, self.short_str)
     #END DEf
 
     # DESC: Converts all of the individual test and ping threads and such
@@ -370,7 +375,7 @@ class SpeedTestFile(object):
                                         else self.NetworkOperator)])
         counter = 5
         testnum = 1
-        for test in self.this_SpeedTests:
+        for test in self.mySpeedTests:
             #This section sets up the column headers for the test. Each
             # test will have column headers. The timing headers need
             # to account for different length threads, hence getLongest
@@ -393,7 +398,7 @@ class SpeedTestFile(object):
             #Append the threads to the array. If the array is not nothing,
             # it must then be holding the Test Header information, and so
             # we don't need any padding
-            for thread in test.this_PingThreads:
+            for thread in test.myPingThreads:
                 try:
                     toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
                 except:
@@ -423,25 +428,25 @@ class SpeedTestFile(object):
     #       call it's thread sum function, and append the standard deviation to
     #       the passed structure reference.
     def calc_TCP_StDev_and_append_to_Distribution(self, structRef, list_carriers):
-        for indivTest in self.this_SpeedTests:
+        for indivTest in self.mySpeedTests:
             if (indivTest.ConnectionType == "TCP"):
                 if (self.NetworkOperator in list_carriers):
-                    this_carrier = self.NetworkOperator
+                    mycarrier = self.NetworkOperator
                 elif (self.NetworkProvider in list_carriers):
-                    this_carrier = self.NetworkProvider
+                    mycarrier = self.NetworkProvider
                 else:
                     continue
                 #END IF/ELIF
                 up_stdev = StDevP(indivTest.sum_UpThreads())
                 if up_stdev is not None:
                     structRef[self.NetworkType]\
-                             [this_carrier]\
+                             [mycarrier]\
                              [indivTest.ConnectionLoc]\
                              ["Up"].append(up_stdev)
                 down_stdev = StDevP(indivTest.sum_DownThreads())
                 if down_stdev is not None:
                     structRef[self.NetworkType]\
-                             [this_carrier]\
+                             [mycarrier]\
                              [indivTest.ConnectionLoc]\
                              ["Down"].append(down_stdev)
                 
@@ -471,7 +476,7 @@ class SpeedTestFile(object):
             westCount = 0
             eastCount = 0
             toAppend = [0]*16
-            for indivTest in self.this_SpeedTests:
+            for indivTest in self.mySpeedTests:
                 if (indivTest.ConnectionType == "TCP"):
                     upThread = indivTest.sum_UpThreads()
                     downThread = indivTest.sum_DownThreads()
@@ -501,8 +506,8 @@ class SpeedTestFile(object):
     # DESC: Returns all of the sub tests for this file as a string
     def printSpeedTests(self):
         text = ""
-        for obj in self.this_SpeedTests:
-            text += pad*2 + "Speed Test #" + str(self.this_SpeedTests.index(obj)+1) + "\n" + str(obj)
+        for obj in self.mySpeedTests:
+            text += pad*2 + "Speed Test #" + str(self.mySpeedTests.index(obj)+1) + "\n" + str(obj)
         return text
     #END DEF
 

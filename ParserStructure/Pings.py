@@ -57,8 +57,7 @@ if __name__ == '__main__':
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
-from .utils import global_str_padding as pad
-pad = pad*4
+from .utils import global_str_padding as pad; pad = pad*4
 class Ping():
     # ------------------
     # Initializing some class attributes
