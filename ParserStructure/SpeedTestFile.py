@@ -8,7 +8,7 @@ if __name__ == '__main__':
     print("Please run main.py.")
 
     #Changing Current Working Directory to 3 levels up
-    import os, sys
+    import os
     os.chdir("../../..")
     duhDir = os.getcwd()
 
@@ -42,29 +42,29 @@ if __name__ == '__main__':
 #           related objects
 #
 # VARIABLES:
-#   FileName        String, holding file name that is being parsed
-#   FileStreamLoc   Integer, representing byte location that the script is at in file stream
-# * DateTime        String, holding date and time test was taken
-#   OSName          String, holding OS name that this test was conducted with
-#   OSArchitecture  String, holding OS architecture that this test was conducted with
-#   OSVersion       String, holding OS version that this test was conducted with
-#   JavaVersion     String, holding Java version that this test was conducted with
-#   JavaVendor      String, holding Java vendor that this test was conducted with
-#   NetworkType     String, holding Network Type that this test was conducted with
-#   Server          String, holding Server that this test was conducted with
-#   Host            String, holding Host that this test was conducted with
-#   NetworkProvider String, holding Network Provider that this test was conducted with (i.e. the Carrier)
-#   NetworkOperator String, holding Network Operator that this test was conducted with (i.e. the Carrier)
-#           note: Sometimes, the carrier name is in Network Provider, other times it is in Network Operator
-#   DeviceID        String, the Device ID number
-#   ConnectionType  String, holding Connection type that this test was conducted with
-#   LocationID      Integer, the ID number of the location that this test was conducted at
-#   Latitude        Integer, the latitude given by the GPS that this test was conducted at.
+#   FileName            String, holding file name that is being parsed
+#   FileStreamLoc       Integer, representing byte location that the script is at in file stream
+# * DateTime            String, holding date and time test was taken
+#   OSName              String, holding OS name that this test was conducted with
+#   OSArchitecture      String, holding OS architecture that this test was conducted with
+#   OSVersion           String, holding OS version that this test was conducted with
+#   JavaVersion         String, holding Java version that this test was conducted with
+#   JavaVendor          String, holding Java vendor that this test was conducted with
+#   NetworkType         String, holding Network Type that this test was conducted with
+#   Server              String, holding Server that this test was conducted with
+#   Host                String, holding Host that this test was conducted with
+#   NetworkProvider     String, holding Network Provider that this test was conducted with (i.e. the Carrier)
+#   NetworkOperator     String, holding Network Operator that this test was conducted with (i.e. the Carrier)
+#                           note: Sometimes, the carrier name is in Network Provider, other times it is in Network Operator
+#   DeviceID            String, the Device ID number
+#   ConnectionType      String, holding Connection type that this test was conducted with
+#   LocationID          Integer, the ID number of the location that this test was conducted at
+#   Latitude            Integer, the latitude given by the GPS that this test was conducted at.
 #                           Is 0 if no GPS data was available
-#   Longitude       Integer, the latitude given by the GPS that this test was conducted at.
+#   Longitude           Integer, the latitude given by the GPS that this test was conducted at.
 #                           Is 0 if no GPS data was available
-#   mySpeedTests    List, holding all of the Individual Speed tests that are contained in the given file being parsed
-#   short_str       Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
+#   mySpeedTests        List, holding all of the Individual Speed tests that are contained in the given file being parsed
+#   short_str_method    Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
 # FUNCTIONS:
@@ -78,11 +78,11 @@ if __name__ == '__main__':
 #                   filePath:   String, containing absolute path to raw data file
 #       OUTPUTS-    none
 #
-#   parseIndivTests -   ..
+#   createIndivTests -   ..
 #       INPUTS-     ..
 #       OUTPUTS-    ..
 #
-#   convertTo2D - Converts this SpeedTestFile object into a 2D array, and returns the result
+# * convertTo2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    tobeReturned:   the 2D array that will be returned
 #
@@ -143,12 +143,13 @@ class SpeedTestFile(object):
     mySpeedTests = {}
 
     ignored_text = []
-    short_str = False
+    short_str_method = False
     # -------------------
 
     # DESC: init functions calls load using the given file path
     def __init__(self, filePath, short=False):
-        self.short_str = short; self.ignored_text = []
+        self.short_str_method = short
+        self.ignored_text = []
         self.mySpeedTests = {  "TCP" : [],
                                "UDP" : []   }
         self.FileName = filePath.split("/")[-1]
@@ -317,13 +318,13 @@ class SpeedTestFile(object):
         # !!!!
         # Don't want open streams o_O
         fs.close()
-        self.parseIndivTests(remaingingFileContents)
+        self.createIndivTests(remaingingFileContents)
     #END DEF
 
 
     # DESC: This takes the remaining contents of the file being parsed, splits the
     #       content by test (to included any error messages) and the creates the Test objects
-    def parseIndivTests(self, fileContents):
+    def createIndivTests(self, fileContents):
         fileContents = fileContents.split('\n\n')
         sortedFileContents = []
         appending = False
@@ -343,13 +344,12 @@ class SpeedTestFile(object):
                     aTest =  chunk + "\n"
                 #END IF/ELSE
             #END IF/ELSE
-            #This is so that the last test is appended, as it will not be
+            #This is so that the last test is appended, as it will not be when the loop finishes
             if chunk == fileContents[-1]:
                 sortedFileContents.append(aTest)
             #END IF
         #END FOR
         for testText in sortedFileContents:
-            print(testText)
             testAsArray = testText.split('\n')
             command = ""
             for line in testAsArray:
@@ -357,10 +357,11 @@ class SpeedTestFile(object):
                     command = line; break
             #END FOR
             if " -e " in command:
-                newTCP = TCPTest(testText, self.short_str)
+                newTCP = TCPTest(testText, self.short_str_method)
+                #print(str(newTCP))
                 self.mySpeedTests["TCP"].append(newTCP)
             elif " -u " in command:
-                newUDP = UDPTest(testText, self.short_str)
+                newUDP = UDPTest(testText, self.short_str_method)
                 self.mySpeedTests["UDP"].append(newUDP)
             else:
                 self.ignored_text.append(testText)
@@ -514,15 +515,16 @@ class SpeedTestFile(object):
     # DESC: Returns all of the sub tests for this file as a string
     def printSpeedTests(self):
         text = ""
-        for obj in self.mySpeedTests:
-            text += pad*2 + "Speed Test #" + str(self.mySpeedTests.index(obj)+1) + "\n" + str(obj)
+        for type in self.mySpeedTests:
+            for test in self.mySpeedTests[type]:
+                text +=  str(test)
         return text
     #END DEF
 
 
     # DESC: Returns a string representation of the object
     def __str__(self):
-        if self.short_str:
+        if self.short_str_method:
             return (pad + "Filename: " + self.FileName + "\n" +
                     pad + "DateTime of Speed Test: " + self.Date + " " + self.Time + "\n" +
                     pad + "Network Type: " + self.NetworkType + "\n" +

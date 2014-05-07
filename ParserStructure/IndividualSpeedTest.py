@@ -48,7 +48,7 @@ if __name__ == '__main__':
 #   Port                Integer, the port this test is connected to
 #   TestInterval        Integer, the length of time that the test will be run
 #   MeasurementFormat   String, the format (Kbytes, Kbits, etc.) that the data has been stored in
-#   short_str           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
+#   short_str_method           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
 # FUNCTIONS:
@@ -70,6 +70,7 @@ class SpeedTest():
     ConnectionLoc = "UNKNOWN"
 
     myPingThreads = []
+    TestNumber = 0
 
     RecieverIP = "UNKNOWN"
     Port = 0000
@@ -77,7 +78,7 @@ class SpeedTest():
     TestInterval = 0
     MeasurementFormat = None  #[kmKM] (Kbits, Mbits, KBytes, MBytes)
 
-    short_str = False
+    short_str_method = False
     # ------------------------
 
 

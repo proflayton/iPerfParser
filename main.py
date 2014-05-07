@@ -47,7 +47,7 @@ so_many_STDs = STDs(recusivlyPrintFiles, printShortString)
 #Loading in the raw data, and passing in the system arguements
 # The two Trues are for the STDs recursive print and quick print options
 so_many_STDs.loadRawData(sys.argv)
-#print(str(so_many_STDs))
+print(str(so_many_STDs))
 
 """
 # Converting the structure of parsed raw data into a 2 dimensional array

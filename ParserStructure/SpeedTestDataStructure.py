@@ -8,7 +8,7 @@ if __name__ == '__main__':
     print("Please run main.py.")
 
     #Changing Current Working Directory to 3 levels up
-    import os, sys
+    import os
     os.chdir("../../..")
     duhDir = os.getcwd()
 
@@ -72,7 +72,7 @@ if __name__ == '__main__':
 #       OUTPUTS-    toBeReturned:   a structure similar to this object's mySpeedTestFiles, except each
 #                                   SpeedTestFile is now a 2D array
 #
-#   convertTo_Object_To_TCPStDev - Returns a 2D array that can be converted into a 2D array. The information
+# * convertTo_Object_To_TCPStDev - Returns a 2D array that can be converted into a 2D array. The information
 #                           inside represents a distribution of the standard deviation of each SpeedTestFile's
 #                           TCP tests. The values used to calculate each StDev is the sum of all TCP threads' speed
 #                           in a specific direction (Up or Down)
@@ -81,7 +81,7 @@ if __name__ == '__main__':
 #                                   default is 3
 #       OUTPUTS-    realReturn: a 2D array with the ditribution data
 #
-#   convertTo_TCP_to_2D - Takes a STDs like structure, and returns it converted into a 2D array.
+# * convertTo_TCP_to_2D - Takes a STDs like structure, and returns it converted into a 2D array.
 #                         What was given was a structure like so:
 #                         { mobile:
 #                               { carrier1:
@@ -108,7 +108,7 @@ if __name__ == '__main__':
 from .SpeedTestFile import SpeedTestFile
 import os
 import sys
-from .utils import isLessThanVersion, csvExport
+from .utils import csvExport
 import tkinter as TK, tkinter.filedialog as TKFD
 
 class SpeedTestDS():
@@ -143,32 +143,20 @@ class SpeedTestDS():
         #END FORS
     #END DEF
 
-    def findErrorTests(self,arrayRef):
-        data = file.open("../ReferenceData/CPUC_FieldTestResults_Q42013_Data.csv","r")
-        line = data.readline()
-        while line != b'':
-            splitLine = line.split(",")
-            for cell in splitLine:
-                if "no effective service" in cell:
-                    #ERROR!
-                    pass
-                elif "timeout" in cell:
-                    #ERROR!
-                    pass
-                #END BRANCH
-            #END LOOP
-            data.readline()
-        #END LOOP
-    #END DEF
-
 
     # DESC: Given the system arguements from main.py, load in the raw data files
     def loadRawData(self, sysArgv):
         #cheat for not having to select the folder every time.
         #change string in DataRoot to be the absolute path to the data files
-        #In command line, use "python main.py -c"
-        # use "python main.py -cs" to only test on 3 files (one of each type)
-        # use "python main.py -css" to only test on 1 file
+        #In command line:
+        # use "main.py -b" if your files are located in the folders specified in the first block
+        # use "main.py -p" if your files are located in the folders specified in the second block
+        # - use "main.py -p/b -c" to test a folder of data files
+        # - use "main.py -p/b -cs" to only test on 2 files (one of each type)
+        # - use "main.py -p/b -css1" to only test on 1 file with no errors
+        # - use "main.py -p/b -css2" to only test on 1 file with errors
+        # - use "main.py -p/b -s" to only test on all sample files. Two arguments of True/False optional
+        # - use "main.py -p/b -ss - #" to only test on 1 sample file. a number after -ss is optional (must be 1->5)
         if (len(sysArgv) > 1):
             if (sysArgv[1] == "-b"):
                 DataRoot = "D:/CPUC/"
@@ -192,14 +180,11 @@ class SpeedTestDS():
             elif (sysArgv[2] == "-cs"):
                 #Alter these strings to be individual data files
                 file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
-                file2 = DataRoot + BBresults + "10_17_2013/356420059231100-10172013094856.txt"
-                file3 = DataRoot + BBresults + "10_17_2013/WBBDTest2-10172013151943.txt"
+                file2 = DataRoot + BBresults + "10_17_2013/WBBDTest2-10172013151943.txt"
                 stfile1 = SpeedTestFile(file1, self.short_str_method)
                 stfile2 = SpeedTestFile(file2, self.short_str_method)
-                stfile3 = SpeedTestFile(file3, self.short_str_method)
                 self.addToStructure(stfile1)
                 self.addToStructure(stfile2)
-                self.addToStructure(stfile3)
             elif (sysArgv[2] == "-c"):
                 for root, dirs, files in os.walk(DataRoot + BBresults + "10_17_2013/"):
                     for aFile in files:
@@ -218,9 +203,12 @@ class SpeedTestDS():
                 #END FOR os.walk
             #------------------------------------------------
             elif (sysArgv[2] == "-s"):
-                if sysArgv[3]:
+                try:
                     self.recursively_print = False if sysArgv[3] == "False" else True
                     self.short_str_method = False if sysArgv[4] == "False" else True
+                except:
+                    pass
+                #END TRY/EXCEPT
                 for root, dirs, files in os.walk(DataRoot + Samples):
                     for aFile in files:
                         #Seeing if the file given is, in fact, a data file
@@ -237,12 +225,16 @@ class SpeedTestDS():
                     #END FOR files
                 #END FOR os.walk
             elif (sysArgv[2] == "-ss"):
-                num = sysArgv[3] if (sysArgv[3]) else 1
-                file1 = DataRoot + Samples + "sample_test_"+num+".txt"
+                try:
+                    num = sysArgv[3]
+                except:
+                    num = 1
+                #END TRY/EXCEPT
+                file1 = DataRoot + Samples + "sample_test_" + str(num) + ".txt"
                 test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
                 self.addToStructure(test_SpeedTest)
             else:
-                print("I don't know that option. I'm just a silly computer. I know -css1, -css2, -cs, -c, -s, and -ss")
+                print("I don't know that option.")
             #END IF/ELIF/ELSE
         # ----------------------------------------------------------
         # ----------------------------------------------------------
@@ -332,14 +324,10 @@ class SpeedTestDS():
                     csvReady[devType][carrier].append(speedTest.convertTo2D())
             #END FOR
         #END FOR
-        """
         print("Please select the folder you wish to hold the csv files that will be created")
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                          title = "Select the Folder You Wish To Hold the CSV Files",
                                          mustexist = True)
-        """
-        rootOfFiles = os.path.expanduser("~") + "/Desktop"
-        ""
         for devType in csvReady:
             for carrier in csvReady[devType]:
                 for array in csvReady[devType][carrier]:
@@ -509,7 +497,7 @@ class SpeedTestDS():
         returnedString = ""
         #For each type of carrier in each device type, print the number of object
         for deviceType in self.mySpeedTestFiles:
-            returnedString += deviceType + "\n"
+            returnedString += deviceType.upper() + "\n"
             for carrier in self.mySpeedTestFiles[deviceType]:
                 returnedString += ("   "+ carrier + ": " +
                                    str(len(self.mySpeedTestFiles[deviceType][carrier])) + "\n")
@@ -521,16 +509,17 @@ class SpeedTestDS():
             returnedString += elem + "; "
         #END FOR
 
-        #Also, print the number of files that were ignored because of bad
-        # carrier information
-        returnedString += "\nNum ignore files: " + str(len(self.ignored_Files)) + "\n"
+        if self.short_str_method:
+            #Print the number of files that were ignored because of bad carrier information
+            returnedString += "Num ignore files: " + str(len(self.ignored_Files)) + "\n"
+        else:
+            #This loop prints the file names of all of the ignored files
+            for elem in self.ignored_Files:
+                returnedString += elem + "\n"
+        #END IF/ELSE
 
-        #Use this commented out section to print the file names of all of the
-        # ignored files
-        """
-        for elem in self.ignored_Files:
-            returnedString += "\n" + elem
-        """
+        returnedString += "------------------------------------------\n"
+        returnedString += "------------------------------------------\n"
 
         #This section will print out all of the parsed files if the quickPrint option is False
         if self.recursively_print:
@@ -541,6 +530,7 @@ class SpeedTestDS():
                     #END FOR
                 #END FOR
             #END FOR
+        #END IF
 
         return returnedString
     #END DEF

@@ -9,7 +9,7 @@ if __name__ == '__main__':
     print("Please run main.py.")
 
     #Changing Current Working Directory to 3 levels up
-    import os, sys
+    import os
     os.chdir("../../..")
     duhDir = os.getcwd()
 

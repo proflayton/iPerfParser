@@ -8,7 +8,7 @@ if __name__ == '__main__':
     print("Please run main.py.")
 
     #Changing Current Working Directory to 3 levels up
-    import os, sys
+    import os
     os.chdir("../../..")
     duhDir = os.getcwd()
 
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 #   final_speed             The summation Ping speed (KB/s)
 #   Datagrams               String? Integer? holding some UDP information we don't understand yet
 #   myPings                 List, holding all of the Pings in this specific thread
-#   short_str               Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
+#   short_str_method               Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                               Default is False
 #   ERROR                   Boolean, is True if there was a in the UDP test
 #
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    none
 #
-#   array_itize - Returns an array of this thread's pings. Used when converting
+# * array_itize - Returns an array of this thread's pings. Used when converting
 #                 STDs structure to a 2D array
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #                   totalLength:    The number of "rows", or elements, that the returned array needs to be,
@@ -73,7 +73,6 @@ if __name__ == '__main__':
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
-from .utils import readToAndGetLine
 from .utils import global_str_padding as pad; pad = pad*3
 from .Pings import Ping
 class PingThread():
@@ -83,49 +82,68 @@ class PingThread():
     PipeNumber    = 0
     DataDirection = ""
 
-    LocalIP       = 0
-    LocalPort     = 0
-    ServerIP      = 0
-    ServerPort    = 0
+    LocalIP    = 0
+    LocalPort  = 0
+    ServerIP   = 0
+    ServerPort = 0
 
-    final_secIntervalStart = 0
-    final_secIntervalEnd   = 0
-    final_size             = 0
-    final_speed            = 0
+    myPings     = []
+    myfinalPing = None
 
-    Datagrams     = None
-    myPings    = []
-
-    short_str     = False
-
-    ERROR         = False
+    short_str_method = False
     # ----------------
 
     # DESC: Initializing class
-    def __init__(self, threadNum, direction, data, short=False):
-        #This takes the given data String and parses the object information
-        self.short_str = short
-        data            = data.split("local", 1)[1].strip()
-        data_localIP    = data.split("port")[0].strip()
-        data            = data.split("port", 1)[1].strip()
-        data_localPort  = data.split("connected")[0].strip()
-        data            = data.split("connected with", 1)[1].strip()
-        data_serverIP   = data.split("port", 1)[0].strip()
-        data            = data.split("port", 1)[1].strip()
-        data_serverPort = data.split("\n")[0].strip()
-        self.myPings    = []
-        self.PipeNumber    = threadNum
+    def __init__(self, dataArr, pipeNum, direction, size, speed, short=False):
+        self.short_str_method = short
+        self.myPings = []
+        self.PipeNumber = pipeNum
         self.DataDirection = direction
-        self.LocalIP       = data_localIP
-        self.LocalPort     = data_localPort
-        self.ServerIP      = data_serverIP
-        self.ServerPort    = data_serverPort
-    #END DEF
-
-
-    # DESC: Adding a Ping object to this class' array of Ping objects
-    def addPing(self,ping):
-        self.myPings.append(ping)
+        #This takes the given data String and parses the object information
+        for line in dataArr:
+            if "connected with" in line:
+                line            = line.split("local", 1)[1].strip()
+                self.LocalIP    = line.split("port")[0].strip()
+                line            = line.split("port", 1)[1].strip()
+                self.LocalPort  = line.split("connected")[0].strip()
+                line            = line.split("connected with", 1)[1].strip()
+                self.ServerIP   = line.split("port", 1)[0].strip()
+                line            = line.split("port", 1)[1].strip()
+                self.ServerPort = line.split("\n")[0].strip()
+            #END IF
+        #END FOR
+        #Removing the line from the array of pings that contains the connection info
+        # and then creating all of the pings from the remaining strings
+        dataArray = [line for line in dataArr if "connected with" not in line]
+        for line in dataArray:
+            newPing = Ping(line, size, speed)
+            if (newPing.secIntervalStart == newPing.secIntervalEnd-1):
+                self.myPings.insert(int(newPing.secIntervalStart), newPing)
+            else:
+                self.myfinalPing = newPing
+            #END IF/ELSE
+        #END FOR
+        #This block inserts any missing Pings into the array as Pings with 0.00 for speed and size
+        index = 0
+        end = len(self.myPings)
+        while index < end:
+            if (self.myPings[index].secIntervalStart != index):
+                emptyPing = "[]  "+str(float(index))+"-"+str(float(index+1))+" sec  "+"0.00 "+size+"  0.00 "+speed
+                self.myPings.insert(index, Ping(emptyPing, size, speed))
+                end = len(self.myPings)
+            index+=1
+        #END WHILE
+        #Special case of SUM thread needs a final Ping
+        if self.PipeNumber == "SUM":
+            sizeSum = 0
+            speedSum = 0
+            for elem in self.myPings:
+                sizeSum += elem.size
+                speedSum += elem.speed
+            emptyPing = "[]  0.0-"+str(self.myPings[-1].secIntervalEnd)+" sec  "+\
+                            str(sizeSum)+" "+size+"  "+\
+                            str(int(speedSum/len(self.myPings)))+" "+speed
+            self.myfinalPing = Ping(emptyPing, size, speed)
     #END DEF
 
 
@@ -149,10 +167,10 @@ class PingThread():
             arrayed.append("")
         #END FOR
         #Add the last two values, and return
-        if (self.final_secIntervalStart == 0
-            and self.final_secIntervalEnd == 0
-            and self.final_size == 0
-            and self.final_speed == 0):
+        if (self.myfinalPing.secIntervalStart == 0
+            and self.myfinalPing.secIntervalEnd == 0
+            and self.myfinalPing.size == 0
+            and self.myfinalPing.speed == 0):
             arrayed.append(self.myPings[-1].size)
             arrayed.append(self.myPings[-1].speed)
         else:
@@ -165,15 +183,12 @@ class PingThread():
     # DESC: Creating a string representation of our object
     def __str__(self):
         this_str = ""
-        if self.short_str:
+        if self.short_str_method:
             this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
                         pad + "Data Direction: " + self.DataDirection + "\n" +
-                        pad + "Final Ping: " + str(self.final_secIntervalStart) + "-" +
-                                               str(self.final_secIntervalEnd) + " " +
-                                               str(self.final_size) + "KBytes " +
-                                               str(self.final_speed) + "Kbits/sec" + "\n"
+                        pad + "  Final Ping: " + str(self.myfinalPing)[ int(len(pad)*(4.0/3)) :] + "\n"
                        )
-            this_str += pad + "Number of Pings: " + str(len(self.myPings)) + "\n"
+            this_str += pad + "  Number of Pings: " + str(len(self.myPings)) + "\n"
         else:
             this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
                         pad + "Data Direction: " + self.DataDirection + "\n" +
@@ -182,11 +197,7 @@ class PingThread():
                        )
             for ping in self.myPings:
                 this_str += str(ping) + "\n"
-            this_str += (pad + "Final Ping: " + str(self.final_secIntervalStart) + "-" +
-                                                str(self.final_secIntervalEnd) + " " +
-                                                str(self.final_size) + "KBytes " +
-                                                str(self.final_speed) + "Kbits/sec" + "\n"
-                        )
+            this_str += str(self.myfinalPing) + "\n"
             #END FOR
         return this_str
 

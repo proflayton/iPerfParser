@@ -8,7 +8,7 @@ if __name__ == '__main__':
     print("Please run main.py.")
 
     #Changing Current Working Directory to 3 levels up
-    import os, sys
+    import os
     os.chdir("../../..")
     duhDir = os.getcwd()
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 #   Port                Integer, the port this test is connected to
 #   TestInterval        Integer, the length of time that the test will be run
 #   MeasurementFormat   String, the format (Kbytes, Kbits, etc.) that the data has been stored in
-#   short_str           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
+#   short_str_method           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
 # FUNCTIONS:
@@ -115,17 +115,18 @@ class UDPTest(SpeedTest):
     #---- Inherited Variables ----
     # ConnectionLoc = "UNKNOWN"
     # myPingThreads = []
+    # TestNumber = 0
     # RecieverIP = "UNKNOWN"
     # Port = 0000
     # TestInterval = 0
     # MeasurementFormat = None
-    # short_str = False
+    # short_str_method = False
     # ------------------------
 
 """
     # DESC: Initializing class
     def __init__(self, dataString, short=False):
-        self.short_str = short
+        self.short_str_method = short
         self.myPingThreads = []
         self.loadHeaderInfo(dataString)
         self.createPingThreads(dataString)
@@ -181,9 +182,9 @@ class UDPTest(SpeedTest):
                     #If local is in the rest of the line, then we are starting a new thread
                     elif "local" in temp:
                         if len(self.myPingThreads) < 4:
-                            self.myPingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str))
+                            self.myPingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str_method))
                         else:
-                            self.myPingThreads.append(PingThread(threadNumber, "Down", temp, self.short_str))
+                            self.myPingThreads.append(PingThread(threadNumber, "Down", temp, self.short_str_method))
                     #Otherwise, we are adding a new ping to our ping thread
                     else:
                         currPingThread = self.getPingThreadWithNum(threadNumber)
@@ -199,7 +200,7 @@ class UDPTest(SpeedTest):
                         currPingThread.ERROR = True
                     elif "local" in temp:
                         #new UDP pingThread
-                        self.myPingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str))
+                        self.myPingThreads.append(PingThread(threadNumber, "Up", temp, self.short_str_method))
                         #print("Local")
                     elif "-" in temp:
                         #Some actual Data we can use, as long as there is no error
@@ -338,7 +339,7 @@ class UDPTest(SpeedTest):
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        if self.short_str:
+        if self.short_str_method:
             this_str = (pad + "Connection Type: " + self.ConnectionType + "\n" +
                         pad + "Connection Location: " + self.ConnectionLoc + "\n"
                        )
