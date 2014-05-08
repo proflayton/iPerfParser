@@ -113,8 +113,8 @@ class SpeedTestFile(object):
 
     # -------------------
     # Initializing some class attributes
+    #File information
     FileName = "UNKNOWN"
-    FileStreamLoc = 0
 
     Date = "UNKNOWN"
     Time = "UNKNOWN"
@@ -140,8 +140,11 @@ class SpeedTestFile(object):
     Latitude = 0
     Longitude = 0
 
+    #Parsed speed tests from file
     mySpeedTests = {}
 
+    #Variables for tracking errors, filestream location, or str method
+    FileStreamLoc = 0
     ignored_text = []
     short_str_method = False
     # -------------------
@@ -235,6 +238,8 @@ class SpeedTestFile(object):
         #END TRY/EXCEPT
 
         #Get Network Provider
+        #First TRY branch is for the mobile data files (no spaces in Network Provider)
+        # Second TRY branch is for the netbook data files (space between Network and Provider)
         try:
             self.NetworkProvider = readToAndGetLine(fs,"NetworkProvider: ").split("NetworkProvider: ")[1][:-1]
             if self.NetworkProvider == "": self.NetworkProvider = "N/A"
@@ -247,7 +252,6 @@ class SpeedTestFile(object):
                 self.NetworkProvider = "N/A"
         fs.seek(self.FileStreamLoc)
         #END TRY/EXCEPT
-
         #Get Network Operator
         try:
             self.NetworkOperator = readToAndGetLine(fs,"NetworkOperator: ").split("NetworkOperator: ")[1][:-1]
@@ -255,7 +259,10 @@ class SpeedTestFile(object):
         except:
             self.NetworkOperator = "N/A"
         fs.seek(self.FileStreamLoc)
+
         #Get Device ID
+        #First TRY branch is for the mobile data files (no spaces in Network Provider)
+        # Second TRY branch is for the netbook data files (space between Network and Provider)
         try:
             self.DeviceID = readToAndGetLine(fs,"Device ID: ").split("Device ID: ")[1][:-1]
             if self.DeviceID == "": self.DeviceID = "N/A"
@@ -303,7 +310,7 @@ class SpeedTestFile(object):
                     self.Longitude = temp
                 temp = readToAndGetLine(fs, "Latitude:")
         except:
-            not_doing_anything = True
+            catching_exceptions_and_doing_nothing = True
         fs.seek(self.FileStreamLoc)
 
         #Set the file stream to the line after "Checking Connectivity"
@@ -312,13 +319,13 @@ class SpeedTestFile(object):
 
         #Reading in the remaining contents of the file (the speed tests) and passing
         # it to the function that will split it into test chunks and create the objects
-        remaingingFileContents = fs.read()
+        remainingFileContents = fs.read()
         # !!!!
         # SUPER IMPORTANT!! Otherwise, problems galore
-        # !!!!
         # Don't want open streams o_O
         fs.close()
-        self.createIndivTests(remaingingFileContents)
+        #Passing the string of file contents to the function that will split each test into it's own unit
+        self.createIndivTests(remainingFileContents)
     #END DEF
 
 
@@ -330,14 +337,14 @@ class SpeedTestFile(object):
         appending = False
         for chunk in fileContents:
             if not appending:
-                if ("Starting Test " in chunk) or ("Starting UDP" in chunk):
+                if "Starting Test " in chunk:
                     aTest =  chunk + "\n"
                     appending = True
                 else:
                     continue
                 #END IF/ELSE
             else:
-                if ("Starting Test " not in chunk) and ("Starting UDP" not in chunk):
+                if "Starting Test " not in chunk:
                     aTest += chunk + "\n"
                 else:
                     sortedFileContents.append(aTest)
@@ -352,17 +359,45 @@ class SpeedTestFile(object):
         for testText in sortedFileContents:
             testAsArray = testText.split('\n')
             command = ""
+            #Getting the command line string used to run the test
             for line in testAsArray:
                 if "Iperf command line" in line:
                     command = line; break
             #END FOR
+            #Determining what kind of test the current chunk of test is
+            # and calling the corresponding constructor
             if " -e " in command:
-                newTCP = TCPTest(testText, self.short_str_method)
-                #print(str(newTCP))
+                #print(testText)
+                newTCP = TCPTest(testText, short=self.short_str_method)
                 self.mySpeedTests["TCP"].append(newTCP)
             elif " -u " in command:
-                newUDP = UDPTest(testText, self.short_str_method)
-                self.mySpeedTests["UDP"].append(newUDP)
+                #The 1 second test chunk is organized a little differently than the 5 second test,
+                # and needs to use a different variation of constructor
+                if ("-t 1" in command):
+                    #Adding an extra new line to separate each 1 second UDP test,
+                    # and keeping track of the test number, as it is the same for each one
+                    newTestText = ""
+                    thisTestNumber = 0
+                    for line in testText.split('\n'):
+                        if "Starting Test" in line:
+                            thisTestNumber = line.split(" ")[2].split(":")[0].split("..")[0]
+                        if "Starting UDP 1" in line:
+                            newTestText += '\n'
+                        newTestText += line+'\n'
+                    #END FOR
+                    testText = newTestText.split('\n\n')
+                    subTestNum = 0
+                    for chunk in testText:
+                        if "Starting UDP 1" in chunk:
+                            subTestNum += 1
+                            testNum = str(thisTestNumber)+"."+str(subTestNum)
+                            newUDP = UDPTest(chunk, testNum, self.short_str_method)
+                            self.mySpeedTests["UDP"].append(newUDP)
+                    #END FOR
+                else:
+                    newUDP = UDPTest(testText, short=self.short_str_method)
+                    self.mySpeedTests["UDP"].append(newUDP)
+                #END IF/ELSE
             else:
                 self.ignored_text.append(testText)
             #END IF/ELIF/ELSE
@@ -437,8 +472,8 @@ class SpeedTestFile(object):
     #       call it's thread sum function, and append the standard deviation to
     #       the passed structure reference.
     def calc_TCP_StDev_and_append_to_Distribution(self, structRef, list_carriers):
-        for indivTest in self.mySpeedTests:
-            if (indivTest.ConnectionType == "TCP"):
+        for indivTest in self.mySpeedTests["TCP"]:
+            if not indivTest.ERROR:
                 if (self.NetworkOperator in list_carriers):
                     mycarrier = self.NetworkOperator
                 elif (self.NetworkProvider in list_carriers):
@@ -452,13 +487,14 @@ class SpeedTestFile(object):
                              [mycarrier]\
                              [indivTest.ConnectionLoc]\
                              ["Up"].append(up_stdev)
+                #END IF
                 down_stdev = StDevP(indivTest.sum_DownThreads())
                 if down_stdev is not None:
                     structRef[self.NetworkType]\
                              [mycarrier]\
                              [indivTest.ConnectionLoc]\
                              ["Down"].append(down_stdev)
-                
+                #END IF
             #END IF
         #END FOR
     #END DEF

@@ -158,84 +158,102 @@ class SpeedTestDS():
         # - use "main.py -p/b -s" to only test on all sample files. Two arguments of True/False optional
         # - use "main.py -p/b -ss - #" to only test on 1 sample file. a number after -ss is optional (must be 1->5)
         if (len(sysArgv) > 1):
-            if (sysArgv[1] == "-b"):
-                DataRoot = "D:/CPUC/"
-                BBresults = "BB_results/"
-                Samples = ""   #see if statement at the bottom. option "-sb"
-            elif (sysArgv[1] == "-p"):
-                DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
-                BBresults = "bb results/"
-                Samples = "sampleTests/"
-            #END DECLARING STRINGS
-
-            #Below are the actual sys arg options
-            if (sysArgv[2] == "-css1"):
-                file1 = DataRoot + BBresults + "10_18_2013/WBBDTest2-10182013113755.txt"
-                test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
-                self.addToStructure(test_SpeedTest)
-            elif (sysArgv[2] == "-css2"):
-                file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
-                test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
-                self.addToStructure(test_SpeedTest)
-            elif (sysArgv[2] == "-cs"):
-                #Alter these strings to be individual data files
-                file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
-                file2 = DataRoot + BBresults + "10_17_2013/WBBDTest2-10172013151943.txt"
-                stfile1 = SpeedTestFile(file1, self.short_str_method)
-                stfile2 = SpeedTestFile(file2, self.short_str_method)
-                self.addToStructure(stfile1)
-                self.addToStructure(stfile2)
-            elif (sysArgv[2] == "-c"):
-                for root, dirs, files in os.walk(DataRoot + BBresults + "10_17_2013/"):
-                    for aFile in files:
-                        #Seeing if the file given is, in fact, a data file
-                        #If not, the script will exit and display the message below
-                        f = open(os.path.join(root, aFile),'r')
-                        try:
-                            isItCPUC = f.readline()
-                            if ("CPUC Tester Beta v2.0" in isItCPUC):
-                                test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
-                                self.addToStructure(test_STFile)
-                            #END IF
-                        except:
-                            pass
-                    #END FOR files
-                #END FOR os.walk
-            #------------------------------------------------
-            elif (sysArgv[2] == "-s"):
-                try:
-                    self.recursively_print = False if sysArgv[3] == "False" else True
-                    self.short_str_method = False if sysArgv[4] == "False" else True
-                except:
-                    pass
-                #END TRY/EXCEPT
-                for root, dirs, files in os.walk(DataRoot + Samples):
-                    for aFile in files:
-                        #Seeing if the file given is, in fact, a data file
-                        #If not, the script will exit and display the message below
-                        f = open(os.path.join(root, aFile),'r')
-                        try:
-                            isItCPUC = f.readline()
-                            if ("CPUC Tester Beta v2.0" in isItCPUC):
-                                test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
-                                self.addToStructure(test_STFile)
-                        except:
-                            pass
-                        #END TRY/EXCEPT
-                    #END FOR files
-                #END FOR os.walk
-            elif (sysArgv[2] == "-ss"):
-                try:
-                    num = sysArgv[3]
-                except:
-                    num = 1
-                #END TRY/EXCEPT
-                file1 = DataRoot + Samples + "sample_test_" + str(num) + ".txt"
-                test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
-                self.addToStructure(test_SpeedTest)
+            if (sysArgv[1] == "-h") or ("help" in sysArgv[1]):
+                print(  "Syntax:\n" +
+                        "    main.py [fileLocation] [filesToUse]\n" +
+                        "Options:\n" +
+                        "    -c     uses a folder of data files (i.e. 10_17_2013)\n" +
+                        "    -cs    uses a file of each type (netbook and mobile)\n" +
+                        "    -css1  uses a file known to have some errors\n" +
+                        "    -css2  uses a file with no errors\n" +
+                        "    -s     uses sample data files provided (2 w/o errors, 3 w/)\n" +
+                        "       OPT: 2 arguements of 'False' or 'True' (sets recurPrint and short_str_method in STDs\n" +
+                        "    -ss    uses sample test file 1 (i.e. sample_test_1.txt)\n" +
+                        "       OPT: number of text file to use. If file doesn't exist, uses sample_test_1.txt"
+                     )
+                raise SystemExit
             else:
-                print("I don't know that option.")
-            #END IF/ELIF/ELSE
+                if (sysArgv[1] == "-b"):
+                    DataRoot = "D:/CPUC/"
+                    BBresults = "BB_results/"
+                    Samples = ""   #see if statement at the bottom. option "-sb"
+                elif (sysArgv[1] == "-p"):
+                    DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
+                    BBresults = "bb results/"
+                    Samples = "sampleTests/"
+                #END DECLARING STRINGS
+
+                #Below are the actual sys arg options
+                if (sysArgv[2] == "-css1"):
+                    file1 = DataRoot + BBresults + "10_18_2013/WBBDTest2-10182013113755.txt"
+                    test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
+                    self.addToStructure(test_SpeedTest)
+                elif (sysArgv[2] == "-css2"):
+                    file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
+                    test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
+                    self.addToStructure(test_SpeedTest)
+                elif (sysArgv[2] == "-cs"):
+                    #Alter these strings to be individual data files
+                    file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
+                    file2 = DataRoot + BBresults + "10_17_2013/WBBDTest2-10172013151943.txt"
+                    stfile1 = SpeedTestFile(file1, self.short_str_method)
+                    stfile2 = SpeedTestFile(file2, self.short_str_method)
+                    self.addToStructure(stfile1)
+                    self.addToStructure(stfile2)
+                elif (sysArgv[2] == "-c"):
+                    for root, dirs, files in os.walk(DataRoot + BBresults + "10_17_2013/"):
+                        for aFile in files:
+                            #Seeing if the file given is, in fact, a data file
+                            #If not, the script will exit and display the message below
+                            f = open(os.path.join(root, aFile),'r')
+                            try:
+                                isItCPUC = f.readline()
+                                if ("CPUC Tester Beta v2.0" in isItCPUC):
+                                    test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
+                                    self.addToStructure(test_STFile)
+                                #END IF
+                            except:
+                                pass
+                        #END FOR files
+                    #END FOR os.walk
+                #------------------------------------------------
+                elif (sysArgv[2] == "-s"):
+                    try:
+                        self.recursively_print = False if sysArgv[3] == "False" else True
+                        self.short_str_method = False if sysArgv[4] == "False" else True
+                    except:
+                        pass
+                    #END TRY/EXCEPT
+                    for root, dirs, files in os.walk(DataRoot + Samples):
+                        for aFile in files:
+                            #Seeing if the file given is, in fact, a data file
+                            #If not, the script will exit and display the message below
+                            f = open(os.path.join(root, aFile),'r')
+                            try:
+                                isItCPUC = f.readline()
+                                if ("CPUC Tester Beta v2.0" in isItCPUC):
+                                    test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
+                                    self.addToStructure(test_STFile)
+                            except:
+                                pass
+                            #END TRY/EXCEPT
+                        #END FOR files
+                    #END FOR os.walk
+                elif (sysArgv[2] == "-ss"):
+                    try:
+                        num = sysArgv[3]
+                    except:
+                        num = 1
+                    #END TRY/EXCEPT
+                    file1 = DataRoot + Samples + "sample_test_" + str(num) + ".txt"
+                    if not os.path.isfile(file1):
+                        file1 = DataRoot + Samples + "sample_test_1.txt"
+                    test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
+                    self.addToStructure(test_SpeedTest)
+                else:
+                    print("I don't know that option.")
+                #END IF/ELIF/ELSE
+            #END IF/ELSE
         # ----------------------------------------------------------
         # ----------------------------------------------------------
         else:
@@ -337,8 +355,8 @@ class SpeedTestDS():
                     except: pass
                     try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType + "/" + carrier)
                     except: pass
-
-                    index = csvReady[devType][carrier].index(array)
+                    #This section exports the 2D array, using the file name stored in the 
+                    # 2nd box of the first array
                     csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
                                      devType + "/" +
                                      carrier + "/" +
@@ -354,7 +372,7 @@ class SpeedTestDS():
     #       an array of 2-dimensional arrays that can be passed into the
     #       CSV converter class. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
-    def convertTo_Object_To_TCPStDev(self, numRangeCols=3, maxRange=10000): #pingData="speed"
+    def convertTo_Object_To_TCPStDev(self, numRangeCols=3, maxRange=1000): #pingData="speed"
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
@@ -365,18 +383,11 @@ class SpeedTestDS():
         for key in toBeReturned:
             for elem in self.Carriers:
                 toBeReturned[key][elem] = {
-                                            "East" : {
-                                                        "Up" : [] ,
-                                                        "Down" : []
-                                                     },
-                                            "West" : {
-                                                        "Up" : [] ,
-                                                        "Down" : []
-                                                     }
+                                            "East" : {  "Up" : [], "Down" : []  },
+                                            "West" : {  "Up" : [], "Down" : []  }
                                           }
             #END FOR
         #END FOR
-
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
@@ -400,9 +411,10 @@ class SpeedTestDS():
     def convertTo_TCP_to_2D(self, structure, numRangeCols, maxRange):
         if numRangeCols < 3:
             numRangeCols = 3
+        if maxRange < 1:
+            maxRange = 1000
         #END IF
         new_structure = []
-
         #Creating the arrays of the upper and lower ranges of StDevs.
         # index 2 with in val_ranges_lower is the lower bound of the column, and
         # index 2 of val_ranges_upper is the upper bound
@@ -447,8 +459,8 @@ class SpeedTestDS():
                         for value in structure[key][elem][server][direction]:
                             if value > maxRange:
                                 range_totals[-1] += 1
-                            for i in range(numRangeCols-1):
-                                if (value <= val_ranges_upper[i]) and (value > val_ranges_lower[i]):
+                            for i in range(numRangeCols): # numRangeCols-1
+                                if (value > val_ranges_lower[i]) and (value <= val_ranges_upper[i]):
                                     range_totals[i] += 1
                                     break
                                 #END IF

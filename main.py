@@ -47,7 +47,7 @@ so_many_STDs = STDs(recusivlyPrintFiles, printShortString)
 #Loading in the raw data, and passing in the system arguements
 # The two Trues are for the STDs recursive print and quick print options
 so_many_STDs.loadRawData(sys.argv)
-print(str(so_many_STDs))
+#print(str(so_many_STDs))
 
 """
 # Converting the structure of parsed raw data into a 2 dimensional array
@@ -55,17 +55,17 @@ print("Structure")
 csvReady = so_many_STDs.convertTo_Structure_To_2D()
 """
 
-"""
+""
 # Converting the structure of parsed raw data into a 2 dimensional array
 print("SD")
-csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(20, 8000)
+csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(20, 7000)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 utils.csvExport(csvOfTCP, rootOfFiles + "/StandardDeviationofTCPSumThreads.csv")
-"""
+""
 
 """
 # Adding the StDev and Median values to the csv of file information
-print("Full File")
+print("Master Excel File")
 originalCSV = utils.csvImport(DATA_PATH)
 so_many_STDs.add_StDev_and_Median_to_Master(originalCSV)
 utils.csvExport(originalCSV, rootOfFiles + "/CPUC_FieldTestResults_Q42013_Data_with_StDev_and_Median.csv")

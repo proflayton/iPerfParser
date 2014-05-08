@@ -161,8 +161,10 @@ def getMedian(vals):
     if not vals:
         return None
     sortedVals = sorted(vals)
-    mid = int(len(sortedVals)/2)
-    return sortedVals[mid]
+    if (len(sortedVals)%2 == 1):
+        return sortedVals[int(len(sortedVals)/2)]
+    else:
+        return (sortedVals[int(len(sortedVals)/2)] + sortedVals[int(len(sortedVals)/2)-1])/2.0
 #END DEF
 
 
