@@ -117,7 +117,7 @@ class TCPTest(SpeedTest):
         # putting them into the array whose key corresponds with their thread number.
         tempThreads = {}
         for line in self.text:
-            if "[" in line:
+            if ("[" in line) and ("SUM" not in line):
                 newKey = line.split("]")[0][1:].strip()
                 if newKey not in tempThreads.keys():
                     tempThreads[newKey] = []
@@ -129,18 +129,13 @@ class TCPTest(SpeedTest):
         # the structure to separate the Upload threads from the Download threads.
         dirSplitTempThreads = {"Up":{},"Down":{}}
         for key in list(tempThreads):
-            if key != "SUM":
-                dirSplitTempThreads["Down"][key] = []
-                dirSplitTempThreads["Up"][key] = []
+            dirSplitTempThreads["Down"][key] = []
+            dirSplitTempThreads["Up"][key] = []
         #END FOR
-        dirSplitTempThreads["Down"].sort()
-        dirSplitTempThreads["Up"].sort()
         #This block goes through each thread in the first structure, and essentially
         # divides the array of strings in half, putting the Upload streams into their
         # appropiate array, and the Downloads in their's.
         for thread in tempThreads:
-            #The SUM thread is only for the Upload stream, so we always know where it goes,
-            # and there is no SUM thread for the Download stream
             direction = ["Up", "Down"]
             dircInd = -1
             for line in tempThreads[thread]:
