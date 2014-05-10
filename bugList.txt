@@ -5,7 +5,8 @@
 
 Overall:
   - Not enough bacon being consumed. Increase consumption by at least 146%
-    + Fix: Acquired cast iron skillet for cooking more bacon
+     + Fix: Acquired cast iron skillet for cooking more bacon
+  - More comments needed!!
 
 SpeedTestDataStructure:
   - Adapt StDev function to be more modular
@@ -13,13 +14,17 @@ SpeedTestDataStructure:
 SpeedTestFile:
   - Creation of Individual Speeds Tests (and therefore Ping Threads and Pings)
     might work better when parsing a String rather than a FileStream
+     + Basic structure created and mildly tested 5/9/14
   - Alter structure of array storing Tests (separate by TCP/UDP, E/W)
+     + new array structure implemented 5/5/14. Functions that use this structure
+       have be adjusted accordingly
   - Pass a string of information to IndivSpeedTest, not a stream. What we can do
     is read in the whole of the file (stream.read()), split the string by “\n\n”,
     and then combine elements that are connected (ie. there may be a test that
     has an error, and so the next element in the array has this error info.
     Essentially, we combine the split elements until we hit one that has the
     String “Starting Test” in it)
+     + method has been implemented and improved as needed
   - Adapt StDev function to be more modular
 
 IndividualSpeedTest:
@@ -28,15 +33,20 @@ IndividualSpeedTest:
   - Store which order it was (first one = 1, second = 2). Don’t use 
     “Starting Test __”, we don’t want that number. We want which one it was in terms
     of when the test was executed. Was it the first or second one run?
+     + Implemented 5/7/14
   - getThreadwithNum should work a little differently, like taking a number and direction.
     This function may not be as necessary if we organize IndivTest a little differently
+     + function removed for now
 
 PingThread:
   - Work on handling of cases where a PingThread was started, but has no Pings.
     i.e. should it be a thread with one Ping, 0.0-1.0 with size and speed of 0?
+     + Errors were read as part of new parsing method (string of text), and so this
+       error checking is no longer needed
   - When converting 1 second UDP threads into an array (for SpeedTestFile function
     convertTo_StructureTo2D()), the test has two 0.0-1.0 measurements. How should
     this be handled?
+     + Problem handled. Fix implemented 5/9/14
 
 Ping:
   -

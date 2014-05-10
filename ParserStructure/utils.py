@@ -1,36 +1,4 @@
 
-
-# ------------------------------------------------------------------------
-# This section checks to see if the script is being run directly,
-# i.e. through the command line. If it is, then it stops and exits the
-# program, asking the user to use these files by running the main.py
-# ------------------------------------------------------------------------
-if __name__ == '__main__':
-    print("Please run main.py.")
-
-    #Changing Current Working Directory to 3 levels up
-    import os
-    os.chdir("../../..")
-    duhDir = os.getcwd()
-
-    #Initialize array to hold locations of "main.py"
-    #Using os.walk to look in all sub-directories
-    search = []
-    for root, dirs, files in os.walk(duhDir):
-        for name in files:
-            if name == "main.py":
-                search.append(os.path.join(root, name))
-    print("Your file seems to be located in one of these paths:")
-    for link in search:
-        print(link)
-
-    #Telling the system to exit with no errors
-    raise SystemExit
-#END __name__=='__main__'
-
-
-
-
 # ------------------------------------------------------------------------
 # UTILS.PY
 #
@@ -74,6 +42,39 @@ if __name__ == '__main__':
 #
 # ------------------------------------------------------------------------
 
+
+# DESC: This section checks to see if the script is being run directly,
+#       i.e. through the command line. If it is, then it stops and exits the
+#       program, asking the user to use these files by running the main.py
+def testForMain(name):
+    if name == '__main__':
+        print("Please run main.py.")
+
+        #Changing Current Working Directory to 3 levels up
+        import os
+        os.chdir("../../..")
+        duhDir = os.getcwd()
+
+        #Initialize array to hold locations of "main.py"
+        #Using os.walk to look in all sub-directories
+        search = []
+        for root, dirs, files in os.walk(duhDir):
+            for name in files:
+                if name == "main.py":
+                    search.append(os.path.join(root, name))
+
+        print("Your file seems to be located in one of these paths:")
+        for link in search:
+            print(link)
+
+        #Telling the system to exit with no errors
+        raise SystemExit
+    #END __name__=='__main__'
+#END DEF
+#Now I check for main (from this file, utils)
+testForMain(__name__)
+
+
 #This is going to be a global variable used in the __str__ methods of all other modules
 # This way, when objects are outputted, they can be indented to create a tree looking output
 global_str_padding = "   "
@@ -90,7 +91,6 @@ def readToAndGetLine(fileStream, delimiter):
         line = line[:-2] + "\n"
     return line
 #END DEF
-
 
 # DESC: ..
 def isLessThanVersion(minVer):
@@ -138,6 +138,7 @@ def monthNumToAbbr(num):
 #END DEF
 
 
+
 # DESC: Returns the population standard deviation of the given array of values.
 #       If an empty array is given, it returns None, which should be ignored
 def StDevP(array):
@@ -154,7 +155,6 @@ def StDevP(array):
     return dev
 #END DEF
 
-
 # DESC: This function takes in an array
 #       And returns the median of the array
 def getMedian(vals):
@@ -166,6 +166,7 @@ def getMedian(vals):
     else:
         return (sortedVals[int(len(sortedVals)/2)] + sortedVals[int(len(sortedVals)/2)-1])/2.0
 #END DEF
+
 
 
 # DESC: This fuction takes in two values:
@@ -180,7 +181,6 @@ def csvExport(a_2D_Array, fileNameToSave):
         f.write(rowOfText[:-1]+"\n")
     f.close()
 #END DEF
-
 
 # DESC: This function takes the path to a .csv file
 #       and imports it as a 2-D array
@@ -199,3 +199,19 @@ def csvImport(fileNameToImport):
     #END WHILE
     return a_2D_Array
 #END DEF
+
+
+
+""" #------------------------------------------
+In case you every need to have a one line method to print out elements in
+an array, use list comprehension.
+e.g.
+    [print(line) for line in dataArr]
+    
+The basic structure is as such...
+
+new_list = [expression(i) for i in old_list if filter(i)]
+    [ expression for item in list if conditional ]
+""" #------------------------------------------
+
+

@@ -1,34 +1,14 @@
 
 # ------------------------------------------------------------------------
-# This section checks to see if the script is being run directly,
+# This block checks to see if the script is being run directly,
 # i.e. through the command line. If it is, then it stops and exits the
 # program, asking the user to use these files by running the main.py
 # ------------------------------------------------------------------------
-if __name__ == '__main__':
-    print("Please run main.py.")
-
-    #Changing Current Working Directory to 3 levels up
-    import os
-    os.chdir("../../..")
-    duhDir = os.getcwd()
-
-    #Initialize array to hold locations of "main.py"
-    #Using os.walk to look in all sub-directories
-    search = []
-    for root, dirs, files in os.walk(duhDir):
-        for name in files:
-            if name == "main.py":
-                search.append(os.path.join(root, name))
-
-    print("Your file seems to be located in one of these paths:")
-    for link in search:
-        print(link)
-
-    #Telling the system to exit with no errors
-    raise SystemExit
-#END __name__=='__main__'
-
-
+try:
+    from .utils import testForMain
+except:
+    from utils import testForMain
+testForMain(__name__)
 
 
 # ------------------------------------------------------------------------
@@ -107,10 +87,10 @@ if __name__ == '__main__':
 from .utils import readToAndGetLine, monthAbbrToNum
 from .utils import StDevP, getMedian
 from .utils import global_str_padding as pad; pad = pad*1
-from .TCP import TCPTest
-from .UDP import UDPTest
-class SpeedTestFile(object):
+from .TCP_Test import TCPTest
+from .UDP_Test import UDPTest
 
+class SpeedTestFile(object):
     # -------------------
     # Initializing some class attributes
     #File information
@@ -122,12 +102,10 @@ class SpeedTestFile(object):
     OSName = "UNKNOWN"
     OSArchitecture = "UNKNOWN"
     OSVersion = "UNKNOWN"
-
     JavaVersion = "UNKNOWN"
     JavaVendor = "UNKNOWN"
 
     NetworkType = "UNKNOWN"
-
     Server = "UNKNOWN"
     Host = "UNKNOWN"
 
@@ -140,7 +118,6 @@ class SpeedTestFile(object):
     Latitude = 0
     Longitude = 0
 
-    #Parsed speed tests from file
     mySpeedTests = {}
 
     #Variables for tracking errors, filestream location, or str method
@@ -367,7 +344,6 @@ class SpeedTestFile(object):
             #Determining what kind of test the current chunk of test is
             # and calling the corresponding constructor
             if " -e " in command:
-                #print(testText)
                 newTCP = TCPTest(testText, short=self.short_str_method)
                 self.mySpeedTests["TCP"].append(newTCP)
             elif " -u " in command:
@@ -481,14 +457,14 @@ class SpeedTestFile(object):
                 else:
                     continue
                 #END IF/ELIF
-                up_stdev = StDevP(indivTest.sum_UpThreads())
+                up_stdev = StDevP(indivTest.sumSpeed_UpThreads())
                 if up_stdev is not None:
                     structRef[self.NetworkType]\
                              [mycarrier]\
                              [indivTest.ConnectionLoc]\
                              ["Up"].append(up_stdev)
                 #END IF
-                down_stdev = StDevP(indivTest.sum_DownThreads())
+                down_stdev = StDevP(indivTest.sumSpeed_DownThreads())
                 if down_stdev is not None:
                     structRef[self.NetworkType]\
                              [mycarrier]\
@@ -507,7 +483,6 @@ class SpeedTestFile(object):
             if ((self.DeviceID in str(row[13])) and
                 (self.Date in str(row[5])) and
                 (self.Time in str(row[6])) ):
-                #count[0]+=1
                 index = masterCSVRef.index(row)
                 break
         return index
@@ -521,10 +496,10 @@ class SpeedTestFile(object):
             westCount = 0
             eastCount = 0
             toAppend = [0]*16
-            for indivTest in self.mySpeedTests:
-                if (indivTest.ConnectionType == "TCP"):
-                    upThread = indivTest.sum_UpThreads()
-                    downThread = indivTest.sum_DownThreads()
+            for indivTest in self.mySpeedTests["TCP"]:
+                if not indivTest.ERROR:
+                    upThread = indivTest.sumSpeed_UpThreads()
+                    downThread = indivTest.sumSpeed_DownThreads()
                     up_stdev = StDevP(upThread)
                     up_median = getMedian(upThread)
                     down_stdev = StDevP(downThread)
@@ -551,9 +526,10 @@ class SpeedTestFile(object):
     # DESC: Returns all of the sub tests for this file as a string
     def printSpeedTests(self):
         text = ""
-        for type in self.mySpeedTests:
-            for test in self.mySpeedTests[type]:
-                text +=  str(test)
+        for test in self.mySpeedTests["TCP"]:
+            text +=  str(test)
+        for test in self.mySpeedTests["UDP"]:
+            text +=  str(test)
         return text
     #END DEF
 

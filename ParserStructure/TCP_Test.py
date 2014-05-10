@@ -1,38 +1,18 @@
 
 # ------------------------------------------------------------------------
-# This section checks to see if the script is being run directly,
+# This block checks to see if the script is being run directly,
 # i.e. through the command line. If it is, then it stops and exits the
 # program, asking the user to use these files by running the main.py
 # ------------------------------------------------------------------------
-if __name__ == '__main__':
-    print("Please run main.py.")
-
-    #Changing Current Working Directory to 3 levels up
-    import os
-    os.chdir("../../..")
-    duhDir = os.getcwd()
-
-    #Initialize array to hold locations of "main.py"
-    #Using os.walk to look in all sub-directories
-    search = []
-    for root, dirs, files in os.walk(duhDir):
-        for name in files:
-            if name == "main.py":
-                search.append(os.path.join(root, name))
-
-    print("Your file seems to be located in one of these paths:")
-    for link in search:
-        print(link)
-
-    #Telling the system to exit with no errors
-    raise SystemExit
-#END __name__=='__main__'
-
-
+try:
+    from .utils import testForMain
+except:
+    from utils import testForMain
+testForMain(__name__)
 
 
 # ------------------------------------------------------------------------
-# UDP.PY
+# TCP.PY
 #
 # AUTHOR(S):    Peter Walker    pwalker@csumb.edu
 #               Brandon Layton  blayton@csumb.edu
@@ -43,14 +23,13 @@ if __name__ == '__main__':
 #
 # VARIABLES:
 #   ConnectionType      String, represents the type of connection (TCP or UDP)
-#   DatagramSize        The size of datagrams that will be sent
-#   TargetBandwidth     String, the targetted bandwidth to be used in this test
+#   WindowSize          Integer, the size of TCP window to be used in this test
 #   ConnectionLoc       String, represents where this test is connected to (East or West)
 #   myPingThreads       list, holding all of the PingThreads in this test
 #   RecieverIP          String, IP of the server this test is connected to
 #   Port                Integer, the port this test is connected to
 #   TestInterval        Integer, the length of time that the test will be run
-#   MeasurementFormat   String, the format (Kbytes, Kbits, etc.) that the data has been stored in
+#   MeasuringFmt        String, the format (Kbytes, Kbits, etc.) that the data has been stored in
 #   short_str_method           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
@@ -73,42 +52,34 @@ if __name__ == '__main__':
 #                   dataStream: a data stream, with the rest of the Speed Test information
 #       OUTPUTS-    none
 #
-#   getPingThreadWithNum - This returns the PingThread object with the thread number given
-#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#                   threadNumber:   Integer, representing the ping thread's pipe/thread number
-#       OUTPUTS-    realPingThread: A Ping thread object, which was the last thread whose thread number
-#                                   was given to the function
-#
 #   getLongestThreadTime - The looks through all of the threads in this function and
 #                          returns the longest thread time in seconds
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    time:   Integer, representing the longest thread time
 #
-#   calc_StDev_ofTCPThreadSumsByDirection
-#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
-#                   structRef:  reference to the structure that will hold the standard deviation values
-#                   netType:    String, the network type (mobile or netbook) that this test falls under
-#                   carrier:    String, the carrier (AT&T, Verizon, etc.) that this test falls under
-#       OUTPUTS-    none
+#   sumSpeed_UpThreads - Creating an array of the sum of each 1 second interval of all 4 thread's speed
+#       INPUTS-     self:               reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    Up_Threads_sum:     an array containing values representing the sum of each 4 threads' speed
+#
+#   sumSpeed_DownThreads - Creating an array of the sum of each 1 second interval of all 4 thread's speed
+#       INPUTS-     self:               reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    Down_Threads_sum:   an array containing values representing the sum of each 4 threads' speed
 #
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
-import io
 from .utils import global_str_padding as pad; pad = pad*2
+from .IndividualSpeedTest import SpeedTest
 from .PingThread import PingThread
 from .Pings import Ping
 
-from .IndividualSpeedTest import SpeedTest
-class UDPTest(SpeedTest):
-
+class TCPTest(SpeedTest):
     # ------------------------
     # Class variables
     #e.g. TCP, UDP
-    ConnectionType = "UDP"
-    DatagramSize = 0
-    TargetBandwidth = None  #n[KM]
+    ConnectionType = "TCP"
+    WindowSize = 0
 
     #---- Inherited Variables ----
     # ConnectionLoc = "UNKNOWN"
@@ -117,7 +88,7 @@ class UDPTest(SpeedTest):
     # RecieverIP = "UNKNOWN"
     # Port = 0000
     # TestInterval = 0
-    # MeasurementFormat = None
+    # MeasuringFmt = None
     # iPerfCommand = ""
     # ERROR = False
     # ErrorMessage = None
@@ -127,25 +98,21 @@ class UDPTest(SpeedTest):
 
     # DESC: Initializing class
     def __init__(self, dataString, testNum=0, short=False):
-        iPerfCommand = SpeedTest.__init__(self, dataString, testNum, short)
+        #Call the parent class' __init__
+        SpeedTest.__init__(self, dataString, testNum, short)
         if not self.ERROR:
-            #Getting the datagram size
-            self.DatagramSize = self.iPerfCommand[self.iPerfCommand.find("-l"):].split(" ")[1].strip()
-            #Getting the datagram size
-            self.TargetBandwidth = self.iPerfCommand[self.iPerfCommand.find("-b"):].split(" ")[1].strip()
+            #Getting the window size
+            self.WindowSize = self.iPerfCommand[self.iPerfCommand.find("-w"):].split(" ")[1].strip()
             #Declaring and creating the Ping Threads for this test
-            self.myPingThreads = []
-            self.createPingThread()
+            self.myPingThreads = { "Up" : [], "Down" : [] }
+            self.SumThread = None
+            self.createPingThreads()
             self.text = None
     #END DEF
 
 
     # DESC: Given the data stream, parses the Speed Test streams into individual Ping Threads
-    def createPingThread(self):
-        return False
-        #
-        #
-        """
+    def createPingThreads(self):
         #This block does the initial organization, going through each line and
         # putting them into the array whose key corresponds with their thread number.
         tempThreads = {}
@@ -162,51 +129,101 @@ class UDPTest(SpeedTest):
         # the structure to separate the Upload threads from the Download threads.
         dirSplitTempThreads = {"Up":{},"Down":{}}
         for key in list(tempThreads):
-            dirSplitTempThreads["Up"][key] = []
             if key != "SUM":
                 dirSplitTempThreads["Down"][key] = []
+                dirSplitTempThreads["Up"][key] = []
         #END FOR
+        dirSplitTempThreads["Down"].sort()
+        dirSplitTempThreads["Up"].sort()
         #This block goes through each thread in the first structure, and essentially
         # divides the array of strings in half, putting the Upload streams into their
         # appropiate array, and the Downloads in their's.
         for thread in tempThreads:
             #The SUM thread is only for the Upload stream, so we always know where it goes,
             # and there is no SUM thread for the Download stream
-            if thread != "SUM":
-                direction = ["Up", "Down"]
-                dircInd = -1
-                for line in tempThreads[thread]:
-                    if "connected with" in line:
-                        dircInd += 1
-                    dirSplitTempThreads[direction[dircInd]][thread].append(line)
-                #END FOR
-            else:
-                for line in tempThreads[thread]:
-                    dirSplitTempThreads["Up"][thread].append(line)
-                #END FOR
-            #END IF/ELSE
+            direction = ["Up", "Down"]
+            dircInd = -1
+            for line in tempThreads[thread]:
+                if "connected with" in line:
+                    dircInd += 1
+                dirSplitTempThreads[direction[dircInd]][thread].append(line)
+            #END FOR
         #END FOR
-        #
-        #
+        #Sorting the arrays of threads, as they are now organized by thread and direction
+        for direction in dirSplitTempThreads:
+            for thread in dirSplitTempThreads[direction]:
+                temp = sorted(dirSplitTempThreads[direction][thread])
+                start = temp.pop(-1); end = temp.pop(1)
+                dirSplitTempThreads[direction][thread] = [start]
+                dirSplitTempThreads[direction][thread].extend(temp)
+                dirSplitTempThreads[direction][thread].append(end)
+        #END FOR
+        #Now pass each array of Pings (as Strings) to the PingThread constructor
         for direction in dirSplitTempThreads:
             for thread in dirSplitTempThreads[direction]:
                 self.myPingThreads[direction].append( 
                     PingThread(dirSplitTempThreads[direction][thread],\
                                thread, direction,\
-                               self.MeasurementFormat["Size"], self.MeasurementFormat["Speed"],\
+                               self.MeasuringFmt["Size"],\
+                               self.MeasuringFmt["Speed"],\
                                self.short_str_method) )
-        """
         #END FOR
     #END DEF
+
 
     # DESC: In this test, find the longest thread time among all of the threads
     def getLongestThreadTime(self):
         time = 0
-        for thread in self.myPingThreads:
-            for ping in thread.myPings:
-                new_time = ping.secIntervalEnd
+        for direction in self.myPingThreads:
+            for thread in self.myPingThreads[direction]:
+                new_time = thread.myPings[-1].secIntervalEnd
                 time = new_time if new_time > time else time
+        #END FOR
         return time
+    #END DEF
+
+
+    # DESC: This returns the sum of the Up threads in this test
+    def sumSpeed_UpThreads(self):
+        Up_threads_sum = []
+        #Calculating max thread length
+        max_up_length = 0
+        for thread in self.myPingThreads["Up"]:
+            new_max = int(thread.myPings[-1].secIntervalEnd)
+            max_up_length = new_max if new_max > max_up_length else max_up_length
+        #END FOR
+        #Get the sums of the Up and Down threads
+        for step in range(max_up_length):
+            temp = 0
+            for itr in range(len(self.myPingThreads["Up"])):
+                try: temp += self.myPingThreads["Up"][itr].myPings[step].speed
+                except: pass
+            #END FOR
+            Up_threads_sum.append(temp)
+        #END FOR
+        return Up_threads_sum
+    #END DEF
+
+
+    # DESC: This returns the sum of the Down threads in this test
+    def sumSpeed_DownThreads(self):
+        Down_threads_sum = []
+        #Calculating max thread length by direction
+        max_down_length = 0
+        for thread in self.myPingThreads["Down"]:
+            new_max = int(thread.myPings[-1].secIntervalEnd)
+            max_down_length = new_max if new_max > max_down_length else max_down_length
+        #END FOR
+        #Get the sums of the Up and Down threads
+        for step in range(max_down_length):
+            temp = 0
+            for itr in range(len(self.myPingThreads["Down"])):
+                try: temp += self.myPingThreads["Down"][itr].myPings[step].speed
+                except: pass
+            #END FOR
+            Down_threads_sum.append(temp)
+        #END FOR
+        return Down_threads_sum
     #END DEF
 
 
@@ -220,8 +237,9 @@ class UDPTest(SpeedTest):
                             pad + "Connection Type: " + self.ConnectionType + "\n" +
                             pad + "Connection Location: " + self.ConnectionLoc + "\n"
                            )
-                for pingThread in self.myPingThreads:
-                    this_str += str(pingThread)
+                for direction in self.myPingThreads:
+                    for pingThread in self.myPingThreads[direction]:
+                        this_str += str(pingThread)
                 #END FOR
             else:
                 this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
@@ -229,13 +247,13 @@ class UDPTest(SpeedTest):
                             pad + "Connection Location: " + self.ConnectionLoc + "\n" +
                             pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
                             pad + "Test Interval:" + self.TestInterval +\
-                                "  Datagram Size:" + self.DatagramSize + "\n" +\
-                            pad + "Target Bandwidth:" + self.TargetBandwidth +\
-                                "  Measurement Format:" + self.MeasurementFormat["Size"] +\
-                                    ", " + self.MeasurementFormat["Speed"] + "\n"
+                                "  Window Size:" + self.WindowSize +\
+                                "  Measurement Format:" + self.MeasuringFmt["Size"] +\
+                                    ", " + self.MeasuringFmt["Speed"] + "\n"
                            )
-                for pingThread in self.myPingThreads:
-                    this_str += str(pingThread)
+                for direction in self.myPingThreads:
+                    for pingThread in self.myPingThreads[direction]:
+                        this_str += str(pingThread)
                 #END FOR
             #END IF/ELSE
             return this_str

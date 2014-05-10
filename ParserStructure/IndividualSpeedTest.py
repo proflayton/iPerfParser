@@ -1,34 +1,14 @@
 
 # ------------------------------------------------------------------------
-# This section checks to see if the script is being run directly,
+# This block checks to see if the script is being run directly,
 # i.e. through the command line. If it is, then it stops and exits the
 # program, asking the user to use these files by running the main.py
 # ------------------------------------------------------------------------
-if __name__ == '__main__':
-    print("Please run main.py.")
-
-    #Changing Current Working Directory to 3 levels up
-    import os, sys
-    os.chdir("../../..")
-    duhDir = os.getcwd()
-
-    #Initialize array to hold locations of "main.py"
-    #Using os.walk to look in all sub-directories
-    search = []
-    for root, dirs, files in os.walk(duhDir):
-        for name in files:
-            if name == "main.py":
-                search.append(os.path.join(root, name))
-
-    print("Your file seems to be located in one of these paths:")
-    for link in search:
-        print(link)
-
-    #Telling the system to exit with no errors
-    raise SystemExit
-#END __name__=='__main__'
-
-
+try:
+    from .utils import testForMain
+except:
+    from utils import testForMain
+testForMain(__name__)
 
 
 # ------------------------------------------------------------------------
@@ -47,7 +27,7 @@ if __name__ == '__main__':
 #   RecieverIP          String, IP of the server this test is connected to
 #   Port                Integer, the port this test is connected to
 #   TestInterval        Integer, the length of time that the test will be run
-#   MeasurementFormat   String, the format (Kbytes, Kbits, etc.) that the data has been stored in
+#   MeasuringFmt        String, the format (Kbytes, Kbits, etc.) that the data has been stored in
 #   iPerfCommand        String, the command line string used to run iPerf for this test
 #   ERROR               Boolean, True if test contained an error, False otherwise
 #   ErrorMessage        String, the message that will be displayed if the test contained an error
@@ -63,8 +43,8 @@ if __name__ == '__main__':
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
-class SpeedTest():
 
+class SpeedTest(object):
     # ------------------------
     # Class variables.
     #e.g. TCP, UDP
@@ -79,7 +59,7 @@ class SpeedTest():
     Port = 0000
 
     TestInterval = 0
-    MeasurementFormat = None  #[kmKM] (Kbits, Mbits, KBytes, MBytes)
+    MeasuringFmt = None  #[kmKM] (Kbits, Mbits, KBytes, MBytes)
 
     iPerfCommand = ""
     ERROR = False
@@ -111,7 +91,7 @@ class SpeedTest():
             return
         #END IF/ELIF
         self.short_str_method = short_str
-        self.MeasurementFormat = { "Speed" : None, "Size" : None}
+        self.MeasuringFmt = { "Speed" : None, "Size" : None}
         self.text = dataString.split('\n')
 
         #This block will copy the command line call into the iPerfCommand variable,
@@ -143,17 +123,17 @@ class SpeedTest():
         #Getting measurement format
         mform = self.iPerfCommand[self.iPerfCommand.find("-f"): ].split(" ")[1].strip()
         if mform == "k":
-            self.MeasurementFormat["Speed"] = "Kbits/sec"
-            self.MeasurementFormat["Size"] = "KBytes"
+            self.MeasuringFmt["Speed"] = "Kbits/sec"
+            self.MeasuringFmt["Size"] = "KBytes"
         elif mform == "K":
-            self.MeasurementFormat["Speed"] = "KBytes/sec"
-            self.MeasurementFormat["Size"] = "KBytes"
+            self.MeasuringFmt["Speed"] = "KBytes/sec"
+            self.MeasuringFmt["Size"] = "KBytes"
         elif mform == "m":
-            self.MeasurementFormat["Speed"] = "Mbits/sec"
-            self.MeasurementFormat["Size"] = "MBytes"
+            self.MeasuringFmt["Speed"] = "Mbits/sec"
+            self.MeasuringFmt["Size"] = "MBytes"
         elif mform == "M":
-            self.MeasurementFormat["Speed"] = "MBytes/sec"
-            self.MeasurementFormat["Size"] = "MBytes"
+            self.MeasuringFmt["Speed"] = "MBytes/sec"
+            self.MeasuringFmt["Size"] = "MBytes"
         #END IF/ELIF
     #END DEF
 

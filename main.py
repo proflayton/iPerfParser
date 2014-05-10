@@ -42,12 +42,12 @@ DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q4201
 #Here's where main actually starts
 # creating a Speed Test Data Structure
 recusivlyPrintFiles = True
-printShortString = True
+printShortString = False
 so_many_STDs = STDs(recusivlyPrintFiles, printShortString)
 #Loading in the raw data, and passing in the system arguements
 # The two Trues are for the STDs recursive print and quick print options
 so_many_STDs.loadRawData(sys.argv)
-#print(str(so_many_STDs))
+print(str(so_many_STDs))
 
 """
 # Converting the structure of parsed raw data into a 2 dimensional array
@@ -55,13 +55,13 @@ print("Structure")
 csvReady = so_many_STDs.convertTo_Structure_To_2D()
 """
 
-""
+"""
 # Converting the structure of parsed raw data into a 2 dimensional array
 print("SD")
 csvOfTCP = so_many_STDs.convertTo_Object_To_TCPStDev(20, 7000)
 rootOfFiles = os.path.expanduser("~") + "/Desktop"
 utils.csvExport(csvOfTCP, rootOfFiles + "/StandardDeviationofTCPSumThreads.csv")
-""
+"""
 
 """
 # Adding the StDev and Median values to the csv of file information
