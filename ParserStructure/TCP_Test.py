@@ -100,12 +100,11 @@ class TCPTest(SpeedTest):
     def __init__(self, dataString, testNum=0, short=False):
         #Call the parent class' __init__
         SpeedTest.__init__(self, dataString, testNum, short)
+        #Getting the window size
+        self.WindowSize = self.iPerfCommand[self.iPerfCommand.find("-w"):].split(" ")[1].strip()
         if not self.ERROR:
-            #Getting the window size
-            self.WindowSize = self.iPerfCommand[self.iPerfCommand.find("-w"):].split(" ")[1].strip()
             #Declaring and creating the Ping Threads for this test
             self.myPingThreads = { "Up" : [], "Down" : [] }
-            self.SumThread = None
             self.createPingThreads()
             self.text = None
     #END DEF
@@ -144,7 +143,11 @@ class TCPTest(SpeedTest):
                 dirSplitTempThreads[direction[dircInd]][thread].append(line)
             #END FOR
         #END FOR
-        #Sorting the arrays of threads, as they are now organized by thread and direction
+        #Sorting the arrays of threads, as they are now organized by thread and direction.
+        # Once the sorted() function runs, the line are not in their correct order. We need to take
+        # the last line (which contains the "local xxx.xxx.xxx.xxx ....") and the second line (which is
+        # the [x] 0.0-t.t line, or the summation line) and put them in their respective locations, which
+        # is the beginning and end of the array of lines
         for direction in dirSplitTempThreads:
             for thread in dirSplitTempThreads[direction]:
                 temp = sorted(dirSplitTempThreads[direction][thread])
@@ -167,13 +170,21 @@ class TCPTest(SpeedTest):
 
 
     # DESC: In this test, find the longest thread time among all of the threads
-    def getLongestThreadTime(self):
+    def getLongestThreadTime(self, direction_passed="ALL"):
         time = 0
-        for direction in self.myPingThreads:
-            for thread in self.myPingThreads[direction]:
+        if direction_passed == "ALL":
+            for direction in self.myPingThreads:
+                for thread in self.myPingThreads[direction]:
+                    #As long as the PingThreads array of Pings is ordered correctly, the last
+                    # Ping object will always be the last Ping in the sequence. Hence, we can -1
+                    new_time = thread.myPings[-1].secIntervalEnd
+                    time = new_time if new_time > time else time
+            #END FOR
+        else:
+            for thread in self.myPingThreads[direction_passed]:
                 new_time = thread.myPings[-1].secIntervalEnd
                 time = new_time if new_time > time else time
-        #END FOR
+            #END FOR
         return time
     #END DEF
 
@@ -182,16 +193,16 @@ class TCPTest(SpeedTest):
     def sumSpeed_UpThreads(self):
         Up_threads_sum = []
         #Calculating max thread length
-        max_up_length = 0
-        for thread in self.myPingThreads["Up"]:
-            new_max = int(thread.myPings[-1].secIntervalEnd)
-            max_up_length = new_max if new_max > max_up_length else max_up_length
-        #END FOR
-        #Get the sums of the Up and Down threads
+        max_up_length = int(self.getLongestThreadTime("Up"))
+        #Get the sums of the Up threads. The first FOR loop will iterate X number of times
+        # based on what was returned by getLongestThreadTime(). Within the FOR loop, we set up
+        # a temporary variable. We then try to add a specific interval (e.g. 1.0-2.0 sec) for each
+        # thread to the temporary variable. If the interval does not exist, then nothing is added
+        # (i.e. we add 0). We then append this value to Up_threads_sum, which will be returned.
         for step in range(max_up_length):
             temp = 0
-            for itr in range(len(self.myPingThreads["Up"])):
-                try: temp += self.myPingThreads["Up"][itr].myPings[step].speed
+            for thread in self.myPingThreads["Up"]:
+                try: temp += thread.myPings[step].speed
                 except: pass
             #END FOR
             Up_threads_sum.append(temp)
@@ -204,16 +215,12 @@ class TCPTest(SpeedTest):
     def sumSpeed_DownThreads(self):
         Down_threads_sum = []
         #Calculating max thread length by direction
-        max_down_length = 0
-        for thread in self.myPingThreads["Down"]:
-            new_max = int(thread.myPings[-1].secIntervalEnd)
-            max_down_length = new_max if new_max > max_down_length else max_down_length
-        #END FOR
-        #Get the sums of the Up and Down threads
+        max_down_length = int(self.getLongestThreadTime("Down"))
+        #Get the sums of the Down threads
         for step in range(max_down_length):
             temp = 0
-            for itr in range(len(self.myPingThreads["Down"])):
-                try: temp += self.myPingThreads["Down"][itr].myPings[step].speed
+            for thread in self.myPingThreads["Down"]:
+                try: temp += thread.myPings[step].speed
                 except: pass
             #END FOR
             Down_threads_sum.append(temp)
@@ -224,34 +231,40 @@ class TCPTest(SpeedTest):
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        if self.ERROR:
-            return self.text.strip('\n\n')
-        else:
-            if self.short_str_method:
-                this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                            pad + "Connection Type: " + self.ConnectionType + "\n" +
-                            pad + "Connection Location: " + self.ConnectionLoc + "\n"
-                           )
-                for direction in self.myPingThreads:
-                    for pingThread in self.myPingThreads[direction]:
-                        this_str += str(pingThread)
-                #END FOR
+        #If there was an error, return all of the text on this function call. Otherwise, print
+        # the appropiate text based on whether the user wants the long or short form
+        if self.short_str_method:
+            this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
+                        pad + "Connection Type: " + self.ConnectionType + "\n" +
+                        pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                       )
+            if self.ERROR:
+                this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
             else:
-                this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                            pad + "Connection Type: " + self.ConnectionType + "\n" +
-                            pad + "Connection Location: " + self.ConnectionLoc + "\n" +
-                            pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
-                            pad + "Test Interval:" + self.TestInterval +\
-                                "  Window Size:" + self.WindowSize +\
-                                "  Measurement Format:" + self.MeasuringFmt["Size"] +\
-                                    ", " + self.MeasuringFmt["Speed"] + "\n"
-                           )
                 for direction in self.myPingThreads:
                     for pingThread in self.myPingThreads[direction]:
                         this_str += str(pingThread)
                 #END FOR
             #END IF/ELSE
-            return this_str
+        else:
+            this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
+                        pad + "Connection Type: " + self.ConnectionType + "\n" +
+                        pad + "Connection Location: " + self.ConnectionLoc + "\n" +
+                        pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
+                        pad + "Test Interval:" + self.TestInterval +\
+                            "  Window Size:" + self.WindowSize +\
+                            "  Measurement Format:" + self.MeasuringFmt["Size"] +\
+                                ", " + self.MeasuringFmt["Speed"] + "\n"
+                       )
+            if self.ERROR:
+                this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
+            else:
+                for direction in self.myPingThreads:
+                    for pingThread in self.myPingThreads[direction]:
+                        this_str += str(pingThread)
+                #END FOR
+            #END IF/ELSE
         #END IF/ELSE
+        return this_str
     #END DEF
 #END CLASS

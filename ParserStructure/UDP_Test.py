@@ -92,12 +92,12 @@ class UDPTest(SpeedTest):
 
     # DESC: Initializing class
     def __init__(self, dataString, testNum=0, short=False):
-        iPerfCommand = SpeedTest.__init__(self, dataString, testNum, short)
+        SpeedTest.__init__(self, dataString, testNum, short)
+        #Getting the datagram size
+        self.DatagramSize = self.iPerfCommand[self.iPerfCommand.find("-l"):].split(" ")[1].strip()
+        #Getting the datagram size
+        self.TargetBandwidth = self.iPerfCommand[self.iPerfCommand.find("-b"):].split(" ")[1].strip()
         if not self.ERROR:
-            #Getting the datagram size
-            self.DatagramSize = self.iPerfCommand[self.iPerfCommand.find("-l"):].split(" ")[1].strip()
-            #Getting the datagram size
-            self.TargetBandwidth = self.iPerfCommand[self.iPerfCommand.find("-b"):].split(" ")[1].strip()
             #Declaring and creating the Ping Threads for this test
             self.myPingThreads = []
             self.createPingThread()
@@ -134,12 +134,18 @@ class UDPTest(SpeedTest):
             # If "Server Report" is in the line, we need the next line
             elif "Server Report" in line:
                 self.ServerReport = { "Ping": None, "Time": None,
-                                      "Datagrams_OutofOrder": None
+                                      "Datagrams_OutofOrder": []
                                     }
                 text = self.text[self.text.index(line)+1]
                 self.ServerReport["Ping"] = Ping(text, self.MeasuringFmt["Size"], self.MeasuringFmt["Speed"])
                 self.ServerReport["Time"] = text.split("/sec")[1].split("ms")[0].strip() + " ms"
-                self.ServerReport["Datagrams_OutofOrder"] = text.split("ms")[1].strip().replace("  ","")
+                #Parsing the percentage at the end of this server report string
+                fraction = text.split("ms")[1]
+                lost = int(fraction.split("/")[0].strip())
+                total = int(fraction.split("/")[1].split("(")[0].strip())
+                self.ServerReport["Datagrams_OutofOrder"].append(lost)
+                self.ServerReport["Datagrams_OutofOrder"].append(total)
+                self.ServerReport["Datagrams_OutofOrder"].append((float(lost)/float(total))*100)
             #END IF/ELIF
         #END FOR
     #END DEF
@@ -147,37 +153,50 @@ class UDPTest(SpeedTest):
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        if self.ERROR:
-            return self.text.strip('\n\n')
-        else:
-            if self.short_str_method:
-                this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                            pad + "Connection Type: " + self.ConnectionType + "\n" +
-                            pad + "Connection Location: " + self.ConnectionLoc + "\n"
-                           )
-                for pingThread in self.myPingThreads:
-                    this_str += str(pingThread)
-                this_str += str(self.ServerReport["Ping"]) + "   " + str(self.ServerReport["Time"]) + "   " + \
-                            str(self.ServerReport["Datagrams_OutofOrder"]) + "\n"
-                #END FOR
+        this_str = ""
+        if self.short_str_method:
+            this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
+                        pad + "Connection Type: " + self.ConnectionType + "\n" +
+                        pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                       )
+            if self.ERROR:
+                this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
             else:
-                this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                            pad + "Connection Type: " + str(self.ConnectionType) + "\n" +
-                            pad + "Connection Location: " + str(self.ConnectionLoc) + "\n" +
-                            pad + "Reciever IP:" + str(self.RecieverIP) + " port:" + str(self.Port) + "\n" +
-                            pad + "Test Interval:" + str(self.TestInterval) +\
-                                "  Datagram Size:" + str(self.DatagramSize) + "\n" +\
-                            pad + "Target Bandwidth:" + str(self.TargetBandwidth) +\
-                                "  Measurement Format:" + str(self.MeasuringFmt["Size"]) +\
-                                ", " + str(self.MeasuringFmt["Speed"]) + "\n"
-                           )
                 for pingThread in self.myPingThreads:
                     this_str += str(pingThread)
-                this_str += str(self.ServerReport["Ping"]) + "   " + str(self.ServerReport["Time"]) + "   " + \
-                            str(self.ServerReport["Datagrams_OutofOrder"]) + "\n"
-                #END FOR
+                this_str += ( str(self.ServerReport["Ping"]) + "   " +
+                              str(self.ServerReport["Time"]) + "   " +
+                              str(self.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
+                              str(self.ServerReport["Datagrams_OutofOrder"][1]) + " (" +
+                              str( int(round(self.ServerReport["Datagrams_OutofOrder"][2])) ) + "%)\n"
+                            )
+                #END APPEND PING THREADS
             #END IF/ELSE
-            return this_str
+        else:
+            this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
+                        pad + "Connection Type: " + str(self.ConnectionType) + "\n" +
+                        pad + "Connection Location: " + str(self.ConnectionLoc) + "\n" +
+                        pad + "Reciever IP:" + str(self.RecieverIP) + " port:" + str(self.Port) + "\n" +
+                        pad + "Test Interval:" + str(self.TestInterval) +
+                            "  Datagram Size:" + str(self.DatagramSize) + "\n" +
+                        pad + "Target Bandwidth:" + str(self.TargetBandwidth) +
+                            "  Measurement Format:" + str(self.MeasuringFmt["Size"]) +
+                            ", " + str(self.MeasuringFmt["Speed"]) + "\n"
+                       )
+            if self.ERROR:
+                this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
+            else:
+                for pingThread in self.myPingThreads:
+                    this_str += str(pingThread)
+                this_str += ( str(self.ServerReport["Ping"]) + "   " +
+                              str(self.ServerReport["Time"]) + "   " +
+                              str(self.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
+                              str(self.ServerReport["Datagrams_OutofOrder"][1]) + " (" +
+                              str( int(round(self.ServerReport["Datagrams_OutofOrder"][2])) ) + "%)\n"
+                            )
+                #END APPEND PING THREADS
+            #END IF/ELSE
         #END IF/ELSE
+        return this_str
     #END DEF
 #END CLASS

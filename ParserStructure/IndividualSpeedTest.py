@@ -76,19 +76,15 @@ class SpeedTest(object):
         if ("Test Timed Out" in dataString) or ("timed out" in dataString):
             self.ERROR = True
             self.ErrorMessage = "Test Timed Out."
-            return
         elif "Quitting operations" in dataString:
             self.ERROR = True
             self.ErrorMessage = "Test quit by User."
-            return
         elif "failed:" in dataString:
             self.ERROR = True
             self.ErrorMessage = "There was an error of some kind. Please investigate"
-            return
-        elif "WARNING: did not recieve" in dataString:
+        elif "WARNING: did not receive" in dataString:
             self.ERROR = True
-            self.ErrorMessage = "WARNING: did not receive ack of last datagram after 10 tries."
-            return
+            self.ErrorMessage = "WARNING: did not receive ACK of last datagram after 10 tries."
         #END IF/ELIF
         self.short_str_method = short_str
         self.MeasuringFmt = { "Speed" : None, "Size" : None}
@@ -140,6 +136,6 @@ class SpeedTest(object):
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        return self.text
+        return self.text.replace('\n\n','\n')
     #END DEF
 #END CLASS

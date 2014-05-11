@@ -381,6 +381,7 @@ class SpeedTestFile(object):
     #END DEf
 
 
+    """
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
     def convertTo2D(self):
@@ -442,7 +443,7 @@ class SpeedTestFile(object):
         #END FOR
         return toBeReturned
     #END DEF
-
+    """
 
     # DESC: Looping through each Test, if the test if of type TCP, then
     #       call it's thread sum function, and append the standard deviation to
@@ -526,10 +527,10 @@ class SpeedTestFile(object):
     # DESC: Returns all of the sub tests for this file as a string
     def printSpeedTests(self):
         text = ""
-        for test in self.mySpeedTests["TCP"]:
-            text +=  str(test)
-        for test in self.mySpeedTests["UDP"]:
-            text +=  str(test)
+        for speedTest in self.mySpeedTests["TCP"]:
+            text +=  str(speedTest)
+        for speedTest in self.mySpeedTests["UDP"]:
+            text +=  str(speedTest)
         return text
     #END DEF
 

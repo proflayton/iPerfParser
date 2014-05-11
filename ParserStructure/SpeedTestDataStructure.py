@@ -44,7 +44,7 @@ testForMain(__name__)
 #                   STFileObj:  SpeedTestFile object, holds the raw data that has been parsed
 #       OUTPUTS-    none
 #
-#   convertTo_Structure_To_2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
+# * convertTo_Structure_To_2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
 #                             array. Each array can be converted to a .csv file. Each array holds all of the
 #                             SpeedTestFile information, down to the Ping level
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
@@ -356,31 +356,43 @@ class SpeedTestDS(object):
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
-        toBeReturned = {
-                        "mobile"  : {},
-                        "netbook" : {}
-                       }
-        for key in toBeReturned:
+        TCPStDevStruct = {
+                          "mobile"  : {},
+                          "netbook" : {}
+                         }
+        for key in TCPStDevStruct:
             for elem in self.Carriers:
-                toBeReturned[key][elem] = {
-                                            "East" : {  "Up" : [], "Down" : []  },
-                                            "West" : {  "Up" : [], "Down" : []  }
-                                          }
+                TCPStDevStruct[key][elem] = {
+                                              "East" : {  "Up" : [], "Down" : []  },
+                                              "West" : {  "Up" : [], "Down" : []  }
+                                            }
             #END FOR
         #END FOR
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
-                    speedTest.calc_TCP_StDev_and_append_to_Distribution(toBeReturned, self.Carriers)
+                    speedTest.calc_TCP_StDev_and_append_to_Distribution(TCPStDevStruct, self.Carriers)
                 #END FOR
             #END FOR
         #END FOR
-        #After the FOR loops above, the structure toBeReturned should have Up and Down
+        #After the FOR loops above, the structure TCPStDevStruct should have Up and Down
         # in each carrier populated with standard deviation values. A reference to this
         # structure is then passed to the function that converts the Up and Down dictionaries
         # into 2D arrays
-        realReturn = self.convertTo_TCP_to_2D(toBeReturned, numRangeCols, maxRange)
-        return realReturn
+        csvStruct_TCPStDev = self.convertTo_TCP_to_2D(TCPStDevStruct, numRangeCols, maxRange)
+
+        """
+        print("Please select the folder you wish to hold the csv file that will be created")
+        rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
+                                         title = "Select the Folder You Wish To Hold the CSV Files",
+                                         mustexist = True)
+        """
+        rootOfFiles = os.path.expanduser("~") + "/Desktop"
+
+        from datetime import datetime
+        now = datetime.now().strftime('%Y%m%d-%I%M%S')
+        csvExport(csvStruct_TCPStDev, rootOfFiles + "/StandardDeviationofTCPSumThreads_"+now+".csv")
+        return True
     #END DEF
 
 
@@ -481,6 +493,15 @@ class SpeedTestDS(object):
                     speedTest.calc_StDev_and_Median_and_append_to_MasterCSV(origRef, self.Carriers)
             #END FOR
         #END FOR
+
+        """
+        print("Please select the folder you wish to hold the csv file that will be created")
+        rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
+                                         title = "Select the Folder You Wish To Hold the CSV Files",
+                                         mustexist = True)
+        """
+        rootOfFiles = os.path.expanduser("~") + "/Desktop"
+        csvExport(origRef, rootOfFiles + "/CPUC_FieldTestResults_Q42013_Data_with_StDev_and_Median.csv")
     #END DEF
 
 
@@ -500,14 +521,18 @@ class SpeedTestDS(object):
         for elem in self.ignored_Carriers:
             returnedString += elem + "; "
         #END FOR
+        if len(self.ignored_Carriers) > 0:
+            returnedString += "\n"
 
         if self.short_str_method:
             #Print the number of files that were ignored because of bad carrier information
             returnedString += "Num ignore files: " + str(len(self.ignored_Files)) + "\n"
         else:
             #This loop prints the file names of all of the ignored files
-            for elem in self.ignored_Files:
-                returnedString += elem + "\n"
+            for itir in range( int(len(self.ignored_Files)/2) ):
+                try: returnedString += self.ignored_Files[itir*2] + ", " + self.ignored_Files[(itir*2)+1] + "\n"
+                except: returnedString += self.ignored_Files[itir*2] + "\n"
+            #END FOR
         #END IF/ELSE
 
         returnedString += "------------------------------------------\n"
@@ -518,7 +543,7 @@ class SpeedTestDS(object):
             for deviceType in self.mySpeedTestFiles:
                 for carrier in self.mySpeedTestFiles[deviceType]:
                     for aFile in self.mySpeedTestFiles[deviceType][carrier]:
-                        returnedString += str(aFile)
+                        returnedString += str(aFile) + "\n"
                     #END FOR
                 #END FOR
             #END FOR
