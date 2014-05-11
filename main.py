@@ -34,10 +34,6 @@ from ParserStructure.SpeedTestDataStructure import SpeedTestDS as STDs
 import ParserStructure.utils as utils
 import os, sys, datetime
 import tkinter as TK, tkinter.filedialog as TKFD
-#Setting up some files to use for checking data.
-this_dir, this_filename = os.path.split(__file__)
-DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
-
 
 #Here's where main actually starts
 # creating a Speed Test Data Structure
@@ -63,15 +59,18 @@ while command:
         print(str(so_many_STDs))
     elif "1" in choice:
         # Converting the structure of parsed raw data into a 2 dimensional array
-        print("Structure")
         csvReady = so_many_STDs.convertTo_Structure_To_2D()
     elif "2" in choice:
         # Converting the structure of parsed raw data into a 2 dimensional array
-        print("SD")
-        so_many_STDs.convertTo_Object_To_TCPStDev(20, 7000)
+        print("Please provide a few numbers...")
+        buckets = int(input("Number of buckets in histogram: "))
+        maxValue = int(input("Max Standard Deviation value allowed: "))
+        so_many_STDs.convertTo_Object_To_TCPStDev(buckets, maxValue)
     elif "3" in choice:
         # Adding the StDev and Median values to the csv of file information
         print("Master Excel File")
+        this_dir, this_filename = os.path.split(__file__)
+        DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
         originalCSV = utils.csvImport(DATA_PATH)
         so_many_STDs.add_StDev_and_Median_to_Master(originalCSV)
     elif "q" in choice or "Q" in choice:
@@ -79,6 +78,8 @@ while command:
         command = False
     else:
         print("This option is unknown. Please try again...")
+    #END IF/ELIF/ELSE
+#END WHILe
 
 
 #END MAIN
