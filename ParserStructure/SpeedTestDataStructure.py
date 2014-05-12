@@ -44,23 +44,25 @@ testForMain(__name__)
 #                   STFileObj:  SpeedTestFile object, holds the raw data that has been parsed
 #       OUTPUTS-    none
 #
-# * convertTo_Structure_To_2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
-#                             array. Each array can be converted to a .csv file. Each array holds all of the
-#                             SpeedTestFile information, down to the Ping level
-#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    toBeReturned:   a structure similar to this object's mySpeedTestFiles, except each
-#                                   SpeedTestFile is now a 2D array
+#   convertTo_Structure_To_2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
+#                               array. Each array can be converted to a .csv file. Each array holds all of the
+#                               SpeedTestFile information, down to the Ping level
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    None:   The structure created (containing a 2-D array representation of each file)
+#                           is passed to the CSV exporter..
 #
-# * convertTo_Object_To_TCPStDev - Returns a 2D array that can be converted into a 2D array. The information
+#   convertTo_Object_To_TCPStDev - Returns a 2D array that can be converted into a 2D array. The information
 #                           inside represents a distribution of the standard deviation of each SpeedTestFile's
 #                           TCP tests. The values used to calculate each StDev is the sum of all TCP threads' speed
 #                           in a specific direction (Up or Down)
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #                   numRangeCols:   Integer, the number of columns that the user would like in their distribution
 #                                   default is 3
-#       OUTPUTS-    realReturn: a 2D array with the ditribution data
+#                   maxRange:       The largest value the StDev is allowed that will be organized into the buckets
+#       OUTPUTS-    None:           The structure created (containing the StDevs of each test,
+#                                   categorized by Direction and Location) is passed to the CSV exporter..
 #
-# * convertTo_TCP_to_2D - Takes a STDs like structure, and returns it converted into a 2D array.
+#   convertTo_TCP_to_2D - Takes a STDs like structure, and returns it converted into a 2D array.
 #                         What was given was a structure like so:
 #                         { mobile:
 #                               { carrier1:
@@ -77,6 +79,10 @@ testForMain(__name__)
 #                   numRangeCols:   Integer, the number of columns that the user would like in their distribution
 #       OUTPUTS-    new_structure:  2D array, that will be converted into a .csv file
 #
+# * add_StDev_and_Median_to_Master - ...
+# *     INPUTS-     ..
+#       OUTPUTS-    ..
+#
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    returnedString: String, prints out the number of tests in each nettype and carrier,
@@ -85,9 +91,8 @@ testForMain(__name__)
 # ------------------------------------------------------------------------
 
 from .SpeedTestFile import SpeedTestFile
-import os
-import sys
 from .utils import csvExport
+import os, sys, datetime
 import tkinter as TK, tkinter.filedialog as TKFD
 
 class SpeedTestDS(object):
@@ -144,8 +149,6 @@ class SpeedTestDS(object):
                         "  -p   Peter's file location paths\n" +
                         "    -c     uses a folder of data files (i.e. 10_17_2013)\n" +
                         "    -cs    uses a file of each type (netbook and mobile)\n" +
-                        "    -css1  uses a file known to have some errors\n" +
-                        "    -css2  uses a file with no errors\n" +
                         "    -s     uses sample data files provided (2 w/o errors, 3 w/)\n" +
                         "       OPT: 2 arguements of 'False' or 'True' (sets recurPrint and short_str_method in STDs\n" +
                         "    -ss    uses sample test file 1 (i.e. sample_test_1.txt)\n" +
@@ -156,7 +159,7 @@ class SpeedTestDS(object):
                 if (sysArgv[1] == "-b"):
                     DataRoot = "D:/CPUC/"
                     BBresults = "BB_results/"
-                    Samples = ""   #see if statement at the bottom. option "-sb"
+                    Samples = ""   #see if statements at the bottom (-s and -ss)
                 elif (sysArgv[1] == "-p"):
                     DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
                     BBresults = "bb results/"
@@ -164,15 +167,7 @@ class SpeedTestDS(object):
                 #END DECLARING STRINGS
 
                 #Below are the actual sys arg options
-                if (sysArgv[2] == "-css1"):
-                    file1 = DataRoot + BBresults + "10_18_2013/WBBDTest2-10182013113755.txt"
-                    test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
-                    self.addToStructure(test_SpeedTest)
-                elif (sysArgv[2] == "-css2"):
-                    file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
-                    test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
-                    self.addToStructure(test_SpeedTest)
-                elif (sysArgv[2] == "-cs"):
+                if (sysArgv[2] == "-cs"):
                     #Alter these strings to be individual data files
                     file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
                     file2 = DataRoot + BBresults + "10_17_2013/WBBDTest2-10172013151943.txt"
@@ -303,7 +298,7 @@ class SpeedTestDS(object):
 
     # DESC: Creating a csv file of the data structure. Starts by converting
     #       the structure into a 2-dimensional array, then passes it to the
-    #       csv converter class, which returns the file
+    #       CSV converter function, which returns the file
     def convertTo_Structure_To_2D(self):
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
@@ -349,8 +344,8 @@ class SpeedTestDS(object):
 
 
     # DESC: This will take the object's structure of parsed data and return
-    #       an array of 2-dimensional arrays that can be passed into the
-    #       CSV converter class. Each 2-D array will be placed into a specific
+    #       an array of 2-dimensional arrays that will be passed into the
+    #       CSV converter function. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
     def convertTo_Object_To_TCPStDev(self, numRangeCols=3, maxRange=1000): #pingData="speed"
         #Start by creating an empty dictionary. then copy the structure's
@@ -397,8 +392,8 @@ class SpeedTestDS(object):
 
 
     # DESC: This will take the object's structure of parsed data and return
-    #       an array of 2-dimensional arrays that can be passed into the
-    #       CSV converter class. Each 2-D array will be placed into a specific
+    #       an array of 2-dimensional arrays that will be passed into the
+    #       CSV converter function. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
     def convertTo_TCP_to_2D(self, structure, numRangeCols, maxRange):
         if numRangeCols < 3:

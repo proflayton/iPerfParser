@@ -26,7 +26,9 @@ testForMain(__name__)
 #   size                Float, represents this Ping's size in Kbits sent
 #   speed               Float, represents this Ping's speed in KBytes/sec
 #   size_string         String, converted from size, used in __str__
+#   size_units          String, units to be appended to string
 #   speed_string        String, converted from speed, used in __str__
+#   speed_units         String, units to be appended to string
 #
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
@@ -54,9 +56,9 @@ class Ping(object):
     # ------------------
 
     # DESC: Initializing class
-    def __init__(self, data, size, speed):
-        self.size_units = size
-        self.speed_units = speed
+    def __init__(self, data, size_u, speed_u):
+        self.size_units = size_u
+        self.speed_units = speed_u
         #This takes the given data String and parses the object information
         data_start = data.split("-")[0].split("]")[1].strip()
         data       = data.split("-")[1]

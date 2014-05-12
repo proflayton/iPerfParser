@@ -140,9 +140,9 @@ class PingThread(object):
         if self.short_str_method:
             this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
                         pad + "Data Direction: " + self.DataDirection + "\n" +
-                        pad + " Final Ping: " + str(self.myfinalPing)[ int(len(pad)*(4.0/3)) :] + "\n"
+                        pad + " Number of Pings: " + str(len(self.myPings)) + "\n" +
+                        pad + " Final Ping: " + str(self.myfinalPing).strip() + "\n"
                        )
-            this_str += pad + " Number of Pings: " + str(len(self.myPings)) + "\n"
         else:
             this_str = (pad + "Pipe Number: " + str(self.PipeNumber) + "\n" +
                         pad + "Data Direction: " + self.DataDirection + "\n" +

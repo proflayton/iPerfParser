@@ -73,6 +73,9 @@ class SpeedTest(object):
     def __init__(self, dataString, testNum=0, short_str=False):
         self.text = dataString
         self.TestNumber = testNum
+        self.short_str_method = short_str
+        self.MeasuringFmt = { "Speed" : None, "Size" : None}
+        self.text = dataString.split('\n')
         if ("Test Timed Out" in dataString) or ("timed out" in dataString):
             self.ERROR = True
             self.ErrorMessage = "Test Timed Out."
@@ -86,9 +89,6 @@ class SpeedTest(object):
             self.ERROR = True
             self.ErrorMessage = "WARNING: did not receive ACK of last datagram after 10 tries."
         #END IF/ELIF
-        self.short_str_method = short_str
-        self.MeasuringFmt = { "Speed" : None, "Size" : None}
-        self.text = dataString.split('\n')
 
         #This block will copy the command line call into the iPerfCommand variable,
         # as well as declare this objects TestNumber

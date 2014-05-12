@@ -23,8 +23,8 @@ testForMain(__name__)
 #
 # VARIABLES:
 #   FileName            String, holding file name that is being parsed
-#   FileStreamLoc       Integer, representing byte location that the script is at in file stream
-# * DateTime            String, holding date and time test was taken
+#   Date                String, holding the date the test was taken
+#   Time                String, holding the time test was taken
 #   OSName              String, holding OS name that this test was conducted with
 #   OSArchitecture      String, holding OS architecture that this test was conducted with
 #   OSVersion           String, holding OS version that this test was conducted with
@@ -44,6 +44,8 @@ testForMain(__name__)
 #   Longitude           Integer, the latitude given by the GPS that this test was conducted at.
 #                           Is 0 if no GPS data was available
 #   mySpeedTests        List, holding all of the Individual Speed tests that are contained in the given file being parsed
+#   FileStreamLoc       Integer, representing byte location that the script is at in file stream
+#   ignored_text        String, text from original file that was ignored when splitting up text by Test
 #   short_str_method    Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
@@ -72,6 +74,14 @@ testForMain(__name__)
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #                   structRef:  reference to the structure created in STDs.convertTo_ObjectToTCP()
 #       OUTPUTS-    none
+#
+# * calc_StDev_and_Median_and_append_to_MasterCSV - ..
+#       INPUTS-     ..
+#       OUTPUTS-    ..
+#
+# * this_File_Index_in_MasterCSV - ..
+#       INPUTS-     ..
+#       OUTPUTS-    ..
 #
 #   printSpeedTests - Return a string that has the information of each speed test in the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -521,6 +531,8 @@ class SpeedTestFile(object):
             #END FOR
             origRef[thisFile].extend(toAppend)
         #END IF
+        #else:
+        #    print(self.FileName)
     #END DEF
 
 

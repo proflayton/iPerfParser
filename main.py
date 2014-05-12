@@ -32,13 +32,12 @@ if not isLessThanVersion((3,0)):
 #Importing the necessary classes in the sub-directory
 from ParserStructure.SpeedTestDataStructure import SpeedTestDS as STDs
 import ParserStructure.utils as utils
-import os, sys, datetime
-import tkinter as TK, tkinter.filedialog as TKFD
+import os, sys
 
 #Here's where main actually starts
 # creating a Speed Test Data Structure
 recusivlyPrintFiles = True
-printShortString = False
+printShortString = True
 so_many_STDs = STDs(recusivlyPrintFiles, printShortString)
 #Loading in the raw data, and passing in the system arguements
 # The two Trues are for the STDs recursive print and quick print options
@@ -47,13 +46,13 @@ so_many_STDs.loadRawData(sys.argv)
 command = True
 while command:
     print("Please input the number of the function you wish to perform:\n" +
-          " -0- Print the structure\n" +
-          " -1- Convert all parsed Files into CSV files\n" +
-          " -2- Create a distribution of the standard deviations of TCP network speeds\n" +
-          "     (based off the sum of speeds of all four TCP threads per Test, per File\n" +
-          " -3- Append the standard deviation and median of the Sum threads of the TCP tests\n" +
-          "     to the master CSV file included in the package\n" +
-          " -q- Quit")
+          "  -0-  Print the structure\n" +
+          "  -1-  Convert all parsed Files into CSV files\n" +
+          "  -2-  Create a distribution of the standard deviations of TCP network speeds\n" +
+          "       (based off the sum of speeds of all four TCP threads per Test, per File\n" +
+          "  -3-  Append the standard deviation and median of the Sum threads of the TCP tests\n" +
+          "       to the master CSV file included in the package\n" +
+          " -q/Q- Quit")
     choice = input("--> ")
     if "0" in choice:
         print(str(so_many_STDs))

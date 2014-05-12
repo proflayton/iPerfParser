@@ -12,6 +12,10 @@
 #                       methods of all classes.
 #
 # FUNCTIONS:
+#   testForMain - ..
+#       INPUTS-     ..
+#       OUTPUTS-    ..
+#
 #   readToAndGetLine -  Given a file stream, reads the stream until the delimiter is found
 #       INPUTS-     fileStream:         FileStream object, called with open(FILEPATH, 'r')
 #                   delimiter:          String, the text that you are looking for
@@ -24,11 +28,11 @@
 #
 #   monthAbbrToNum -  This function takes an abbreviation for a month name and returns the number index
 #       INPUTS-     date:   String, abbreviation for a month (e.g. Jun, Oct, etc.)
-#       OUTPUTS-    ..:     Integer, representing the month index (from 1 to 12)
+#       OUTPUTS-    return: Integer, representing the month index (from 1 to 12)
 #
 #   monthAbbrToNum -  This function takes a number index for a month and returns the name abbreviation
 #       INPUTS-     num:    Integer, representing the month index (from 1 to 12)
-#       OUTPUTS-    ..:     String, abbreviation for a month (e.g. Jun, Oct, etc.)
+#       OUTPUTS-    retrn:  String, abbreviation for a month (e.g. Jun, Oct, etc.)
 #
 #   StDevP - Calculates the population standard deviation of the given array
 #       INPUTS-     array:  list of values that will be used in calculated StDev
@@ -38,7 +42,12 @@
 #       INPUTS-     a_2D_Array:     A 2-dimensional array with each sub array representing
 #                                   a line in the end csv file
 #                   fileNameToSave: The full path of the resulting csv file
-#       OUTPUTS-    none
+#       OUTPUTS-    csv file saved at given path
+#
+#   csvImport - Used to initialize an object of this class
+#       INPUTS-     fileNameToSave: The full path of the csv file to import
+#       OUTPUTS-    a_2D_Array:     A 2-dimensional array with each sub array representing
+#                                   a line in the csv file
 #
 # ------------------------------------------------------------------------
 

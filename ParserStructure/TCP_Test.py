@@ -30,6 +30,9 @@ testForMain(__name__)
 #   Port                Integer, the port this test is connected to
 #   TestInterval        Integer, the length of time that the test will be run
 #   MeasuringFmt        String, the format (Kbytes, Kbits, etc.) that the data has been stored in
+#   iPerfCommand        String, the command line string used to run iPerf for this test
+#   ERROR               Boolean, True if test contained an error, False otherwise
+#   ErrorMessage        String, the message that will be displayed if the test contained an error
 #   short_str_method           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
@@ -231,39 +234,25 @@ class TCPTest(SpeedTest):
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        #If there was an error, return all of the text on this function call. Otherwise, print
-        # the appropiate text based on whether the user wants the long or short form
-        if self.short_str_method:
-            this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                        pad + "Connection Type: " + self.ConnectionType + "\n" +
-                        pad + "Connection Location: " + self.ConnectionLoc + "\n"
-                       )
-            if self.ERROR:
-                this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
-            else:
-                for direction in self.myPingThreads:
-                    for pingThread in self.myPingThreads[direction]:
-                        this_str += str(pingThread)
-                #END FOR
-            #END IF/ELSE
+        this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
+                    pad + "Connection Type: " + self.ConnectionType + "\n" +
+                    pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                   )
+        if not self.short_str_method:
+            this_str += (pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
+                         pad + "Test Interval:" + self.TestInterval +\
+                             "  Window Size:" + self.WindowSize +\
+                             "  Measurement Format:" + self.MeasuringFmt["Size"] +\
+                                               ", " + self.MeasuringFmt["Speed"] + "\n"
+                        )
+        if self.ERROR:
+            this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
         else:
-            this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                        pad + "Connection Type: " + self.ConnectionType + "\n" +
-                        pad + "Connection Location: " + self.ConnectionLoc + "\n" +
-                        pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
-                        pad + "Test Interval:" + self.TestInterval +\
-                            "  Window Size:" + self.WindowSize +\
-                            "  Measurement Format:" + self.MeasuringFmt["Size"] +\
-                                ", " + self.MeasuringFmt["Speed"] + "\n"
-                       )
-            if self.ERROR:
-                this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
-            else:
-                for direction in self.myPingThreads:
-                    for pingThread in self.myPingThreads[direction]:
-                        this_str += str(pingThread)
-                #END FOR
-            #END IF/ELSE
+            for pingThread in self.myPingThreads["Up"]:
+                this_str += str(pingThread)
+            for pingThread in self.myPingThreads["Down"]:
+                this_str += str(pingThread)
+            #END FOR
         #END IF/ELSE
         return this_str
     #END DEF

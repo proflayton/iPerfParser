@@ -33,6 +33,9 @@ testForMain(__name__)
 #   Port                Integer, the port this test is connected to
 #   TestInterval        Integer, the length of time that the test will be run
 #   MeasuringFmt        String, the format (Kbytes, Kbits, etc.) that the data has been stored in
+#   iPerfCommand        String, the command line string used to run iPerf for this test
+#   ERROR               Boolean, True if test contained an error, False otherwise
+#   ErrorMessage        String, the message that will be displayed if the test contained an error
 #   short_str_method           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
@@ -118,7 +121,7 @@ class UDPTest(SpeedTest):
                                               self.MeasuringFmt["Size"], self.MeasuringFmt["Speed"], \
                                               self.short_str_method) )
         for line in self.text:
-            #These two lines check that the correct line is gotten.
+            #These two lines below check that the correct line is gotten.
             # First initialize an array of strings (which will be used as refernece).
             # Next, for each elem in the array, check if it is in the line we are checking.
             #   (this is everything in the parenthesis)
@@ -153,49 +156,32 @@ class UDPTest(SpeedTest):
 
     # DESC: Creating a string representation of our object
     def __str__(self):
-        this_str = ""
-        if self.short_str_method:
-            this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                        pad + "Connection Type: " + self.ConnectionType + "\n" +
-                        pad + "Connection Location: " + self.ConnectionLoc + "\n"
-                       )
-            if self.ERROR:
-                this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
-            else:
-                for pingThread in self.myPingThreads:
-                    this_str += str(pingThread)
-                this_str += ( str(self.ServerReport["Ping"]) + "   " +
-                              str(self.ServerReport["Time"]) + "   " +
-                              str(self.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
-                              str(self.ServerReport["Datagrams_OutofOrder"][1]) + " (" +
-                              str( int(round(self.ServerReport["Datagrams_OutofOrder"][2])) ) + "%)\n"
-                            )
-                #END APPEND PING THREADS
-            #END IF/ELSE
+        this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
+                    pad + "Connection Type: " + self.ConnectionType + "\n" +
+                    pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                   )
+        if not self.short_str_method:
+            this_str += (pad + "Reciever IP:" + str(self.RecieverIP) + " port:" + str(self.Port) + "\n" +
+                         pad + "Test Interval:" + str(self.TestInterval) +
+                               "  Datagram Size:" + str(self.DatagramSize) + "\n" +
+                         pad + "Target Bandwidth:" + str(self.TargetBandwidth) +
+                               "  Measurement Format:" + str(self.MeasuringFmt["Size"]) +
+                                                 ", " + str(self.MeasuringFmt["Speed"]) + "\n"
+                        )
+        if self.ERROR:
+            this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
         else:
-            this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                        pad + "Connection Type: " + str(self.ConnectionType) + "\n" +
-                        pad + "Connection Location: " + str(self.ConnectionLoc) + "\n" +
-                        pad + "Reciever IP:" + str(self.RecieverIP) + " port:" + str(self.Port) + "\n" +
-                        pad + "Test Interval:" + str(self.TestInterval) +
-                            "  Datagram Size:" + str(self.DatagramSize) + "\n" +
-                        pad + "Target Bandwidth:" + str(self.TargetBandwidth) +
-                            "  Measurement Format:" + str(self.MeasuringFmt["Size"]) +
-                            ", " + str(self.MeasuringFmt["Speed"]) + "\n"
-                       )
-            if self.ERROR:
-                this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
-            else:
-                for pingThread in self.myPingThreads:
-                    this_str += str(pingThread)
-                this_str += ( str(self.ServerReport["Ping"]) + "   " +
-                              str(self.ServerReport["Time"]) + "   " +
-                              str(self.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
-                              str(self.ServerReport["Datagrams_OutofOrder"][1]) + " (" +
-                              str( int(round(self.ServerReport["Datagrams_OutofOrder"][2])) ) + "%)\n"
-                            )
-                #END APPEND PING THREADS
-            #END IF/ELSE
+            for pingThread in self.myPingThreads:
+                this_str += str(pingThread)
+            #Now append the Server Report information
+            this_str += ( pad + " Server Report: " +
+                          str(self.ServerReport["Ping"]).strip() + "   " +
+                          str(self.ServerReport["Time"]) + "   " +
+                          str(self.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
+                          str(self.ServerReport["Datagrams_OutofOrder"][1]) + " (" +
+                          str( int(round(self.ServerReport["Datagrams_OutofOrder"][2])) ) + "%)\n"
+                        )
+            #END APPEND PING THREADS
         #END IF/ELSE
         return this_str
     #END DEF
