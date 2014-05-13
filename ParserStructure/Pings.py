@@ -64,9 +64,9 @@ class Ping(object):
         data       = data.split("-")[1]
         data_end   = data.split("sec", 1)[0].strip()
         data       = data.split("sec", 1)[1]
-        data_size  = data.split(size)[0].strip()
-        data       = data.split(size)[1]
-        data_speed = data.split(speed)[0].strip()
+        data_size  = data.split(self.size_units)[0].strip()
+        data       = data.split(self.size_units)[1]
+        data_speed = data.split(self.speed_units)[0].strip()
         self.secIntervalStart = float(data_start)
         self.secIntervalEnd = float(data_end)
         self.size = float(data_size)

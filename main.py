@@ -37,7 +37,7 @@ import os, sys
 #Here's where main actually starts
 # creating a Speed Test Data Structure
 recusivlyPrintFiles = True
-printShortString = True
+printShortString = False
 so_many_STDs = STDs(recusivlyPrintFiles, printShortString)
 #Loading in the raw data, and passing in the system arguements
 # The two Trues are for the STDs recursive print and quick print options

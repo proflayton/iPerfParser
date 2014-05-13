@@ -253,6 +253,7 @@ class SpeedTestDS(object):
                         isItCPUC = f.readline()
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
                             test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
+                            print(str(test_STFile))
                             self.addToStructure(test_STFile)
                         #END IF
                     except:
@@ -485,7 +486,7 @@ class SpeedTestDS(object):
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
-                    speedTest.calc_StDev_and_Median_and_append_to_MasterCSV(origRef, self.Carriers)
+                    speedTest.calc_StDev_and_Median_and_append_to_MasterCSV( origRef )
             #END FOR
         #END FOR
 

@@ -168,7 +168,7 @@ class SpeedTestFile(object):
         else:
             self.NetworkType = "mobile"
             #Formatting the date and time as "mm/dd/yyyy" and "hh:mm:ss" when not in this format
-            datetime = datetime.split("at ")[1][4:-1]
+            datetime = datetime.split("started at ")[1][4:-1]
             month = str(monthAbbrToNum(datetime[:3]))
             day = str(datetime[4:6])
             year = str(datetime[-4:])
@@ -300,9 +300,8 @@ class SpeedTestFile(object):
             catching_exceptions_and_doing_nothing = True
         fs.seek(self.FileStreamLoc)
 
-        #Set the file stream to the line after "Checking Connectivity"
-        readToAndGetLine(fs, "Checking Connectivity..")
-        self.FileStreamLoc = fs.tell()
+        #Set the file stream to the beginning
+        fs.seek(0)
 
         #Reading in the remaining contents of the file (the speed tests) and passing
         # it to the function that will split it into test chunks and create the objects
@@ -501,38 +500,34 @@ class SpeedTestFile(object):
 
 
     # DESC: ..
-    def calc_StDev_and_Median_and_append_to_MasterCSV(self, origRef, list_carriers):
+    def getTCP_with_TestNumber(self, num):
+        if not isinstance(num, str):
+            raise TypeError
+        for test in self.mySpeedTests["TCP"]:
+            if test.TestNumber == num:
+                return test
+        #END FOR
+        return None
+    #END DEF
+
+
+    # DESC: ..
+    def calc_StDev_and_Median_and_append_to_MasterCSV(self, origRef):
         thisFile = self.this_File_Index_in_MasterCSV(origRef)
         if thisFile is not None:
-            westCount = 0
-            eastCount = 0
-            toAppend = [0]*16
-            for indivTest in self.mySpeedTests["TCP"]:
-                if not indivTest.ERROR:
-                    upThread = indivTest.sumSpeed_UpThreads()
-                    downThread = indivTest.sumSpeed_DownThreads()
-                    up_stdev = StDevP(upThread)
-                    up_median = getMedian(upThread)
-                    down_stdev = StDevP(downThread)
-                    down_median = getMedian(downThread)
-                    if (indivTest.ConnectionLoc == "West"):
-                        westCount += 1
-                        toAppend[(westCount*8)-8] = up_stdev
-                        toAppend[(westCount*8)-7] = up_median
-                        toAppend[(westCount*8)-6] = down_stdev
-                        toAppend[(westCount*8)-5] = down_median
-                    else:
-                        eastCount += 1
-                        toAppend[(eastCount*8)-4] = up_stdev
-                        toAppend[(eastCount*8)-3] = up_median
-                        toAppend[(eastCount*8)-2] = down_stdev
-                        toAppend[(eastCount*8)-1] = down_median
-                #END IF
+            toAppend = []
+            #The test number order is specific, as test 1 is the first TCP West, 2 is TCP East, etc.
+            # Also, they are all string, as the initialization removed the values from a string, and so
+            # the test number remained a string
+            for testNum in ["1","2","4","5"]:
+                indivTest = self.getTCP_with_TestNumber(testNum)
+                if indivTest is not None:
+                    toAppend.extend( indivTest.create_Array_For_Results_CSV() )
+                else:
+                    toAppend.extend( ["error"] * 4 )
             #END FOR
             origRef[thisFile].extend(toAppend)
         #END IF
-        #else:
-        #    print(self.FileName)
     #END DEF
 
 

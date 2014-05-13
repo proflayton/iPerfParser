@@ -72,6 +72,7 @@ testForMain(__name__)
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
+from .utils import StDevP, getMedian
 from .utils import global_str_padding as pad; pad = pad*2
 from .IndividualSpeedTest import SpeedTest
 from .PingThread import PingThread
@@ -229,6 +230,25 @@ class TCPTest(SpeedTest):
             Down_threads_sum.append(temp)
         #END FOR
         return Down_threads_sum
+    #END DEF
+
+
+    # DESC: ..
+    def create_Array_For_Results_CSV(self):
+        toReturn = []
+        #If there was no error, there are values to StDev and Median
+        # Otherwise, we return an array of "None"
+        if not self.ERROR:
+            #Calculating the stDev's and medians of the Up and Down threads
+            upThread = self.sumSpeed_UpThreads()
+            downThread = self.sumSpeed_DownThreads()
+            up_stdev = StDevP(upThread);         toReturn.append(up_stdev)
+            up_median = getMedian(upThread);     toReturn.append(up_median)
+            down_stdev = StDevP(downThread);     toReturn.append(down_stdev)
+            down_median = getMedian(downThread); toReturn.append(down_median)
+        else:
+            toReturn = ["None"] * 4
+        return toReturn
     #END DEF
 
 
