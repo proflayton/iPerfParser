@@ -67,7 +67,6 @@ while command:
         so_many_STDs.convertTo_Object_To_TCPStDev(buckets, maxValue)
     elif "3" in choice:
         # Adding the StDev and Median values to the csv of file information
-        print("Master Excel File")
         this_dir, this_filename = os.path.split(__file__)
         DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
         originalCSV = utils.csvImport(DATA_PATH)

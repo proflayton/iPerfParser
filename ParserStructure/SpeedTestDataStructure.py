@@ -245,7 +245,14 @@ class SpeedTestDS(object):
             #You must use speedTest.speedTest as the left speedTest is
             # the module, and the right speedTest is the class. Maybe I should rename that?
             for root, dirs, files in os.walk(rootOfFiles):
+                #These are used to keep track of what file we are currently at, and the total number of files
+                # in the folder we are currently in
+                counter = 0
+                total = len(files)
                 for aFile in files:
+                    #This is the progress bar that is printed out
+                    print("FOLDER: "+root.split("/")[-1]+' -- FILES: '+str(counter)+'/'+str(total), end='\r')
+                    counter+=1
                     #Seeing if the file given is, in fact, a data file
                     #If not, the script will exit and display the message below
                     f = open(os.path.join(root, aFile),'r')
@@ -253,12 +260,13 @@ class SpeedTestDS(object):
                         isItCPUC = f.readline()
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
                             test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
-                            print(str(test_STFile))
                             self.addToStructure(test_STFile)
                         #END IF
                     except:
                         pass
                 #END FOR files
+                #Printing an empty line after all of the files have been read, so to clear the text
+                print(" "*80, end='\r')
             #END FOR os.walk
         #END IF/ELSE
     #END DEF
@@ -366,9 +374,14 @@ class SpeedTestDS(object):
         #END FOR
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
+                counter = 0
+                total = len(self.mySpeedTestFiles[devType][carrier])
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
+                    print(" "+devType+"-"+carrier+' -- '+str(counter)+'/'+str(total), end='\r')
+                    counter+=1
                     speedTest.calc_TCP_StDev_and_append_to_Distribution(TCPStDevStruct, self.Carriers)
                 #END FOR
+                print(" "*80, end='\r')
             #END FOR
         #END FOR
         #After the FOR loops above, the structure TCPStDevStruct should have Up and Down
@@ -377,14 +390,10 @@ class SpeedTestDS(object):
         # into 2D arrays
         csvStruct_TCPStDev = self.convertTo_TCP_to_2D(TCPStDevStruct, numRangeCols, maxRange)
 
-        """
         print("Please select the folder you wish to hold the csv file that will be created")
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                          title = "Select the Folder You Wish To Hold the CSV Files",
                                          mustexist = True)
-        """
-        rootOfFiles = os.path.expanduser("~") + "/Desktop"
-
         from datetime import datetime
         now = datetime.now().strftime('%Y%m%d-%I%M%S')
         csvExport(csvStruct_TCPStDev, rootOfFiles + "/StandardDeviationofTCPSumThreads_"+now+".csv")
@@ -470,7 +479,8 @@ class SpeedTestDS(object):
     #END DEF
 
 
-    # DESC: ..
+    # DESC: This starts with a reference to a 2-D array (converted from the provided CSV file)
+    #       and appends the TCP StDev and Median to the appropiate row (each row is a file)
     def add_StDev_and_Median_to_Master(self, origRef):
         if (origRef[0][-1] != "eTCP_DOWN2_MEDIAN"):
             newHeaders = ["wTCP_UP1_STDEV","wTCP_UP1_MEDIAN",
@@ -485,18 +495,21 @@ class SpeedTestDS(object):
             origRef[0].extend(newHeaders)
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
+                counter = 0
+                total = len(self.mySpeedTestFiles[devType][carrier])
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
+                    print(" "+devType+"-"+carrier+' -- '+str(counter)+'/'+str(total), end='\r')
+                    counter+=1
                     speedTest.calc_StDev_and_Median_and_append_to_MasterCSV( origRef )
+                #END FOR
+                print(" "*80, end='\r')
             #END FOR
         #END FOR
 
-        """
         print("Please select the folder you wish to hold the csv file that will be created")
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
-                                         title = "Select the Folder You Wish To Hold the CSV Files",
+                                         title = "Select the Folder You Wish To Hold the CSV File",
                                          mustexist = True)
-        """
-        rootOfFiles = os.path.expanduser("~") + "/Desktop"
         csvExport(origRef, rootOfFiles + "/CPUC_FieldTestResults_Q42013_Data_with_StDev_and_Median.csv")
     #END DEF
 
