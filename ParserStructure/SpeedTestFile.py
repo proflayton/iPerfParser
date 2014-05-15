@@ -66,7 +66,7 @@ testForMain(__name__)
 #
 # * convertTo2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    tobeReturned:   the 2D array that will be returned
+#       OUTPUTS-    toBeReturned:   the 2D array that will be returned
 #
 # * calc_TestTCP_StDev - For each test in this object, if the test is a TCP test, calculate the
 #                        standard deviation of the sum of thread speeds at each 1 second interval.
@@ -390,7 +390,6 @@ class SpeedTestFile(object):
     #END DEf
 
 
-    """
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
     def convertTo2D(self):
@@ -403,15 +402,18 @@ class SpeedTestFile(object):
         toBeReturned.append(["Provider", (self.NetworkProvider
                                         if (self.NetworkProvider != "N/A")
                                         else self.NetworkOperator)])
+        #Counter refers to the current array in toBeReturned. This array is
+        # where the tests will start to be array-itized and appened
         counter = 5
-        testnum = 1
-        for test in self.mySpeedTests:
+        for test in self.mySpeedTests["TCP"]:
             #This section sets up the column headers for the test. Each
             # test will have column headers. The timing headers need
             # to account for different length threads, hence getLongest
-
             test_length = int(test.getLongestThreadTime())
             toBeReturned.append(["","","","Thread Num","Data Direction"])
+            #This loop creates the text above the tests that show what interval the numbers
+            # correspond to. An empty value is appended because we are going to print out
+            # the speed and size with one cell per value.
             for t in range(test_length):
                 toBeReturned[counter].append(str(float(t)) + "-" + str(float(t+1)))
                 toBeReturned[counter].append("")
@@ -420,22 +422,31 @@ class SpeedTestFile(object):
             counter += 1
 
             #These three lines set up the Test information in the array
-            toBeReturned.append(["","","Test #" + str(testnum)])
-            testnum += 1
+            toBeReturned.append(["","","Test #" + test.TestNumber])
             toBeReturned.append(["","",test.ConnectionType])
             toBeReturned.append(["","",test.ConnectionLoc])
 
-            #Append the threads to the array. If the array is not nothing,
-            # it must then be holding the Test Header information, and so
-            # we don't need any padding
-            for thread in test.myPingThreads:
-                try:
-                    toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                except:
-                    toBeReturned.append(["","",""])
-                    toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                counter += 1
-            #END FOR
+            if (test.ERROR):
+                toBeReturned[counter].extend(["ERROR"])
+            else:
+                #Append the threads to the array. We first append the Ups, then the Downs
+                for thread in test.myPingThreads["Up"]:
+                    try:
+                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    except:
+                        toBeReturned.append(["","",""])
+                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    counter += 1
+                #END FOR
+                for thread in test.myPingThreads["Down"]:
+                    try:
+                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    except:
+                        toBeReturned.append(["","",""])
+                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    counter += 1
+                #END FOR
+            #END IF/ELSE
 
             #Incrementing the counter so that the next IndivTest that is converted is put below
             # the previous one (sometimes, there is one thread per test, and just moving to the next
@@ -447,12 +458,74 @@ class SpeedTestFile(object):
                     counter +=1
                 except:
                     nextLine = False
+            #END WHILE
+            toBeReturned.append(["",""])
+            counter += 1
+        #END FOR
+        #Now we create the arrays for the UDP tests, as their structure differs from
+        # that of the TCP tests.
+        for test in self.mySpeedTests["UDP"]:
+            #This section sets up the column headers for the test. Each
+            # test will have column headers. The timing headers need
+            # to account for different length threads, hence getLongest
+            toBeReturned.append(["","","","Thread Num","Data Direction"])
+            for t in range(int(test.TestInterval)):
+                toBeReturned[counter].append(str(float(t)) + "-" + str(float(t+1)))
+                toBeReturned[counter].append("")
+            #END FOR
+            toBeReturned[counter].append("END")
+            counter += 1
+
+            #These three lines set up the Test information in the array
+            toBeReturned.append(["","","Test #" + test.TestNumber])
+            toBeReturned.append(["","",test.ConnectionType])
+            toBeReturned.append(["","",test.ConnectionLoc])
+
+            if (test.ERROR):
+                toBeReturned[counter].extend(["ERROR"])
+            else:
+                #Append the threads to the array. If the array is not nothing,
+                # it must then be holding the Test Header information, and so
+                # we don't need any padding
+                for thread in test.myPingThreads:
+                    try:
+                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    except:
+                        toBeReturned.append(["","",""])
+                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    counter += 1
+                #END FOR
+            #END IF/ELSE
+
+            #Incrementing the counter so that the next IndivTest that is converted is put below
+            # the previous one (sometimes, there is one thread per test, and just moving to the next
+            # iteration messed up the spacing)
+            nextLine = True
+            while nextLine:
+                try:
+                    aThing = toBeReturned[counter][2]
+                    counter +=1
+                except:
+                    nextLine = False
+            #END WHILE
+            #Now appending the Server Report information
+            if not test.ERROR:
+                toBeReturned.append(["","","Server Report", 
+                                      str(test.ServerReport["Ping"].secIntervalStart) + "-" + \
+                                      str(test.ServerReport["Ping"].secIntervalEnd),
+                                      str(test.ServerReport["Ping"].size) + " " + str(test.ServerReport["Ping"].size_units),
+                                      str(test.ServerReport["Ping"].speed) + " " + str(test.ServerReport["Ping"].speed_units),
+                                      str(test.ServerReport["Time"]),
+                                      str(test.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
+                                      str(test.ServerReport["Datagrams_OutofOrder"][1])
+                                    ])
+            #END IF
             toBeReturned.append(["",""])
             counter += 1
         #END FOR
         return toBeReturned
     #END DEF
-    """
+
 
     # DESC: Looping through each Test, if the test if of type TCP, then
     #       call it's thread sum function, and append the standard deviation to

@@ -176,7 +176,8 @@ class TCPTest(SpeedTest):
     # DESC: In this test, find the longest thread time among all of the threads
     def getLongestThreadTime(self, direction_passed="ALL"):
         time = 0
-        if direction_passed == "ALL":
+        if ((direction_passed == "ALL") or 
+            (direction_passed != "Up" and direction_passed != "Down")):
             for direction in self.myPingThreads:
                 for thread in self.myPingThreads[direction]:
                     #As long as the PingThreads array of Pings is ordered correctly, the last
