@@ -119,19 +119,19 @@ class UDPTest(SpeedTest):
                 dataArray.append(line)
         #END FOR
         self.myPingThreads.append( PingThread(dataArray, 3, "Up", \
-                                              self.MeasuringFmt["Size"], self.MeasuringFmt["Speed"], \
-                                              self.short_str_method) )
+                                        self.MeasuringFmt["Size"], self.MeasuringFmt["Speed"], \
+                                        self.short_str_method) )
         for line in self.text:
             #These two lines below check that the correct line is gotten.
-            # First initialize an array of strings (which will be used as refernece).
+            # First initialize an array of strings (which will be used as reference).
             # Next, for each elem in the array, check if it is in the line we are checking.
             #   (this is everything in the parenthesis)
-            # Then, use all of the returned array. The code in the parenthesis returns an array of
+            # Then, use all() on the returned array. The code in the parenthesis returns an array of
             #  booleans, and all() makes sure that they are all True.
             # If the conditions are met, this line is the line we are looking for.
-            #
-            # Sadly, it means that these are not the droids we are looking for
-            #
+            # If one of the strings was not found, then sadly, it means
+            #  that these are not the droids we are looking for...
+            # This was implemented because datagrams is in a few other lines, but not the ones we want
             strCheck = ["datagrams", "Sent"]
             if all(text in line for text in strCheck):
                 self.DatagramzSent = line.split("Sent ")[1].split(" ")[0]
@@ -143,7 +143,7 @@ class UDPTest(SpeedTest):
                 text = self.text[self.text.index(line)+1]
                 self.ServerReport["Ping"] = Ping(text, self.MeasuringFmt["Size"], self.MeasuringFmt["Speed"])
                 self.ServerReport["Time"] = text.split("/sec")[1].split("ms")[0].strip() + " ms"
-                #Parsing the percentage at the end of this server report string
+                #Calculating the percentage at the end of this server report string
                 fraction = text.split("ms")[1]
                 lost = int(fraction.split("/")[0].strip())
                 total = int(fraction.split("/")[1].split("(")[0].strip())

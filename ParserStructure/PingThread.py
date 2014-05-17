@@ -27,7 +27,6 @@ testForMain(__name__)
 #   LocalPort           The port of this test's local machine
 #   ServerIP            The IP of the server this thread was connected to
 #   ServerPort          The port of the server this thread was connected to
-#   Datagrams           String? Integer? holding some UDP information we don't understand yet
 #   myPings             List, holding all of the Pings in this specific thread
 #   myfinalPing         Ping object, holding the final summation ping in the list
 #   short_str_method    Boolean, used in SpeedTestDataStructure if the printout requested in short of long.

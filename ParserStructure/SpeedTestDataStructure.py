@@ -79,9 +79,13 @@ testForMain(__name__)
 #                   numRangeCols:   Integer, the number of columns that the user would like in their distribution
 #       OUTPUTS-    new_structure:  2D array, that will be converted into a .csv file
 #
-# * add_StDev_and_Median_to_Master - ...
-# *     INPUTS-     ..
-#       OUTPUTS-    ..
+#   add_StDev_and_Median_to_Master - This calculates the standard deviations of every SpeedTestFile object's
+#                                    TCP tests (Up and Down separately), as well as the median of those tests
+#                                    and appends the values to the imported CSV file, in the appropiate row
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   origRef:    reference to the 2D array of the imported CSV file
+#       OUTPUTS-    None:       The function creates a 2D array of the imported CSV file, appends the necessary
+#                               data, and then exports the file in the users chosen location
 #
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
@@ -160,7 +164,7 @@ class SpeedTestDS(object):
                 if (sysArgv[1] == "-b"):
                     DataRoot = "D:/CPUC/"
                     BBresults = "BB_results/"
-                    Samples = ""   #see if statements at the bottom (-s and -ss)
+                    Samples = ""   #used by if statements at the bottom (-s and -ss)
                 elif (sysArgv[1] == "-p"):
                     DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
                     BBresults = "bb results/"
@@ -169,7 +173,8 @@ class SpeedTestDS(object):
 
                 #Below are the actual sys arg options
                 if (sysArgv[2] == "-cs"):
-                    #Alter these strings to be individual data files
+                    #Alter these strings to be individual data files. These two files are one of
+                    # each kind, a mobile Test, and a netbook Test
                     file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
                     file2 = DataRoot + BBresults + "10_17_2013/WBBDTest2-10172013151943.txt"
                     stfile1 = SpeedTestFile(file1, self.short_str_method)
@@ -177,7 +182,7 @@ class SpeedTestDS(object):
                     self.addToStructure(stfile1)
                     self.addToStructure(stfile2)
                 elif (sysArgv[2] == "-c"):
-                    for root, dirs, files in os.walk(DataRoot + BBresults + "10_17_2013/"):
+                    for root, dirs, files in os.walk(DataRoot + BBresults + "10_24_2013/"):
                         for aFile in files:
                             #Seeing if the file given is, in fact, a data file
                             #If not, the script will exit and display the message below
@@ -284,8 +289,8 @@ class SpeedTestDS(object):
                     except:
                         pass
                 #END FOR files
-                #Printing an empty line after all of the files have been read, so to clear the text
             #END FOR os.walk
+            #Printing an empty line after all of the files have been read, so to clear the text
             print(" "*80, end='\r')
         #END IF/ELSE
     #END DEF
@@ -342,17 +347,26 @@ class SpeedTestDS(object):
         for key in csvReady:
             for elem in self.Carriers:
                 csvReady[key][elem] = []
-
+        #END FORs
+        #This is where the actual function call is made. Looping through the structure, we call
+        # the SpeedTestFile's convertTo2D function, and append the result (a 2D array) to our new
+        # temporary structure (csvReady)
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
                     csvReady[devType][carrier].append(speedTest.convertTo2D())
             #END FOR
         #END FOR
-        print("Please select the folder you wish to hold the csv files that will be created")
+        #We ask where the user wants the files put
+        print("Please select the folder you wish to hold the csv files that will be created:")
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                          title = "Select the Folder You Wish To Hold the CSV Files",
                                          mustexist = True)
+        #Looping through the structure, we check to see if the necessary folders have been created.
+        # There will be folders that separate the CSVs by device type and carrier, and they all go into a
+        # "StructureToCSV" folder. If the folder has already been created, we go to except, which passed, and then
+        # continues until we reach the actual csvExporter. This exports the file with the filename of
+        # the object, which happens to be stored in the first row, second cell
         for devType in csvReady:
             for carrier in csvReady[devType]:
                 for array in csvReady[devType][carrier]:
@@ -367,7 +381,7 @@ class SpeedTestDS(object):
                     csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
                                      devType + "/" +
                                      carrier + "/" +
-                                     array[0][1][:-4] + ".csv")
+                                     array[0][1].split(".")[0] + ".csv")
                 #END FOR
             #END FOR
         #END FOR
@@ -387,6 +401,11 @@ class SpeedTestDS(object):
                           "mobile"  : {},
                           "netbook" : {}
                          }
+        #The structure is similar to the basic one, with each test being separated by device type
+        # and carrier. But inside, we are totalling up the standard deviation for each connected location
+        # (East and West), and each direction (Up and Down). Hence, we create another dictionary, and inside
+        # a dictionary pointing to an array. This reference will be passed through to each SpeedTestFile
+        # object, who will append valus to the correct array (based on dev type, carrier, location, and direction)
         for key in TCPStDevStruct:
             for elem in self.Carriers:
                 TCPStDevStruct[key][elem] = {
@@ -416,11 +435,15 @@ class SpeedTestDS(object):
                         percent = float(objCounter)/filesInStruct
                         print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
                                 str(int(percent*100)) + "%", end='\r')
-                    #Actually calling the function that calculate the StDev for the distribution
+                    #Actually calling the function that calculate the StDev for the distribution. The list
+                    # of carrier needs to be passed through because we don't know if the carrier name
+                    # is in Network Provider or Operator. Hence, we need the array of allowed
+                    # carriers, and so we pass in a reference
                     speedTest.calc_TCP_StDev_and_append_to_Distribution(TCPStDevStruct, self.Carriers)
                 #END FOR
             #END FOR
         #END FOR
+        #Line that clears the progress bar
         print(" "*80, end='\r')
         #After the FOR loops above, the structure TCPStDevStruct should have Up and Down
         # in each carrier populated with standard deviation values. A reference to this
@@ -432,6 +455,8 @@ class SpeedTestDS(object):
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                          title = "Select the Folder You Wish To Hold the CSV Files",
                                          mustexist = True)
+        #Just to keep everything from conflicting/overwriting, we append the datetime onto the
+        # end of the filename. Format is Year Month Day "-" Hour(12 hour clock) Minute Second
         from datetime import datetime
         now = datetime.now().strftime('%Y%m%d-%I%M%S')
         csvExport(csvStruct_TCPStDev, rootOfFiles + "/StandardDeviationofTCPSumThreads_"+now+".csv")
@@ -446,19 +471,20 @@ class SpeedTestDS(object):
     def convertTo_TCP_to_2D(self, structure, numRangeCols, maxRange):
         if numRangeCols < 3:
             numRangeCols = 3
-        if maxRange < 1:
+        if maxRange < numRangeCols:
             maxRange = 1000
         #END IF
         new_structure = []
         #Creating the arrays of the upper and lower ranges of StDevs.
-        # index 2 with in val_ranges_lower is the lower bound of the column, and
-        # index 2 of val_ranges_upper is the upper bound
+        # Two array are created as the output is easier, and the comparisons are also easier
         val_ranges_lower = []
         val_ranges_upper = []
         for i in range(numRangeCols):
             val_ranges_lower.append(maxRange*(float(i)/numRangeCols))
             val_ranges_upper.append(maxRange*(float(i+1)/numRangeCols))
         #END FOR
+        #This array is just used for the output, as it will consist of strings of the upper and lower
+        # ranges from the arrays above
         true_val_ranges = []
         for i in range(numRangeCols):
             true_val_ranges.append(str(int(val_ranges_lower[i])) + "-" + str(int(val_ranges_upper[i])))
@@ -472,36 +498,37 @@ class SpeedTestDS(object):
         new_structure.append(["",""])
         new_structure.append(["Network Type:", "Carrier, Server, & Direction:"])
 
-        for key in structure:
-            new_structure.append([key])
-            for elem in structure[key]:
+        for devType in structure:
+            #Appending the device type. This will be in the top left corner of all of it's data
+            new_structure.append([devType])
+            for carrier in structure[devType]:
                 #Creating an array of the first four cells (doesn't change between section).
                 # Then extend the array with the value ranges, and append to our final 2D array
-                line = ["", elem, "StDev Range:"]
+                line = ["", carrier, "StDev Range:"]
                 line.extend(true_val_ranges)
                 new_structure.append(line)
-                for server in structure[key][elem]:
-                    for direction in structure[key][elem][server]:
+                for server in structure[devType][carrier]:
+                    for direction in structure[devType][carrier][server]:
                         #Creating an empty array. Will hold the number of StDevs that fall within a range
+                        # The empty array is created this way rather than with [0]*numRangeCols because
+                        # I want to make sure that each element is referencing an individual object
                         range_totals = []
                         for i in range(numRangeCols+1):
                             range_totals.append(0)
                         #END FOR
-
                         #This goes through each value in the specific nettype,carrier,direction that we
                         # are currently looping through, and compares the value to the upper and lower
                         # ranges at each step
-                        for value in structure[key][elem][server][direction]:
+                        for value in structure[devType][carrier][server][direction]:
                             if value > maxRange:
                                 range_totals[-1] += 1
-                            for i in range(numRangeCols): # numRangeCols-1
+                            for i in range(numRangeCols):
                                 if (value > val_ranges_lower[i]) and (value <= val_ranges_upper[i]):
                                     range_totals[i] += 1
                                     break
                                 #END IF
                             #END FOR
                         #END FOR
-
                         #Creating an array of the first four cells (doesn't change between section).
                         # Then extend the array with the range totals, and append to our final 2D array
                         line = ["", server+" "+direction, "Totals:"]
@@ -520,6 +547,8 @@ class SpeedTestDS(object):
     # DESC: This starts with a reference to a 2-D array (converted from the provided CSV file)
     #       and appends the TCP StDev and Median to the appropiate row (each row is a file)
     def add_StDev_and_Median_to_Master(self, origRef):
+        #This appends the new column headers to the CPUC_Results CSV if they do not exist.
+        # We check if they exist by seeing if the last header is "eTCP_DOWN2_MEDIAN"
         if (origRef[0][-1] != "eTCP_DOWN2_MEDIAN"):
             newHeaders = ["wTCP_UP1_STDEV","wTCP_UP1_MEDIAN",
                           "wTCP_DOWN1_STDEV","wTCP_DOWN1_MEDIAN",
@@ -580,6 +609,9 @@ class SpeedTestDS(object):
         # we'll put in a value that says there was no such file in the folders of raw data
         lastIndex = origRef[0].index("eTCP_DOWN2_MEDIAN")
         for row in origRef:
+            #This creates a smaller array of the current row. If the array is empty, then
+            # it means that there we no values in that row yet. We fill those cells
+            # in with "FileMissingError"
             are_there_values_here = row[lastIndex-15:lastIndex+1]
             if not are_there_values_here:
                 row.extend(["FileMissingError"]*16)
@@ -606,14 +638,13 @@ class SpeedTestDS(object):
         #END FOR
 
         returnedString += "------------------------------------------\n"
-
         #Also, print the carriers that were ignored
         for elem in self.ignored_Carriers:
             returnedString += elem + "; "
         #END FOR
         if len(self.ignored_Carriers) > 0:
             returnedString += "\n"
-
+        #END IF
         if self.short_str_method:
             #Print the number of files that were ignored because of bad carrier information
             returnedString += "Num ignore files: " + str(len(self.ignored_Files)) + "\n"
@@ -624,7 +655,6 @@ class SpeedTestDS(object):
                 except: returnedString += self.ignored_Files[itir*2] + "\n"
             #END FOR
         #END IF/ELSE
-
         #Print the number of files that were ignored because of bad carrier information
         returnedString += "Num files w/o Carrier Info: " + str(len(self.bad_info_Files)) + "\n"
         #This loop prints the files that had no carrier info
@@ -632,7 +662,6 @@ class SpeedTestDS(object):
             for aFile in self.bad_info_Files:
                 returnedString += str(aFile) + "\n"
         #END IF
-
         returnedString += "------------------------------------------\n"
         returnedString += "------------------------------------------\n"
 
@@ -646,7 +675,6 @@ class SpeedTestDS(object):
                 #END FOR
             #END FOR
         #END IF
-
         return returnedString
     #END DEF
 #END CLASS

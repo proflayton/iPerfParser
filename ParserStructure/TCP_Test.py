@@ -68,6 +68,11 @@ testForMain(__name__)
 #       INPUTS-     self:               reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    Down_Threads_sum:   an array containing values representing the sum of each 4 threads' speed
 #
+#   create_Array_For_Results_CSV - Creates 4 value long array, to be returned to the SpeedTestFile object. The four
+#                       values are the StDev and Median of each direction (Up and Down)
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    toReturn:   Array, 4 values corresponding to this test's StDev and Median for Up and Down direction
+#
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)

@@ -58,30 +58,46 @@ testForMain(__name__)
 #   loadHeaderInfo - initializes the object by parsing the data in the given file path.
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #                   filePath:   String, containing absolute path to raw data file
-#       OUTPUTS-    none
+#       OUTPUTS-    None
 #
-#   createIndivTests -   ..
-#       INPUTS-     ..
-#       OUTPUTS-    ..
+#   createIndivTests - This takes the string of the entire file contents, and splits it up by test.
+#                      These chunks are then passed to their appropiate constructors
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   fileContents:   String, containing the entire file contents
+#       OUTPUTS-    None            As tests are created, they are added to the struct
 #
-# * convertTo2D - Converts this SpeedTestFile object into a 2D array, and returns the result
+#   convertTo2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    toBeReturned:   the 2D array that will be returned
 #
-# * calc_TestTCP_StDev - For each test in this object, if the test is a TCP test, calculate the
-#                        standard deviation of the sum of thread speeds at each 1 second interval.
-#                        The IndivSpeedTest object will handle putting the value into the structure
-#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
-#                   structRef:  reference to the structure created in STDs.convertTo_ObjectToTCP()
-#       OUTPUTS-    none
+#   calc_TCP_StDev_and_append - For each test in this object, if the test is a TCP test, calculate the
+#                       standard deviation of the sum of thread speeds at each 1 second interval.
+#                       The IndivSpeedTest object will handle putting the value into the structure
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   structRef:      reference to the structure created in STDs.convertTo_ObjectToTCP()
+#                   list_carriers:  reference to array of carriers
+#       OUTPUTS-    None
 #
-# * calc_StDev_and_Median_and_append_to_MasterCSV - ..
-#       INPUTS-     ..
-#       OUTPUTS-    ..
+#   calc_StDev_and_Median_and_append_to_MasterCSV - This calculates the standard deviation and
+#                       median of the TCP tests in this object, and then appends the values to
+#                       the CPUC_Results CSV the is provided in the package
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   masterCSVRef:   reference to the 2D array of the CSV file
+#       OUTPUTS-    None
 #
-# * this_File_Index_in_MasterCSV - ..
-#       INPUTS-     ..
-#       OUTPUTS-    ..
+#   this_File_Index_in_MasterCSV - This looks for the row in the CPUC_Results CSV that corresponds
+#                       to this object's information
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   masterCSVRef:   reference to the 2D array of the CSV file
+#       OUTPUTS-    index:          Integer, the row index at which this file is located in the CPUC_Results CSV
+#                                   If the file was not found in the CSV, returns None
+#
+#   getTCP_with_TestNumber - This takes a given string, whose value corresponds to the test number
+#                       (which will be either 1, 2, 4, or 5), and returns the corresponding TCPTest
+#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
+#                   num:    String, the test number of the TCP test we wish to get
+#       OUTPUTS-    test:   TCPTest object whose number corresponds to the given value in num.
+#                           If no test was found, returns None
 #
 #   printSpeedTests - Return a string that has the information of each speed test in the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -391,6 +407,11 @@ class SpeedTestFile(object):
     #END DEf
 
 
+    #
+    # # # #
+    # Fix this function
+    # # # #
+    #
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
     def convertTo2D(self):
@@ -532,8 +553,12 @@ class SpeedTestFile(object):
     #       call it's thread sum function, and append the standard deviation to
     #       the passed structure reference.
     def calc_TCP_StDev_and_append_to_Distribution(self, structRef, list_carriers):
+        #We only use the TCP tests in the function
         for indivTest in self.mySpeedTests["TCP"]:
+            #We only use the test if there were no errors in it
             if not indivTest.ERROR:
+                #This if/else block makes sure that the test is in our list of carriers.
+                # Otherwise, continue will skip to the next test in the object
                 if (self.NetworkOperator in list_carriers):
                     mycarrier = self.NetworkOperator
                 elif (self.NetworkProvider in list_carriers):
@@ -560,7 +585,9 @@ class SpeedTestFile(object):
     #END DEF
 
 
-    # DESC: ..
+    # DESC: This uses the information in this object to find the row in the CPUC_Results CSV
+    #       that it corresponds to. It first checks with DeviceID, Date, and Time. If that
+    #       doesn't work, it tries with LocationID, Date, and Time.
     def this_File_Index_in_MasterCSV(self, masterCSVRef):
         index = None
         for row in masterCSVRef:
@@ -583,7 +610,8 @@ class SpeedTestFile(object):
     #END DEF
 
 
-    # DESC: ..
+    # DESC: Using the value passed in num, this looks for the test whose TestNumber
+    #       corresponds to that value. If there was no such test, returns None
     def getTCP_with_TestNumber(self, num):
         if not isinstance(num, str):
             raise TypeError
@@ -595,9 +623,11 @@ class SpeedTestFile(object):
     #END DEF
 
 
-    # DESC: ..
-    def calc_StDev_and_Median_and_append_to_MasterCSV(self, origRef):
-        thisFile = self.this_File_Index_in_MasterCSV(origRef)
+    # DESC: This function first tries to find the index of this file in the CPUC_Results CSV.
+    #       If the file was found, it calculates the StDev and Median for all of the TCP tests,
+    #       and appends the values to the CSV.
+    def calc_StDev_and_Median_and_append_to_MasterCSV(self, masterCSVRef):
+        thisFile = self.this_File_Index_in_MasterCSV(masterCSVRef)
         if thisFile is not None:
             toAppend = []
             #The test number order is specific, as test 1 is the first TCP West, 2 is TCP East, etc.
@@ -610,12 +640,13 @@ class SpeedTestFile(object):
                 else:
                     toAppend.extend( ["TestMissingError"] * 4 )
             #END FOR
-            origRef[thisFile].extend(toAppend)
+            masterCSVRef[thisFile].extend(toAppend)
         #END IF
     #END DEF
 
 
-    # DESC: Returns all of the sub tests for this file as a string
+    # DESC: Returns all of the sub tests for this file as a string. If there are no
+    #       tests, then it returns a string saying there were no tests
     def printSpeedTests(self):
         text = ""
         for speedTest in self.mySpeedTests["TCP"]:
