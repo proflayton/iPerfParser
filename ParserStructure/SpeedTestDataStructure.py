@@ -242,24 +242,42 @@ class SpeedTestDS(object):
                                              title = "Select the Folder Containing the Raw Data",
                                              mustexist = True)
 
-            #Loops through all files in given folder
-            #You must use speedTest.speedTest as the left speedTest is
-            # the module, and the right speedTest is the class. Maybe I should rename that?
+            #Loops through all files in given folder, and any subfolders.
+            #This loop is to just get the count of files that will be read in, so that
+            # we can print out a progress bar.
+            totalFiles = 0
             for root, dirs, files in os.walk(rootOfFiles):
-                #These are used to keep track of what file we are currently at, and the total number of files
-                # in the folder we are currently in
-                counter = 0
-                total = len(files)
                 for aFile in files:
-                    #This is the progress bar that is printed out
-                    print("FOLDER: "+root.split("/")[-1]+' -- FILES: '+str(counter)+'/'+str(total), end='\r')
-                    counter+=1
+                    f = open(os.path.join(root, aFile),'r')
+                    try:
+                        isItCPUC = f.readline()
+                        if ("CPUC Tester Beta v2.0" in isItCPUC):
+                            totalFiles += 1
+                    except:
+                        pass
+                #END FOR files
+            #END FOR os.walker
+
+            #Now we read in the files, and keep track of how many files have been read in and parsed
+            fileCounter = 0
+            counterCounter = 0
+            for root, dirs, files in os.walk(rootOfFiles):
+                for aFile in files:
                     #Seeing if the file given is, in fact, a data file
                     #If not, the script will exit and display the message below
                     f = open(os.path.join(root, aFile),'r')
                     try:
                         isItCPUC = f.readline()
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
+                            #This is the progress bar that is printed out
+                            fileCounter += 1; counterCounter +=1
+                            if counterCounter > (totalFiles/200):
+                                counterCounter = 0
+                                percent = float(fileCounter)/totalFiles
+                                print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
+                                        str(int(percent*100)) + "%", end='\r')
+                            #END IF
+                            #This is where the file is actually created, and then added to the structure
                             test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
                             self.addToStructure(test_STFile)
                         #END IF
@@ -267,8 +285,8 @@ class SpeedTestDS(object):
                         pass
                 #END FOR files
                 #Printing an empty line after all of the files have been read, so to clear the text
-                print(" "*80, end='\r')
             #END FOR os.walk
+            print(" "*80, end='\r')
         #END IF/ELSE
     #END DEF
 
@@ -377,18 +395,33 @@ class SpeedTestDS(object):
                                             }
             #END FOR
         #END FOR
+        #Counting the number of files in the object, not including the bad files
+        filesInStruct = 0
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
-                counter = 0
-                total = len(self.mySpeedTestFiles[devType][carrier])
+                filesInStruct += len(self.mySpeedTestFiles[devType][carrier])
+        #END FORs
+        #Variables used to track how many objects have been processed
+        objCounter = 0
+        counterCounter = 0
+        
+        for devType in self.mySpeedTestFiles:
+            for carrier in self.mySpeedTestFiles[devType]:
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
-                    print(" "+devType+"-"+carrier+' -- '+str(counter)+'/'+str(total), end='\r')
-                    counter+=1
+                    #Creating the progress bar
+                    objCounter += 1
+                    counterCounter += 1
+                    if counterCounter > (filesInStruct/200):
+                        counterCounter = 0
+                        percent = float(objCounter)/filesInStruct
+                        print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
+                                str(int(percent*100)) + "%", end='\r')
+                    #Actually calling the function that calculate the StDev for the distribution
                     speedTest.calc_TCP_StDev_and_append_to_Distribution(TCPStDevStruct, self.Carriers)
                 #END FOR
-                print(" "*80, end='\r')
             #END FOR
         #END FOR
+        print(" "*80, end='\r')
         #After the FOR loops above, the structure TCPStDevStruct should have Up and Down
         # in each carrier populated with standard deviation values. A reference to this
         # structure is then passed to the function that converts the Up and Down dictionaries
@@ -499,29 +532,46 @@ class SpeedTestDS(object):
                          ]
             origRef[0].extend(newHeaders)
         #END IF
+        #Counting all of the files in this object, to be used for a progress bar
+        filesInStruct = 0
+        for devType in self.mySpeedTestFiles:
+            for carrier in self.mySpeedTestFiles[devType]:
+                filesInStruct += len(self.mySpeedTestFiles[devType][carrier])
+        filesInStruct += len(self.bad_info_Files)
+        #Variables used to track how many objects have been processed
+        objCounter = 0
+        counterCounter = 0
+
         #This section goes through all of the tests stored in this structure and runs
         # the SpeedTestFile object's StDev and Median appending function
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
-                counter = 0
-                total = len(self.mySpeedTestFiles[devType][carrier])
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
-                    #This is the progress bar/output for this function
-                    print(" "+devType+"-"+carrier+' -- '+str(counter)+'/'+str(total), end='\r')
-                    counter+=1
+                    #Creating the progress bar
+                    objCounter += 1
+                    counterCounter += 1
+                    if counterCounter > (filesInStruct/200):
+                        counterCounter = 0
+                        percent = float(objCounter)/filesInStruct
+                        print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
+                                str(int(percent*100)) + "%", end='\r')
+                    #Actually calling the function
                     speedTest.calc_StDev_and_Median_and_append_to_MasterCSV( origRef )
                 #END FOR
-                #After printing out the progress for one carrier, it clears the line
-                print(" "*80, end='\r')
             #END FOR
         #END FOR
         #This section does the same thing as above, but it runs through the files 
         # that had no carrier information.
-        counter = 0
-        total = len(self.bad_info_Files)
         for speedTest in self.bad_info_Files:
-            print(" Files w/o carrier info -- "+str(counter)+"/"+str(total), end='\r')
-            counter+=1
+            #Creating the progress bar
+            objCounter += 1
+            counterCounter += 1
+            if counterCounter > (filesInStruct/200):
+                counterCounter = 0
+                percent = float(objCounter)/filesInStruct
+                print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
+                        str(int(percent*100)) + "%", end='\r')
+            #Actually calling the function
             speedTest.calc_StDev_and_Median_and_append_to_MasterCSV( origRef )
         #END FOR
         print(" "*80, end='\r')
