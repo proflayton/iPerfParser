@@ -96,6 +96,7 @@ class UDPTest(SpeedTest):
     # DESC: Initializing class
     def __init__(self, dataString, testNum=0, short=False):
         SpeedTest.__init__(self, dataString, testNum, short)
+        if not self.iPerfCommand: return
         #Getting the datagram size
         self.DatagramSize = self.iPerfCommand[self.iPerfCommand.find("-l"):].split(" ")[1].strip()
         #Getting the datagram size
@@ -157,8 +158,8 @@ class UDPTest(SpeedTest):
     # DESC: Creating a string representation of our object
     def __str__(self):
         this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                    pad + "Connection Type: " + self.ConnectionType + "\n" +
-                    pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                    pad + "Connection Type: " + str(self.ConnectionType) + "\n" +
+                    pad + "Connection Location: " + str(self.ConnectionLoc) + "\n"
                    )
         if not self.short_str_method:
             this_str += (pad + "Reciever IP:" + str(self.RecieverIP) + " port:" + str(self.Port) + "\n" +
@@ -169,12 +170,12 @@ class UDPTest(SpeedTest):
                                                  ", " + str(self.MeasuringFmt["Speed"]) + "\n"
                         )
         if self.ERROR:
-            this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
+            this_str += pad + "  ERROR: " + str(self.ErrorMessage) + "\n"
         else:
             for pingThread in self.myPingThreads:
                 this_str += str(pingThread)
             #Now append the Server Report information
-            this_str += ( pad + " Server Report: " +
+            this_str += ( pad + "  Server Report: " +
                           str(self.ServerReport["Ping"]).strip() + "   " +
                           str(self.ServerReport["Time"]) + "   " +
                           str(self.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +

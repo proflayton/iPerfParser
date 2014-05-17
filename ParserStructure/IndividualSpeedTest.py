@@ -79,7 +79,7 @@ class SpeedTest(object):
         if ("Test Timed Out" in dataString) or ("timed out" in dataString):
             self.ERROR = True
             self.ErrorMessage = "Test Timed Out."
-        elif "Quitting operations" in dataString:
+        elif ("Quitting operations" in dataString) or ("Quitting Operations" in dataString):
             self.ERROR = True
             self.ErrorMessage = "Test quit by User."
         elif "failed:" in dataString:
@@ -100,6 +100,9 @@ class SpeedTest(object):
             if self.iPerfCommand != "" and self.TestNumber != 0:
                 break
         #END FOR
+
+        #Checking to make sure that self.iPerfCommand has something in it. Otherwise, exit
+        if not self.iPerfCommand: return
 
         #Getting the Reciever IP address
         self.RecieverIP = self.iPerfCommand[self.iPerfCommand.find("-c"): ].split(" ")[1].strip()

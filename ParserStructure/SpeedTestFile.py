@@ -321,6 +321,7 @@ class SpeedTestFile(object):
         fileContents = fileContents.split('\n\n')
         sortedFileContents = []
         appending = False
+        aTest = ""
         for chunk in fileContents:
             if not appending:
                 if "Starting Test " in chunk:
@@ -568,6 +569,16 @@ class SpeedTestFile(object):
                 (self.Time in str(row[6])) ):
                 index = masterCSVRef.index(row)
                 break
+        #END FOR
+        if (index == None):
+            for row in masterCSVRef:
+                if ((self.LocationID in str(row[3])) and
+                    (self.Date in str(row[5])) and
+                    (self.Time in str(row[6])) ):
+                    index = masterCSVRef.index(row)
+                    break
+            #END FOR
+        #END IF
         return index
     #END DEF
 
@@ -597,7 +608,7 @@ class SpeedTestFile(object):
                 if indivTest is not None:
                     toAppend.extend( indivTest.create_Array_For_Results_CSV() )
                 else:
-                    toAppend.extend( ["error"] * 4 )
+                    toAppend.extend( ["TestMissingError"] * 4 )
             #END FOR
             origRef[thisFile].extend(toAppend)
         #END IF
@@ -611,6 +622,9 @@ class SpeedTestFile(object):
             text +=  str(speedTest)
         for speedTest in self.mySpeedTests["UDP"]:
             text +=  str(speedTest)
+        #END FOR
+        if text == "":
+            text = pad + "No viable network speed tests"
         return text
     #END DEF
 
@@ -618,28 +632,28 @@ class SpeedTestFile(object):
     # DESC: Returns a string representation of the object
     def __str__(self):
         if self.short_str_method:
-            return (pad + "Filename: " + self.FileName + "\n" +
-                    pad + "DateTime of Speed Test: " + self.Date + " " + self.Time + "\n" +
-                    pad + "Network Type: " + self.NetworkType + "\n" +
-                    pad + "Network: Provider = " + self.NetworkProvider +
-                          ", Operator = " + self.NetworkOperator + "\n" +
-                    pad + "Device ID: " + self.DeviceID + "\n" +
-                    pad + "Location ID: " + self.LocationID + "\n" +
+            return (pad + "Filename: " + str(self.FileName) + "\n" +
+                    pad + "DateTime of Speed Test: " + str(self.Date) + " " + str(self.Time) + "\n" +
+                    pad + "Network Type: " + str(self.NetworkType) + "\n" +
+                    pad + "Network: Provider = " + str(self.NetworkProvider) +
+                          ", Operator = " + str(self.NetworkOperator) + "\n" +
+                    pad + "Device ID: " + str(self.DeviceID) + "\n" +
+                    pad + "Location ID: " + str(self.LocationID) + "\n" +
                     self.printSpeedTests() +
                     "\n"
                     )
         else:
-            return (pad + "Filename: " + self.FileName + "\n" +
-                    pad + "DateTime of Speed Test: " + self.Date + " " + self.Time + "\n" +
-                    pad + "OS: " + self.OSName + ", " + self.OSArchitecture + ", " + self.OSVersion + "\n" +
-                    pad + "Java: " + self.JavaVersion + ", " + self.JavaVendor + "\n" +
-                    pad + "Network Type: " + self.NetworkType + "\n" +
-                    pad + "Connection: Server = " + self.Server + ", Host = " + self.Host + "\n" +
-                    pad + "Network: Provider = " + self.NetworkProvider +
-                          ", Operator = " + self.NetworkOperator + "\n" +
-                    pad + "Device: ID = " + self.DeviceID +
-                          ", Connection Type = " + self.ConnectionType + "\n" +
-                    pad + "Location ID: " + self.LocationID + "\n" +
+            return (pad + "Filename: " + str(self.FileName) + "\n" +
+                    pad + "DateTime of Speed Test: " + str(self.Date) + " " + str(self.Time) + "\n" +
+                    pad + "OS: " + str(self.OSName) + ", " + str(self.OSArchitecture) + ", " + str(self.OSVersion) + "\n" +
+                    pad + "Java: " + str(self.JavaVersion) + ", " + str(self.JavaVendor) + "\n" +
+                    pad + "Network Type: " + str(self.NetworkType) + "\n" +
+                    pad + "Connection: Server = " + str(self.Server) + ", Host = " + str(self.Host) + "\n" +
+                    pad + "Network: Provider = " + str(self.NetworkProvider) +
+                          ", Operator = " + str(self.NetworkOperator) + "\n" +
+                    pad + "Device: ID = " + str(self.DeviceID) +
+                          ", Connection Type = " + str(self.ConnectionType) + "\n" +
+                    pad + "Location ID: " + str(self.LocationID) + "\n" +
                     pad + "Latitude:" + str(self.Latitude) +
                           " Longitude:" + str(self.Longitude) + "\n" +
                     self.printSpeedTests() +

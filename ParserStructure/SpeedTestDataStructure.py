@@ -99,6 +99,7 @@ class SpeedTestDS(object):
     # ---------------------
     # Initializing some class attributes
     Carriers = ["AT&T", "Verizon", "Sprint", "T-Mobile"]
+    bad_info_Files = []
     ignored_Carriers = []
     ignored_Files = []
 
@@ -113,13 +114,18 @@ class SpeedTestDS(object):
         self.meaningOfLife = "bacon"
         self.recursively_print = recurPrint
         self.short_str_method = quickPrint
+        #Initializing the arrays in this object. There shouldn't be any conflicts
+        # with other objects of the same type, but better to be safe than sorry
+        self.ignored_Carriers = []
+        self.ignored_Files = []
+        self.bad_info_Files = []
         #This bit creates the SpeedTest Files array. For each type of connection
         # (i.e., mobile or netbook), it will instantiate another dictionary, where
         # each key is the carrier name, and points to an array
         self.mySpeedTestFiles = {
-                                    "mobile"  : {},
-                                    "netbook" : {}
-                                   }
+                                  "mobile"  : {},
+                                  "netbook" : {}
+                                }
         for key in self.mySpeedTestFiles:
             for elem in self.Carriers:
                 self.mySpeedTestFiles[key][elem] = []
@@ -132,14 +138,9 @@ class SpeedTestDS(object):
         #cheat for not having to select the folder every time.
         #change string in DataRoot to be the absolute path to the data files
         #In command line:
-        # use "main.py -b" if your files are located in the folders specified in the first block
-        # use "main.py -p" if your files are located in the folders specified in the second block
-        # - use "main.py -p/b -c" to test a folder of data files
-        # - use "main.py -p/b -cs" to only test on 2 files (one of each type)
-        # - use "main.py -p/b -css1" to only test on 1 file with no errors
-        # - use "main.py -p/b -css2" to only test on 1 file with errors
-        # - use "main.py -p/b -s" to only test on all sample files. Two arguments of True/False optional
-        # - use "main.py -p/b -ss - #" to only test on 1 sample file. a number after -ss is optional (must be 1->5)
+        # use "main.py -b" if your files are located in the folders specified in the variables
+        #   DataRoot, BBResults, and Samples
+        # use "main.py -p" if your files are located in the folders specified in the variables
         if (len(sysArgv) > 1):
             if (sysArgv[1] == "-h") or ("help" in sysArgv[1]):
                 print(  "Syntax:\n" +
@@ -299,8 +300,12 @@ class SpeedTestDS(object):
             elif STFileObj.NetworkOperator != "N/A":
                 if not(STFileObj.NetworkOperator in self.ignored_Carriers):
                     self.ignored_Carriers.append(STFileObj.NetworkOperator)
-            #END IF/ELIF
-            self.ignored_Files.append(STFileObj.FileName)
+            #If both the NetworkProvider and NetworkOperator are empty or have a weird 
+            # value, then something went wrong when the test was taken and we don't know
+            # which carrier this test belongs to. But we will still use the test
+            # when adding to the CPUC_Results CSV.
+            self.bad_info_Files.append(STFileObj)
+            #END IF/ELIF/ELSE
         #END IF/ELIF/ELSE
     #END DEF
 
@@ -493,24 +498,49 @@ class SpeedTestDS(object):
                           "eTCP_DOWN2_STDEV","eTCP_DOWN2_MEDIAN"
                          ]
             origRef[0].extend(newHeaders)
+        #END IF
+        #This section goes through all of the tests stored in this structure and runs
+        # the SpeedTestFile object's StDev and Median appending function
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
                 counter = 0
                 total = len(self.mySpeedTestFiles[devType][carrier])
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
+                    #This is the progress bar/output for this function
                     print(" "+devType+"-"+carrier+' -- '+str(counter)+'/'+str(total), end='\r')
                     counter+=1
                     speedTest.calc_StDev_and_Median_and_append_to_MasterCSV( origRef )
                 #END FOR
+                #After printing out the progress for one carrier, it clears the line
                 print(" "*80, end='\r')
             #END FOR
+        #END FOR
+        #This section does the same thing as above, but it runs through the files 
+        # that had no carrier information.
+        counter = 0
+        total = len(self.bad_info_Files)
+        for speedTest in self.bad_info_Files:
+            print(" Files w/o carrier info -- "+str(counter)+"/"+str(total), end='\r')
+            counter+=1
+            speedTest.calc_StDev_and_Median_and_append_to_MasterCSV( origRef )
+        #END FOR
+        print(" "*80, end='\r')
+
+        #If there are any rows that still don't have any information for the TCP StDev and Median,
+        # we'll put in a value that says there was no such file in the folders of raw data
+        lastIndex = origRef[0].index("eTCP_DOWN2_MEDIAN")
+        for row in origRef:
+            are_there_values_here = row[lastIndex-15:lastIndex+1]
+            if not are_there_values_here:
+                row.extend([""]*16)
+                #row.extend(["FileMissingError"]*16)
         #END FOR
 
         print("Please select the folder you wish to hold the csv file that will be created")
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                          title = "Select the Folder You Wish To Hold the CSV File",
                                          mustexist = True)
-        csvExport(origRef, rootOfFiles + "/CPUC_FieldTestResults_Q42013_Data_with_StDev_and_Median.csv")
+        csvExport(origRef, rootOfFiles + "/CPUC_FieldTestResults_Q42013Data_with_StDev_Median.csv")
     #END DEF
 
 
@@ -525,6 +555,8 @@ class SpeedTestDS(object):
                                    str(len(self.mySpeedTestFiles[deviceType][carrier])) + "\n")
             #END FOR
         #END FOR
+
+        returnedString += "------------------------------------------\n"
 
         #Also, print the carriers that were ignored
         for elem in self.ignored_Carriers:
@@ -543,6 +575,14 @@ class SpeedTestDS(object):
                 except: returnedString += self.ignored_Files[itir*2] + "\n"
             #END FOR
         #END IF/ELSE
+
+        #Print the number of files that were ignored because of bad carrier information
+        returnedString += "Num files w/o Carrier Info: " + str(len(self.bad_info_Files)) + "\n"
+        #This loop prints the files that had no carrier info
+        if self.recursively_print:
+            for aFile in self.bad_info_Files:
+                returnedString += str(aFile) + "\n"
+        #END IF
 
         returnedString += "------------------------------------------\n"
         returnedString += "------------------------------------------\n"

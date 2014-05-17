@@ -104,13 +104,17 @@ class TCPTest(SpeedTest):
     def __init__(self, dataString, testNum=0, short=False):
         #Call the parent class' __init__
         SpeedTest.__init__(self, dataString, testNum, short)
+        if not self.iPerfCommand: return
         #Getting the window size
         self.WindowSize = self.iPerfCommand[self.iPerfCommand.find("-w"):].split(" ")[1].strip()
         if not self.ERROR:
             #Declaring and creating the Ping Threads for this test
             self.myPingThreads = { "Up" : [], "Down" : [] }
-            self.createPingThreads()
-            self.text = None
+            #This will run the function that creates the Ping Threads, but will only
+            # clear self.text if there were no errors
+            if self.createPingThreads():
+                self.text = None
+            #END IF
     #END DEF
 
 
@@ -128,54 +132,84 @@ class TCPTest(SpeedTest):
                 tempThreads[newKey].append(line)
             #END IF
         #END FOR
-        #This block does the initial declaration of further organization, setting up
-        # the structure to separate the Upload threads from the Download threads.
-        dirSplitTempThreads = {"Up":{},"Down":{}}
-        for key in list(tempThreads):
-            dirSplitTempThreads["Down"][key] = []
-            dirSplitTempThreads["Up"][key] = []
-        #END FOR
-        #This block goes through each thread in the first structure, and essentially
-        # divides the array of strings in half, putting the Upload streams into their
-        # appropiate array, and the Downloads in their's.
-        for thread in tempThreads:
-            direction = ["Up", "Down"]
-            dircInd = -1
-            for line in tempThreads[thread]:
-                if "connected with" in line:
-                    dircInd += 1
-                dirSplitTempThreads[direction[dircInd]][thread].append(line)
+        #Now that everything is sorted, we are going to put everything into a try/except block.
+        # If there is any error, we know that there must have been something wrong with what was 
+        # recorded by the iPerf program, and the test is ignored. The ErrorMessage will say which
+        # test caused the problem.
+        currentThreadNum = ""
+        try:
+            #This block does the initial declaration of further organization, setting up
+            # the structure to separate the Upload threads from the Download threads.
+            dirSplitTempThreads = {"Up":{},"Down":{}}
+            for key in list(tempThreads):
+                dirSplitTempThreads["Down"][key] = []
+                dirSplitTempThreads["Up"][key] = []
             #END FOR
-        #END FOR
-        #Sorting the arrays of threads, as they are now organized by thread and direction.
-        # Once the sorted() function runs, the line are not in their correct order. We need to take
-        # the last line (which contains the "local xxx.xxx.xxx.xxx ....") and the second line (which is
-        # the [x] 0.0-t.t line, or the summation line) and put them in their respective locations, which
-        # is the beginning and end of the array of lines
-        for direction in dirSplitTempThreads:
-            for thread in dirSplitTempThreads[direction]:
-                temp = sorted(dirSplitTempThreads[direction][thread])
-                start = temp.pop(-1); end = temp.pop(1)
-                dirSplitTempThreads[direction][thread] = [start]
-                dirSplitTempThreads[direction][thread].extend(temp)
-                dirSplitTempThreads[direction][thread].append(end)
-        #END FOR
-        #Now pass each array of Pings (as Strings) to the PingThread constructor
-        for direction in dirSplitTempThreads:
-            for thread in dirSplitTempThreads[direction]:
-                self.myPingThreads[direction].append( 
-                    PingThread(dirSplitTempThreads[direction][thread],\
-                               thread, direction,\
-                               self.MeasuringFmt["Size"],\
-                               self.MeasuringFmt["Speed"],\
-                               self.short_str_method) )
-        #END FOR
+            #This block goes through each thread in the first structure, and essentially
+            # divides the array of strings in half, putting the Upload streams into their
+            # appropiate array, and the Downloads in their's.
+            for thread in tempThreads:
+                #Tracking which thread num we are dealing with
+                currentThreadNum = thread
+                #Each thread startes with a line containing "connected with", and a second one
+                # later in the array of line. These are where the program switched from uploading to
+                # downloading, and is where we can split the array into two separate arrays.
+                direction = ["Up", "Down"]
+                dircInd = -1
+                for line in tempThreads[thread]:
+                    if "connected with" in line:
+                        dircInd += 1
+                    dirSplitTempThreads[direction[dircInd]][thread].append(line)
+                #END FOR
+            #END FOR
+            #Sorting the arrays of threads, as they are now organized by thread and direction.
+            # Once the sorted() function runs, the line are not in their correct order. We need to take
+            # the last line (which contains the "local xxx.xxx.xxx.xxx ....") and the second line (which is
+            # the [x] 0.0-t.t line, or the summation line) and put them in their respective locations, which
+            # is the beginning and end of the array of lines
+            for direction in dirSplitTempThreads:
+                for thread in dirSplitTempThreads[direction]:
+                    #Tracking which thread num we are dealing with
+                    currentThreadNum = thread
+                    #Sorting the array, and then removing the final element (which contains
+                    # "connected with") and the second element (contains the sum). The array is
+                    # redeclared, with the "connected with" in front, the remaining array next, and then
+                    # the final string appended to the end
+                    temp = sorted(dirSplitTempThreads[direction][thread])
+                    start = temp.pop(-1); end = temp.pop(1)
+                    dirSplitTempThreads[direction][thread] = [start]
+                    dirSplitTempThreads[direction][thread].extend(temp)
+                    dirSplitTempThreads[direction][thread].append(end)
+            #END FOR
+            #Now pass each array of Pings (as Strings) to the PingThread constructor
+            for direction in dirSplitTempThreads:
+                for thread in dirSplitTempThreads[direction]:
+                    self.myPingThreads[direction].append( 
+                        PingThread(dirSplitTempThreads[direction][thread],\
+                                   thread, direction,\
+                                   self.MeasuringFmt["Size"],\
+                                   self.MeasuringFmt["Speed"],\
+                                   self.short_str_method) )
+            #END FOR
+            return True
+        except:
+            #If there was an error in the sorting of the file, there must have been some problem in what
+            # was output by iPerf. The ErrorMessage will give a clue to which test, and which thread has the problem
+            self.ERROR = True
+            self.ErrorMessage = ("There was an error in the output of the network test. "+
+                                 "Check test #" + str(self.TestNumber) + " , around thread #" + currentThreadNum
+                                )
+            self.myPingThreads = []
+            return False
+        #END TRY/EXCEPT
     #END DEF
 
 
     # DESC: In this test, find the longest thread time among all of the threads
     def getLongestThreadTime(self, direction_passed="ALL"):
         time = 0
+        if self.ERROR:
+            return time
         if ((direction_passed == "ALL") or 
             (direction_passed != "Up" and direction_passed != "Down")):
             for direction in self.myPingThreads:
@@ -234,7 +268,9 @@ class TCPTest(SpeedTest):
     #END DEF
 
 
-    # DESC: ..
+    # DESC: This creates an array of 4 values that will be appended to the Results CSV
+    # provided by CPUC. If there was an error in the test, the 4 values returned say "TestDataError",
+    # otherwise, the 4 values are the StDev and Median for both thread directions for this test
     def create_Array_For_Results_CSV(self):
         toReturn = []
         #If there was no error, there are values to StDev and Median
@@ -248,7 +284,7 @@ class TCPTest(SpeedTest):
             down_stdev = StDevP(downThread);     toReturn.append(down_stdev)
             down_median = getMedian(downThread); toReturn.append(down_median)
         else:
-            toReturn = ["None"] * 4
+            toReturn = ["TestDataError"] * 4
         return toReturn
     #END DEF
 
@@ -256,18 +292,18 @@ class TCPTest(SpeedTest):
     # DESC: Creating a string representation of our object
     def __str__(self):
         this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
-                    pad + "Connection Type: " + self.ConnectionType + "\n" +
-                    pad + "Connection Location: " + self.ConnectionLoc + "\n"
+                    pad + "Connection Type: " + str(self.ConnectionType) + "\n" +
+                    pad + "Connection Location: " + str(self.ConnectionLoc) + "\n"
                    )
         if not self.short_str_method:
-            this_str += (pad + "Reciever IP:" + self.RecieverIP + " port:" + str(self.Port) + "\n" +
-                         pad + "Test Interval:" + self.TestInterval +\
-                             "  Window Size:" + self.WindowSize +\
-                             "  Measurement Format:" + self.MeasuringFmt["Size"] +\
-                                               ", " + self.MeasuringFmt["Speed"] + "\n"
+            this_str += (pad + "Reciever IP:" + str(self.RecieverIP) + " port:" + str(self.Port) + "\n" +
+                         pad + "Test Interval:" + str(self.TestInterval) +
+                             "  Window Size:" + str(self.WindowSize) +
+                             "  Measurement Format:" + str(self.MeasuringFmt["Size"]) +
+                                               ", " + str(self.MeasuringFmt["Speed"]) + "\n"
                         )
         if self.ERROR:
-            this_str += pad + "  ERROR: " + self.ErrorMessage + "\n"
+            this_str += pad + "  ERROR: " + str(self.ErrorMessage) + "\n"
         else:
             for pingThread in self.myPingThreads["Up"]:
                 this_str += str(pingThread)

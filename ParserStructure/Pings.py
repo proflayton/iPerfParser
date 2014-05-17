@@ -108,8 +108,8 @@ class Ping(object):
     def __str__(self):
         return (pad + str(self.secIntervalStart) + "-"
                     + str(self.secIntervalEnd) + self.time_pad + "  " + self.size_pad 
-                    + str(self.size_string) + " " + self.size_units + "  " + self.speed_pad 
-                    + str(self.speed_string) + " " + self.speed_units 
+                    + str(self.size_string) + " " + str(self.size_units) + "  " + self.speed_pad 
+                    + str(self.speed_string) + " " + str(self.speed_units)
                )
     #END DEF
 #END CLASS
