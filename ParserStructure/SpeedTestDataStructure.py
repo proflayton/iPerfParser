@@ -532,8 +532,7 @@ class SpeedTestDS(object):
         for row in origRef:
             are_there_values_here = row[lastIndex-15:lastIndex+1]
             if not are_there_values_here:
-                row.extend([""]*16)
-                #row.extend(["FileMissingError"]*16)
+                row.extend(["FileMissingError"]*16)
         #END FOR
 
         print("Please select the folder you wish to hold the csv file that will be created")
