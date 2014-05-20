@@ -289,7 +289,7 @@ class TCPTest(SpeedTest):
             down_stdev = StDevP(downThread);     toReturn.append(down_stdev)
             down_median = getMedian(downThread); toReturn.append(down_median)
         else:
-            toReturn = ["TestDataError"] * 4
+            toReturn = ["DataError", ""]*2
         return toReturn
     #END DEF
 

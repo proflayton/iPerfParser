@@ -638,7 +638,7 @@ class SpeedTestFile(object):
                 if indivTest is not None:
                     toAppend.extend( indivTest.create_Array_For_Results_CSV() )
                 else:
-                    toAppend.extend( ["TestMissingError"] * 4 )
+                    toAppend.extend( ["NA",""]*2 )
             #END FOR
             masterCSVRef[thisFile].extend(toAppend)
         #END IF

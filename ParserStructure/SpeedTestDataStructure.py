@@ -250,6 +250,7 @@ class SpeedTestDS(object):
             #Loops through all files in given folder, and any subfolders.
             #This loop is to just get the count of files that will be read in, so that
             # we can print out a progress bar.
+            print("Counting files...")
             totalFiles = 0
             for root, dirs, files in os.walk(rootOfFiles):
                 for aFile in files:
@@ -262,6 +263,7 @@ class SpeedTestDS(object):
                         pass
                 #END FOR files
             #END FOR os.walker
+            print("Done counting files...")
 
             #Now we read in the files, and keep track of how many files have been read in and parsed
             fileCounter = 0
@@ -614,7 +616,7 @@ class SpeedTestDS(object):
             # in with "FileMissingError"
             are_there_values_here = row[lastIndex-15:lastIndex+1]
             if not are_there_values_here:
-                row.extend(["FileMissingError"]*16)
+                row.extend(["FileMissingError",""]*8)
         #END FOR
 
         print("Please select the folder you wish to hold the csv file that will be created")
