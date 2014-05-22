@@ -54,6 +54,7 @@ while command:
           "       (based off the sum of speeds of all four TCP threads per Test, per File\n" +
           "  -3-  Append the standard deviation and median of the Sum threads of the TCP tests\n" +
           "       to the master CSV file included in the package\n" +
+          "  -4-  Append the rValue and MOS to the CSV file\n" +
           " -q/Q- Quit")
     choice = input("--> ")
     print("============================================")
@@ -78,6 +79,11 @@ while command:
         DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
         originalCSV = utils.csvImport(DATA_PATH)
         so_many_STDs.add_StDev_and_Median_to_Master(originalCSV)
+    elif "4" in choice:
+        this_dir, this_filename = os.path.split(__file__)
+        DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
+        originalCSV = utils.csvImport(DATA_PATH)
+        so_many_STDs.rValAndMosCalc(originalCSV,150)
     elif "q" in choice or "Q" in choice:
         #Ending the program
         print("Quitting operations")
