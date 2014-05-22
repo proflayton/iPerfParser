@@ -62,6 +62,7 @@ class PingTest():
 
     # DESC: Initializing class
     def __init__(self, dataString, testNum=0, isMobile=True, short=False):
+        self.times = []
         self.text = dataString
         self.isMobile = isMobile
         self.TestNumber = testNum
@@ -90,8 +91,12 @@ class PingTest():
         #Getting the Reciever IP address
         index = 0
         searchText = "ping statistics" if self.isMobile else "Ping statistics"
+        pingText = "bytes from" if self.isMobile else "Reply from"
         for line in self.text:
-            if searchText in line:
+            #get the ping times
+            if pingText in line:
+                self.times.append(line.split("time=")[1].split("ms")[0].rstrip());
+            elif searchText in line:
                 splitText = line.split(" ")
                 for elem in splitText:
                     if "184.72" in elem:
@@ -101,6 +106,7 @@ class PingTest():
                 #END FOR
                 index = self.text.index(line)
                 break
+            #END IF
         #END FOR
 
         #Determining the Connection Location
@@ -144,7 +150,8 @@ class PingTest():
             this_str += pad + "  ERROR: " + str(self.ErrorMessage) + "\n"
         else:
             if not self.short_str_method:
-                this_str += (pad + "Packets Sent: " + str(self.PacketsSent) + "\n" +
+                this_str += (pad + "times size: " + str(len(self.times)) + "\n" +
+                             pad + "Packets Sent: " + str(self.PacketsSent) + "\n" +
                              pad + "Packets Lost: " + str(self.PacketsLost) + "\n" +
                              pad + "Round Trip Time Minimum: " + str(self.RTTMin) + "\n" +
                              pad + "Round Trip Time Maximum: " + str(self.RTTMax) + "\n" +
