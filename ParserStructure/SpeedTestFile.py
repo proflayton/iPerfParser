@@ -115,6 +115,7 @@ from .utils import StDevP, getMedian
 from .utils import global_str_padding as pad; pad = pad*1
 from .TCP_Test import TCPTest
 from .UDP_Test import UDPTest
+from .Ping_Test import PingTest
 
 class SpeedTestFile(object):
     # -------------------
@@ -157,7 +158,8 @@ class SpeedTestFile(object):
         self.short_str_method = short
         self.ignored_text = []
         self.mySpeedTests = {  "TCP" : [],
-                               "UDP" : []   }
+                               "UDP" : [],
+                               "PING": []   }
         self.FileName = filePath.split("/")[-1]
         self.loadHeaderInfo(filePath)
     #END INIT
@@ -400,6 +402,13 @@ class SpeedTestFile(object):
                     newUDP = UDPTest(testText, short=self.short_str_method)
                     self.mySpeedTests["UDP"].append(newUDP)
                 #END IF/ELSE
+            elif ("ping statistics" in testText) or ("Ping statistics" in testText):
+                newPing = None
+                if self.NetworkType == "mobile":
+                    newPing = PingTest(testText, isMobile=True, short=self.short_str_method)
+                else:
+                    newPing = PingTest(testText, isMobile=False, short=self.short_str_method)
+                self.mySpeedTests["PING"].append(newPing)
             else:
                 self.ignored_text.append(testText)
             #END IF/ELIF/ELSE
@@ -407,11 +416,6 @@ class SpeedTestFile(object):
     #END DEf
 
 
-    #
-    # # # #
-    # Fix this function
-    # # # #
-    #
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
     def convertTo2D(self):
@@ -445,11 +449,10 @@ class SpeedTestFile(object):
 
             #These three lines set up the Test information in the array
             toBeReturned.append(["","","Test #" + test.TestNumber])
-            toBeReturned.append(["","",test.ConnectionType])
-            toBeReturned.append(["","",test.ConnectionLoc])
+            toBeReturned.append(["","",test.ConnectionType+" "+test.ConnectionLoc])
 
             if (test.ERROR):
-                toBeReturned[counter].extend(["ERROR"])
+                toBeReturned[counter].extend(["ERROR","ERROR"])
             else:
                 #Append the threads to the array. We first append the Ups, then the Downs
                 for thread in test.myPingThreads["Up"]:
@@ -476,7 +479,7 @@ class SpeedTestFile(object):
             nextLine = True
             while nextLine:
                 try:
-                    aThing = toBeReturned[counter][2]
+                    aThing = toBeReturned[counter][3]
                     counter +=1
                 except:
                     nextLine = False
@@ -484,6 +487,7 @@ class SpeedTestFile(object):
             toBeReturned.append(["",""])
             counter += 1
         #END FOR
+
         #Now we create the arrays for the UDP tests, as their structure differs from
         # that of the TCP tests.
         for test in self.mySpeedTests["UDP"]:
@@ -500,47 +504,30 @@ class SpeedTestFile(object):
 
             #These three lines set up the Test information in the array
             toBeReturned.append(["","","Test #" + test.TestNumber])
-            toBeReturned.append(["","",test.ConnectionType])
-            toBeReturned.append(["","",test.ConnectionLoc])
+            toBeReturned.append(["","",test.ConnectionType+" "+test.ConnectionLoc])
 
             if (test.ERROR):
-                toBeReturned[counter].extend(["ERROR"])
+                toBeReturned[counter].extend(["ERROR", "ERROR"])
             else:
                 #Append the threads to the array. If the array is not nothing,
                 # it must then be holding the Test Header information, and so
                 # we don't need any padding
                 for thread in test.myPingThreads:
-                    try:
-                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                    except:
-                        toBeReturned.append(["","",""])
-                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
+                    toBeReturned[counter].extend(thread.array_itize((int(test.TestInterval)*2)+2))
                     counter += 1
                 #END FOR
             #END IF/ELSE
 
-            #Incrementing the counter so that the next IndivTest that is converted is put below
-            # the previous one (sometimes, there is one thread per test, and just moving to the next
-            # iteration messed up the spacing)
-            nextLine = True
-            while nextLine:
-                try:
-                    aThing = toBeReturned[counter][2]
-                    counter +=1
-                except:
-                    nextLine = False
-            #END WHILE
             #Now appending the Server Report information
             if not test.ERROR:
-                toBeReturned.append(["","","Server Report", 
-                                      str(test.ServerReport["Ping"].secIntervalStart) + "-" + \
-                                      str(test.ServerReport["Ping"].secIntervalEnd),
-                                      str(test.ServerReport["Ping"].size) + " " + str(test.ServerReport["Ping"].size_units),
-                                      str(test.ServerReport["Ping"].speed) + " " + str(test.ServerReport["Ping"].speed_units),
-                                      str(test.ServerReport["Time"]),
-                                      str(test.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
-                                      str(test.ServerReport["Datagrams_OutofOrder"][1])
-                                    ])
+                toBeReturned[counter].extend(["","Server Report",
+                                              str(test.ServerReport["Ping"].size) + " " + str(test.ServerReport["Ping"].size_units),
+                                              str(test.ServerReport["Ping"].speed) + " " + str(test.ServerReport["Ping"].speed_units),
+                                              str(test.ServerReport["Time"]),
+                                              str(test.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
+                                              str(test.ServerReport["Datagrams_OutofOrder"][1])
+                                            ])
+                counter += 1
             #END IF
             toBeReturned.append(["",""])
             counter += 1
@@ -652,6 +639,8 @@ class SpeedTestFile(object):
         for speedTest in self.mySpeedTests["TCP"]:
             text +=  str(speedTest)
         for speedTest in self.mySpeedTests["UDP"]:
+            text +=  str(speedTest)
+        for speedTest in self.mySpeedTests["PING"]:
             text +=  str(speedTest)
         #END FOR
         if text == "":
