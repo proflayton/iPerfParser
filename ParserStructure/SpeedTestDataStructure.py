@@ -626,6 +626,15 @@ class SpeedTestDS(object):
         csvExport(origRef, rootOfFiles + "/CPUC_FieldTestResults_Q42013Data_with_StDev_Median.csv")
     #END DEF
 
+    # DESC: Calculates r val and MOS (dunno what mos even is at the moment)
+    def rValAndMosCalc(self, origRef):
+        #add the headers to the CSV if we need
+        if (origRef[0][-1] != "rValue"):
+            newHeaders = ["rValue","MOS"]
+            origRef[0].extend(newHeaders)
+        
+    #END DEF
+
 
     # DESC: Creating a string representation of our object
     def __str__(self):
