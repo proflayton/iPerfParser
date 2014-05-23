@@ -641,7 +641,7 @@ class SpeedTestFile(object):
 
     # DESC: Using the value passed in num, this looks for the test whose TestNumber
     #       corresponds to that value. If there was no such test, returns None
-    def get_Test_with_TestNumber(self, testType="TCP", num):
+    def get_Test_with_TestNumber(self, num, testType="TCP"):
         if not isinstance(num, str):
             raise TypeError
         for aTest in self.mySpeedTests[testType]:
@@ -663,7 +663,7 @@ class SpeedTestFile(object):
             # Also, the array values are all strings, as the initialization removed the values 
             # from a string, and so the Test Number variable remained a string
             for testNum in ["1","2","4","5"]:
-                indivTest = self.get_Test_with_TestNumber("TCP", testNum)
+                indivTest = self.get_Test_with_TestNumber(testNum, "TCP")
                 if indivTest is not None:
                     toAppend.extend( indivTest.create_Array_of_StDev_Median_for_CSV() )
                 else:
