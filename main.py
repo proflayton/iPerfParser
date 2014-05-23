@@ -54,6 +54,7 @@ while command:
           "       (based off the sum of speeds of all four TCP threads per Test, per File\n" +
           "  -3-  Append the standard deviation and median of the Sum threads of the TCP tests\n" +
           "       to the master CSV file included in the package\n" +
+          "  -4-  Append the rValue and MOS to the CSV file\n" +
           " -q/Q- Quit")
     choice = input("--> ")
     print("============================================")
@@ -61,23 +62,35 @@ while command:
         print(str(so_many_STDs))
     elif "1" in choice:
         #Converting the structure of parsed raw data into a 2 dimensional array
-        csvReady = so_many_STDs.convertTo_Structure_To_2D()
+        csvReady = so_many_STDs.convert_Structure_To_2D()
     elif "2" in choice:
         #Converting the structure of parsed raw data into a single 2 dimensional
         # array, which is a histogram of the standard deviation of all network speeds,
         # separated by carrier, direction, and location connected to (e.g. Verizon, Up, West)
-        print("Please provide a few numbers...")
+        print("Please provide me a few numbers...")
         buckets = int(input("Number of buckets in histogram: "))
         maxValue = int(input("Max Standard Deviation value allowed: "))
-        so_many_STDs.convertTo_Object_To_TCPStDev(buckets, maxValue)
+        so_many_STDs.create_TCP_StDev_Distribution(buckets, maxValue)
     elif "3" in choice:
         #Adding the StDev and Median values to the csv of file information
         #The first 3 lines declare the string of the path to the original CSV file. It
         # is then imported as a 2D array, and a reference to it is passed to the appropiate function
         this_dir, this_filename = os.path.split(__file__)
-        DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_Q42013_Data.csv")
+        DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_3rd2013_Data.csv")
+        #DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_4th2013_Data.csv")
         originalCSV = utils.csvImport(DATA_PATH)
-        so_many_STDs.add_StDev_and_Median_to_Master(originalCSV)
+        #Now we run the actual function, which will return the CSV we are looking for
+        so_many_STDs.add_StDev_and_Median_to_Given(originalCSV, DATA_PATH)
+    elif "4" in choice:
+        #Adding the rVal and MOS values to the csv of file information
+        #The first 3 lines declare the string of the path to the original CSV file. It
+        # is then imported as a 2D array, and a reference to it is passed to the appropiate function
+        this_dir, this_filename = os.path.split(__file__)
+        #DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_3rd2013_Data.csv")
+        DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_4th2013_Data.csv")
+        originalCSV = utils.csvImport(DATA_PATH)
+        #Now we run the actual function, which will return the CSV we are looking for
+        so_many_STDs.add_rVal_and_MOS_to_Given(originalCSV, 150, DATA_PATH)
     elif "q" in choice or "Q" in choice:
         #Ending the program
         print("Quitting operations")
