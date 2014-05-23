@@ -58,6 +58,10 @@ testForMain(__name__)
 #                   dataStream: a data stream, with the rest of the Speed Test information
 #       OUTPUTS-    none
 #
+#   convert_Obj_To_2D - Converts this SpeedTestFile object into a 2D array, and returns the result
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    toBeReturned:   the 2D array that will be returned
+#
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
@@ -152,6 +156,17 @@ class UDPTest(SpeedTest):
                 self.ServerReport["Datagrams_OutofOrder"].append((float(lost)/float(total))*100)
             #END IF/ELIF
         #END FOR
+    #END DEF
+
+
+    # DESC: This converts the object into a 2D representation of itself. Will return a 2D array
+    #       that will be used in the SpeedTestFile class.
+    def convert_Obj_To_2D():
+        #
+        #
+        doing_something = False
+        #
+        #
     #END DEF
 
 

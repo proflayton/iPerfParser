@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+#Raw data files
+Raw Data/
+
 # C extensions
 *.so
 

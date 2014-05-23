@@ -33,6 +33,10 @@ testForMain(__name__)
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    none
 #
+#   convert_Obj_To_2D - Converts this SpeedTestFile object into a 2D array, and returns the result
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    toBeReturned:   the 2D array that will be returned
+#
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
@@ -138,6 +142,17 @@ class PingTest():
             self.RTTMax = RTTLine[1].split("=")[1][:-2].strip()
             self.RTTAverage = RTTLine[2].split("=")[1][:-2].strip()
         #END IF/ELSE
+    #END DEF
+
+
+    # DESC: This converts the object into a 2D representation of itself. Will return a 2D array
+    #       that will be used in the SpeedTestFile class.
+    def convert_Obj_To_2D():
+        #
+        #
+        doing_something = False
+        #
+        #
     #END DEF
 
 

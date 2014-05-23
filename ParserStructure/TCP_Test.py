@@ -55,21 +55,22 @@ testForMain(__name__)
 #                   dataStream: a data stream, with the rest of the Speed Test information
 #       OUTPUTS-    none
 #
+#   convert_Obj_To_2D - Converts this SpeedTestFile object into a 2D array, and returns the result
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#       OUTPUTS-    toBeReturned:   the 2D array that will be returned
+#
 #   getLongestThreadTime - The looks through all of the threads in this function and
 #                          returns the longest thread time in seconds
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    time:   Integer, representing the longest thread time
 #
-#   sumSpeed_UpThreads - Creating an array of the sum of each 1 second interval of all 4 thread's speed
+#   sum_Threads_Speed - Creating an array of the sum of each 1 second interval of all 4 thread's speed
 #       INPUTS-     self:               reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    Up_Threads_sum:     an array containing values representing the sum of each 4 threads' speed
+#                   direction:          String, threads of specified direction (Up or Down) that will be summed
+#       OUTPUTS-    threads_summed:     an array containing values representing the sum of each 4 threads' speed
 #
-#   sumSpeed_DownThreads - Creating an array of the sum of each 1 second interval of all 4 thread's speed
-#       INPUTS-     self:               reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    Down_Threads_sum:   an array containing values representing the sum of each 4 threads' speed
-#
-#   create_Array_For_Results_CSV - Creates 4 value long array, to be returned to the SpeedTestFile object. The four
-#                       values are the StDev and Median of each direction (Up and Down)
+#   create_Array_of_StDev_Median_for_CSV - Creates 4 value long array, to be returned to the SpeedTestFile object.
+#                        The four values are the StDev and Median of each direction (Up and Down)
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    toReturn:   Array, 4 values corresponding to this test's StDev and Median for Up and Down direction
 #
@@ -210,13 +211,23 @@ class TCPTest(SpeedTest):
     #END DEF
 
 
-    # DESC: In this test, find the longest thread time among all of the threads
+    # DESC: This converts the object into a 2D representation of itself. Will return a 2D array
+    #       that will be used in the SpeedTestFile class.
+    def convert_Obj_To_2D():
+        #
+        #
+        doing_something = False
+        #
+        #
+    #END DEF
+
+
+    # DESC: In this test, find the longest thread time among all of the threads of the given direction
     def getLongestThreadTime(self, direction_passed="ALL"):
         time = 0
         if self.ERROR:
             return time
-        if ((direction_passed == "ALL") or 
-            (direction_passed != "Up" and direction_passed != "Down")):
+        if (direction_passed != "Up") and (direction_passed != "Down"):
             for direction in self.myPingThreads:
                 for thread in self.myPingThreads[direction]:
                     #As long as the PingThreads array of Pings is ordered correctly, the last
@@ -233,11 +244,14 @@ class TCPTest(SpeedTest):
     #END DEF
 
 
-    # DESC: This returns the sum of the Up threads in this test
-    def sumSpeed_UpThreads(self):
-        Up_threads_sum = []
+    # DESC: This returns the sum of the threads of the given direction in this test
+    def sum_Threads_Speed(self, direction="Down"):
+        if (direction != "Up") and (direction != "Down"):
+            direction = "Down"
+        #END IF
+        threads_summed = []
         #Calculating max thread length
-        max_up_length = int(self.getLongestThreadTime("Up"))
+        max_up_length = int(self.getLongestThreadTime(direction))
         #Get the sums of the Up threads. The first FOR loop will iterate X number of times
         # based on what was returned by getLongestThreadTime(). Within the FOR loop, we set up
         # a temporary variable. We then try to add a specific interval (e.g. 1.0-2.0 sec) for each
@@ -245,51 +259,33 @@ class TCPTest(SpeedTest):
         # (i.e. we add 0). We then append this value to Up_threads_sum, which will be returned.
         for step in range(max_up_length):
             temp = 0
-            for thread in self.myPingThreads["Up"]:
+            for thread in self.myPingThreads[direction]:
                 try: temp += thread.myPings[step].speed
                 except: pass
             #END FOR
-            Up_threads_sum.append(temp)
+            threads_summed.append(temp)
         #END FOR
-        return Up_threads_sum
-    #END DEF
-
-
-    # DESC: This returns the sum of the Down threads in this test
-    def sumSpeed_DownThreads(self):
-        Down_threads_sum = []
-        #Calculating max thread length by direction
-        max_down_length = int(self.getLongestThreadTime("Down"))
-        #Get the sums of the Down threads
-        for step in range(max_down_length):
-            temp = 0
-            for thread in self.myPingThreads["Down"]:
-                try: temp += thread.myPings[step].speed
-                except: pass
-            #END FOR
-            Down_threads_sum.append(temp)
-        #END FOR
-        return Down_threads_sum
+        return threads_summed
     #END DEF
 
 
     # DESC: This creates an array of 4 values that will be appended to the Results CSV
     # provided by CPUC. If there was an error in the test, the 4 values returned say "TestDataError",
     # otherwise, the 4 values are the StDev and Median for both thread directions for this test
-    def create_Array_For_Results_CSV(self):
+    def create_Array_of_StDev_Median_for_CSV(self):
         toReturn = []
         #If there was no error, there are values to StDev and Median
         # Otherwise, we return an array of "None"
         if not self.ERROR:
             #Calculating the stDev's and medians of the Up and Down threads
-            upThread = self.sumSpeed_UpThreads()
-            downThread = self.sumSpeed_DownThreads()
-            up_stdev = StDevP(upThread);         toReturn.append(up_stdev)
-            up_median = getMedian(upThread);     toReturn.append(up_median)
-            down_stdev = StDevP(downThread);     toReturn.append(down_stdev)
-            down_median = getMedian(downThread); toReturn.append(down_median)
+            upThread = self.sum_Threads_Speed("Up")
+            downThread = self.sum_Threads_Speed("Down")
+            toReturn.append( StDevP(upThread) )
+            toReturn.append( getMedian(upThread) )
+            toReturn.append( StDevP(downThread) )
+            toReturn.append( getMedian(downThread) )
         else:
-            toReturn = ["DataError", ""]*2
+            toReturn = ["DataError"]*4
         return toReturn
     #END DEF
 
