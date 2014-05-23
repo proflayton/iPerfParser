@@ -31,6 +31,7 @@ testForMain(__name__)
 #   JavaVersion         String, holding Java version that this test was conducted with
 #   JavaVendor          String, holding Java vendor that this test was conducted with
 #   NetworkType         String, holding Network Type that this test was conducted with
+#                           note: this is either mobile or netbook
 #   Server              String, holding Server that this test was conducted with
 #   Host                String, holding Host that this test was conducted with
 #   NetworkProvider     String, holding Network Provider that this test was conducted with (i.e. the Carrier)
@@ -96,12 +97,13 @@ testForMain(__name__)
 #       OUTPUTS-    index:          Integer, the row index at which this file is located in the CPUC_Results CSV
 #                                   If the file was not found in the CSV, returns None
 #
-#   getTCP_with_TestNumber - This takes a given string, whose value corresponds to the test number
+#   get_Test_with_TestNumber - This takes a given string, whose value corresponds to the test number
 #                       (which will be either 1, 2, 4, or 5), and returns the corresponding TCPTest
-#       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
-#                   num:    String, the test number of the TCP test we wish to get
-#       OUTPUTS-    test:   TCPTest object whose number corresponds to the given value in num.
-#                           If no test was found, returns None
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   testType:   String, is either TCP, UDP, or PING.
+#                   num:        String, the test number of the TCP test we wish to get
+#       OUTPUTS-    test:       TCPTest object whose number corresponds to the given value in num.
+#                               If no test was found, returns None
 #
 #   printSpeedTests - Return a string that has the information of each speed test in the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -639,12 +641,12 @@ class SpeedTestFile(object):
 
     # DESC: Using the value passed in num, this looks for the test whose TestNumber
     #       corresponds to that value. If there was no such test, returns None
-    def getTCP_with_TestNumber(self, num):
+    def get_Test_with_TestNumber(self, testType="TCP", num):
         if not isinstance(num, str):
             raise TypeError
-        for TCPTest in self.mySpeedTests["TCP"]:
-            if TCPTest.TestNumber == num:
-                return TCPTest
+        for aTest in self.mySpeedTests[testType]:
+            if aTest.TestNumber == num:
+                return aTest
         #END FOR
         return None
     #END DEF
@@ -661,7 +663,7 @@ class SpeedTestFile(object):
             # Also, the array values are all strings, as the initialization removed the values 
             # from a string, and so the Test Number variable remained a string
             for testNum in ["1","2","4","5"]:
-                indivTest = self.getTCP_with_TestNumber(testNum)
+                indivTest = self.get_Test_with_TestNumber("TCP", testNum)
                 if indivTest is not None:
                     toAppend.extend( indivTest.create_Array_of_StDev_Median_for_CSV() )
                 else:
@@ -742,92 +744,15 @@ class SpeedTestFile(object):
         #END IF
     #END DEF
 
-    #DESC: Calculates rVal and MOS of ping tests and appends to CSV reference
-    #      delayThresh = if under then they get bucketed
-    def calc_rValAndMOS(self, masterCSVRef, delayThresh):
-        thisFile = self.this_File_Index_in_MasterCSV(masterCSVRef)
-        east = 0
-        west = 0
-        eastTotal = 0
-        westTotal = 0
-        westMax = 0
-        eastMax = 0
-        westLost = 0
-        eastLost = 0
-        if thisFile is not None:
-            toAppend = []
-            for speedTest in self.mySpeedTests["PING"]:
-                fd = 0.0
-                for time in speedTest.times:
-                    time = float(time)
-                    if speedTest.ConnectionLoc == "East":
-                        eastLost += speedTest.PacketsLost
-                        east+=1
-                        eastTotal += time
-                        if(time > eastMax):
-                            eastMax = time
-                        #END IF
-                    elif speedTest.ConnectionLoc == "West":
-                        westLost += speedTest.PacketsLost
-                        west+=1
-                        westTotal += time
-                        if(time > westMax):
-                            westMax = time
-                        #END IF
-                    #END IF/ELSE
-                    if(time < delayThresh):
-                        fd+=1
-                    #END IF
-            #END FOR
-            if(east + west <= 0):
-                #print("Error. east + west <= 0 for " + str(self.FileName))
-                #Some error when pinging
-                toAppend = ["NA","NA"]
-            else:
-                pktSecAve = (eastTotal + westTotal)/(east + west)
-                #F(d) calculated
-                fd = fd/(east + west)
-                #loss rate
-                pn = (eastLost + westLost)/(east + west)
-                #loss rate of jitter buffer
-                pb = (1-pn)*(1-fd)
-
-                #Equipment impairment factor
-                ieEff = 5 + 90*(pn+pb)/(pn+pb+10); #14.96 + 16.68*math.log(1+30.11*(pn+pb));//14.96 + 16.68*Math.log(1+30.11*(pn+pbTwo));
-
-                #calculate H(x) -either a zero or a one
-                hofx = 1
-                if ((pktSecAve-177.3)<0):
-                    hofx = 0
-
-                #calculate delay impairment factor
-                idf = (0.024 * pktSecAve) + 0.11*(pktSecAve-177.3)*hofx;
-
-                #calculate r value
-                rvalue = 93.2 - idf - ieEff;
-                #calculate MOS from r value
-                mos = 1
-                if (rvalue>=0):
-                    mos = 1+0.035*rvalue+rvalue*(rvalue-60)*(100-rvalue)*7*math.pow(10, -6);
-
-                toAppend = [rvalue,mos];
-            #END IF
-
-            masterCSVRef[thisFile].extend(toAppend)
-        #END IF
-    #END DEF
-
-
-
 
     # DESC: Returns all of the sub tests for this file as a string. If there are no
     #       tests, then it returns a string saying there were no tests
     def printSpeedTests(self):
         text = ""
-       # for speedTest in self.mySpeedTests["TCP"]:
-      #      text +=  str(speedTest)
-     #   for speedTest in self.mySpeedTests["UDP"]:
-     #       text +=  str(speedTest)
+        for speedTest in self.mySpeedTests["TCP"]:
+            text +=  str(speedTest)
+        for speedTest in self.mySpeedTests["UDP"]:
+            text +=  str(speedTest)
         for speedTest in self.mySpeedTests["PING"]:
             text +=  str(speedTest)
         #END FOR
