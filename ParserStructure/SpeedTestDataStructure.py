@@ -696,6 +696,45 @@ class SpeedTestDS(object):
         csvExport(origCSVRef, rootOfFiles + "/" + filename + "_with_rVal_and_MOS.csv")
     #END DEF
 
+    # DESC: Calculates r val and MOS (dunno what mos even is at the moment)
+    def rValAndMosCalc(self, origRef, delayThresh):
+        #add the headers to the CSV if we need
+        if (origRef[0][-1] != "rValue"):
+            newHeaders = ["rValue","MOS"]
+            origRef[0].extend(newHeaders)
+        
+        #This section goes through all of the tests stored in this structure and runs
+        # the SpeedTestFile object's rval and MOS appending function
+        for devType in self.mySpeedTestFiles:
+            for carrier in self.mySpeedTestFiles[devType]:
+                for speedTest in self.mySpeedTestFiles[devType][carrier]:
+                    speedTest.calc_rValAndMOS(origRef,delayThresh)
+                #END FOR
+            #END FOR
+        #END FOR
+        #This section does the same thing as above, but it runs through the files 
+        # that had no carrier information.
+        for speedTest in self.bad_info_Files:
+            speedTest.calc_rValAndMOS(origRef,150)
+
+         #If there are any rows that still don't have any information for the TCP StDev and Median,
+        # we'll put in a value that says there was no such file in the folders of raw data
+        lastIndex = origRef[0].index("rValue")
+        for row in origRef:
+            #This creates a smaller array of the current row. If the array is empty, then
+            # it means that there we no values in that row yet. We fill those cells
+            # in with "FileMissingError"
+            are_there_values_here = row[lastIndex-15:lastIndex+1]
+            if not are_there_values_here:
+                row.extend(["FileMissingError",""]*8)
+        #END FOR
+        print("Please select the folder you wish to hold the csv file that will be created")
+        rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
+                                         title = "Select the Folder You Wish To Hold the CSV File",
+                                         mustexist = True)
+        csvExport(origRef, rootOfFiles + "/CPUC_FieldTestResults_Q42013Data_with_rVal_and_MOS.csv")
+    #END DEF
+
 
     # DESC: Creating a string representation of our object
     def __str__(self):

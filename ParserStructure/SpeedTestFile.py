@@ -742,6 +742,81 @@ class SpeedTestFile(object):
         #END IF
     #END DEF
 
+    #DESC: Calculates rVal and MOS of ping tests and appends to CSV reference
+    #      delayThresh = if under then they get bucketed
+    def calc_rValAndMOS(self, masterCSVRef, delayThresh):
+        thisFile = self.this_File_Index_in_MasterCSV(masterCSVRef)
+        east = 0
+        west = 0
+        eastTotal = 0
+        westTotal = 0
+        westMax = 0
+        eastMax = 0
+        westLost = 0
+        eastLost = 0
+        if thisFile is not None:
+            toAppend = []
+            for speedTest in self.mySpeedTests["PING"]:
+                fd = 0.0
+                for time in speedTest.times:
+                    time = float(time)
+                    if speedTest.ConnectionLoc == "East":
+                        eastLost += speedTest.PacketsLost
+                        east+=1
+                        eastTotal += time
+                        if(time > eastMax):
+                            eastMax = time
+                        #END IF
+                    elif speedTest.ConnectionLoc == "West":
+                        westLost += speedTest.PacketsLost
+                        west+=1
+                        westTotal += time
+                        if(time > westMax):
+                            westMax = time
+                        #END IF
+                    #END IF/ELSE
+                    if(time < delayThresh):
+                        fd+=1
+                    #END IF
+            #END FOR
+            if(east + west <= 0):
+                #print("Error. east + west <= 0 for " + str(self.FileName))
+                #Some error when pinging
+                toAppend = ["NA","NA"]
+            else:
+                pktSecAve = (eastTotal + westTotal)/(east + west)
+                #F(d) calculated
+                fd = fd/(east + west)
+                #loss rate
+                pn = (eastLost + westLost)/(east + west)
+                #loss rate of jitter buffer
+                pb = (1-pn)*(1-fd)
+
+                #Equipment impairment factor
+                ieEff = 5 + 90*(pn+pb)/(pn+pb+10); #14.96 + 16.68*math.log(1+30.11*(pn+pb));//14.96 + 16.68*Math.log(1+30.11*(pn+pbTwo));
+
+                #calculate H(x) -either a zero or a one
+                hofx = 1
+                if ((pktSecAve-177.3)<0):
+                    hofx = 0
+
+                #calculate delay impairment factor
+                idf = (0.024 * pktSecAve) + 0.11*(pktSecAve-177.3)*hofx;
+
+                #calculate r value
+                rvalue = 93.2 - idf - ieEff;
+                #calculate MOS from r value
+                mos = 1
+                if (rvalue>=0):
+                    mos = 1+0.035*rvalue+rvalue*(rvalue-60)*(100-rvalue)*7*math.pow(10, -6);
+
+                toAppend = [rvalue,mos];
+            #END IF
+
+            masterCSVRef[thisFile].extend(toAppend)
+        #END IF
+    #END DEF
+
 
 
 
@@ -749,10 +824,10 @@ class SpeedTestFile(object):
     #       tests, then it returns a string saying there were no tests
     def printSpeedTests(self):
         text = ""
-        for speedTest in self.mySpeedTests["TCP"]:
-            text +=  str(speedTest)
-        for speedTest in self.mySpeedTests["UDP"]:
-            text +=  str(speedTest)
+       # for speedTest in self.mySpeedTests["TCP"]:
+      #      text +=  str(speedTest)
+     #   for speedTest in self.mySpeedTests["UDP"]:
+     #       text +=  str(speedTest)
         for speedTest in self.mySpeedTests["PING"]:
             text +=  str(speedTest)
         #END FOR
