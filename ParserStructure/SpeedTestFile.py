@@ -66,11 +66,11 @@ testForMain(__name__)
 #                   fileContents:   String, containing the entire file contents
 #       OUTPUTS-    None            As tests are created, they are added to the struct
 #
-#   convertTo2D - Converts this SpeedTestFile object into a 2D array, and returns the result
+#   convert_Obj_To_2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    toBeReturned:   the 2D array that will be returned
 #
-#   calc_TCP_StDev_and_append - For each test in this object, if the test is a TCP test, calculate the
+#   calc_TCP_StDev_for_Distribution - For each test in this object, if the test is a TCP test, calculate the
 #                       standard deviation of the sum of thread speeds at each 1 second interval.
 #                       The IndivSpeedTest object will handle putting the value into the structure
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
@@ -78,14 +78,18 @@ testForMain(__name__)
 #                   list_carriers:  reference to array of carriers
 #       OUTPUTS-    None
 #
-#   calc_StDev_and_Median_and_append_to_MasterCSV - This calculates the standard deviation and
+#   calc_TCP_StDev_and_Median_then_Append - This calculates the standard deviation and
 #                       median of the TCP tests in this object, and then appends the values to
 #                       the CPUC_Results CSV the is provided in the package
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #                   masterCSVRef:   reference to the 2D array of the CSV file
 #       OUTPUTS-    None
 #
-#   this_File_Index_in_MasterCSV - This looks for the row in the CPUC_Results CSV that corresponds
+#   calc_rVal_and_MOS_then_Append - ..
+#       INPUTS-     ..
+#       OUTPUTS-    ..
+#
+#   this_File_Index_in_GivenCSV - This looks for the row in the CPUC_Results CSV that corresponds
 #                       to this object's information
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #                   masterCSVRef:   reference to the 2D array of the CSV file
@@ -149,16 +153,6 @@ class SpeedTestFile(object):
 
     mySpeedTests = {}
 
-    #Ping_Test Variables
-    ePktMin = -1
-    ePktMax = -1
-    ePktAvg = -1
-    ePktLoss=  0
-    wPktMin = -1
-    wPktMax = -1
-    wPktAvg = -1
-    wPktLoss=  0
-
     #Variables for tracking errors, filestream location, or str method
     FileStreamLoc = 0
     ignored_text = []
@@ -186,8 +180,8 @@ class SpeedTestFile(object):
         fs.readline()
         self.FileStreamLoc = fs.tell()
 
-        #Reading in the DateTime of the test
-        #Also setting the network type, as this is where the file types start to differ
+        #Reading in the Date and Time of the test
+        #Also setting the Network Type, as this is where the file types start to differ
         fs.seek(self.FileStreamLoc)
         datetime = fs.readline()
         self.FileStreamLoc = fs.tell()
@@ -348,31 +342,39 @@ class SpeedTestFile(object):
     # DESC: This takes the remaining contents of the file being parsed, splits the
     #       content by test (to included any error messages) and the creates the Test objects
     def createIndivTests(self, fileContents):
+        #First splitting the contents into sections. These section are all of the chunks
+        # that are separated by two newline characters ('\n\n')
         fileContents = fileContents.split('\n\n')
         sortedFileContents = []
         appending = False
-        aTest = ""
+        aNewChunk = ""
+        #These loops will create a very large string that contains all of the text
+        # pertaining to one test. This will include error messages, if they are present.
+        # A new test is know to start if "Starting Test" is in the string chunk. Once we
+        # know that we have all of the string pertaining to one test, it is appended to the array
         for chunk in fileContents:
             if not appending:
                 if "Starting Test " in chunk:
-                    aTest =  chunk + "\n"
+                    aNewChunk =  chunk + "\n"
                     appending = True
                 else:
                     continue
                 #END IF/ELSE
             else:
                 if "Starting Test " not in chunk:
-                    aTest += chunk + "\n"
+                    aNewChunk += chunk + "\n"
                 else:
-                    sortedFileContents.append(aTest)
-                    aTest =  chunk + "\n"
+                    sortedFileContents.append(aNewChunk)
+                    aNewChunk =  chunk + "\n"
                 #END IF/ELSE
             #END IF/ELSE
             #This is so that the last test is appended, as it will not be when the loop finishes
             if chunk == fileContents[-1]:
-                sortedFileContents.append(aTest)
+                sortedFileContents.append(aNewChunk)
             #END IF
         #END FOR
+        #Now we go through each of our sorted string chunks, and determine whether they are a TCP test,
+        # a UDP test, or a Ping Test. The appropiate constructor is then called
         for testText in sortedFileContents:
             testAsArray = testText.split('\n')
             command = ""
@@ -394,6 +396,9 @@ class SpeedTestFile(object):
                     # and keeping track of the test number, as it is the same for each one
                     newTestText = ""
                     thisTestNumber = 0
+                    #This loop adds an extra empty line in between each "sub" test. This is
+                    # because in the string, there are 3 one second UDP test, and this is the
+                    # easiest way to split them up later
                     for line in testText.split('\n'):
                         if "Starting Test" in line:
                             thisTestNumber = line.split(" ")[2].split(":")[0].split("..")[0]
@@ -401,6 +406,8 @@ class SpeedTestFile(object):
                             newTestText += '\n'
                         newTestText += line+'\n'
                     #END FOR
+                    #This is when the 3 one second tests are separated. One by one, the UDP constructor
+                    # is called, and the text passed is and individual one second UDP test.
                     testText = newTestText.split('\n\n')
                     subTestNum = 0
                     for chunk in testText:
@@ -415,7 +422,6 @@ class SpeedTestFile(object):
                     self.mySpeedTests["UDP"].append(newUDP)
                 #END IF/ELSE
             elif ("PING" in testText or "Pinging" in testText):
-
                 newPing = None
                 if self.NetworkType == "mobile":
                     newPing = PingTest(testText, isMobile=True, short=self.short_str_method)
@@ -429,9 +435,15 @@ class SpeedTestFile(object):
     #END DEf
 
 
+    #
+    # !!!
+    # Implement array_itization of Ping Test
+    # Move array-itization of Tests into object's file
+    # !!!
+    #
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
-    def convertTo2D(self):
+    def convert_Obj_To_2D(self):
         toBeReturned = []
         #Setting up the basic information at the top of the 2D array/.csv file
         toBeReturned.append(["Filename", self.FileName])
@@ -444,11 +456,11 @@ class SpeedTestFile(object):
         #Counter refers to the current array in toBeReturned. This array is
         # where the tests will start to be array-itized and appened
         counter = 5
-        for test in self.mySpeedTests["TCP"]:
+        for TCPTest in self.mySpeedTests["TCP"]:
             #This section sets up the column headers for the test. Each
             # test will have column headers. The timing headers need
             # to account for different length threads, hence getLongest
-            test_length = int(test.getLongestThreadTime())
+            test_length = int(TCPTest.getLongestThreadTime())
             toBeReturned.append(["","","","Thread Num","Data Direction"])
             #This loop creates the text above the tests that show what interval the numbers
             # correspond to. An empty value is appended because we are going to print out
@@ -461,14 +473,14 @@ class SpeedTestFile(object):
             counter += 1
 
             #These three lines set up the Test information in the array
-            toBeReturned.append(["","","Test #" + test.TestNumber])
-            toBeReturned.append(["","",test.ConnectionType+" "+test.ConnectionLoc])
+            toBeReturned.append(["","","Test #" + TCPTest.TestNumber])
+            toBeReturned.append(["","",TCPTest.ConnectionType+" "+TCPTest.ConnectionLoc])
 
-            if (test.ERROR):
+            if (TCPTest.ERROR):
                 toBeReturned[counter].extend(["ERROR","ERROR"])
             else:
                 #Append the threads to the array. We first append the Ups, then the Downs
-                for thread in test.myPingThreads["Up"]:
+                for thread in TCPTest.myPingThreads["Up"]:
                     try:
                         toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
                     except:
@@ -476,7 +488,7 @@ class SpeedTestFile(object):
                         toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
                     counter += 1
                 #END FOR
-                for thread in test.myPingThreads["Down"]:
+                for thread in TCPTest.myPingThreads["Down"]:
                     try:
                         toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
                     except:
@@ -500,15 +512,14 @@ class SpeedTestFile(object):
             toBeReturned.append(["",""])
             counter += 1
         #END FOR
-
         #Now we create the arrays for the UDP tests, as their structure differs from
         # that of the TCP tests.
-        for test in self.mySpeedTests["UDP"]:
+        for UDPTest in self.mySpeedTests["UDP"]:
             #This section sets up the column headers for the test. Each
             # test will have column headers. The timing headers need
             # to account for different length threads, hence getLongest
             toBeReturned.append(["","","","Thread Num","Data Direction"])
-            for t in range(int(test.TestInterval)):
+            for t in range(int(UDPTest.TestInterval)):
                 toBeReturned[counter].append(str(float(t)) + "-" + str(float(t+1)))
                 toBeReturned[counter].append("")
             #END FOR
@@ -516,35 +527,51 @@ class SpeedTestFile(object):
             counter += 1
 
             #These three lines set up the Test information in the array
-            toBeReturned.append(["","","Test #" + test.TestNumber])
-            toBeReturned.append(["","",test.ConnectionType+" "+test.ConnectionLoc])
+            toBeReturned.append(["","","Test #" + UDPTest.TestNumber])
+            toBeReturned.append(["","",UDPTest.ConnectionType+" "+UDPTest.ConnectionLoc])
 
-            if (test.ERROR):
+            if (UDPTest.ERROR):
                 toBeReturned[counter].extend(["ERROR", "ERROR"])
             else:
                 #Append the threads to the array. If the array is not nothing,
                 # it must then be holding the Test Header information, and so
                 # we don't need any padding
-                for thread in test.myPingThreads:
-                    toBeReturned[counter].extend(thread.array_itize((int(test.TestInterval)*2)+2))
+                for thread in UDPTest.myPingThreads:
+                    toBeReturned[counter].extend(thread.array_itize((int(UDPTest.TestInterval)*2)+2))
                     counter += 1
                 #END FOR
             #END IF/ELSE
 
             #Now appending the Server Report information
-            if not test.ERROR:
+            if not UDPTest.ERROR:
                 toBeReturned[counter].extend(["","Server Report",
-                                              str(test.ServerReport["Ping"].size) + " " + str(test.ServerReport["Ping"].size_units),
-                                              str(test.ServerReport["Ping"].speed) + " " + str(test.ServerReport["Ping"].speed_units),
-                                              str(test.ServerReport["Time"]),
-                                              str(test.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
-                                              str(test.ServerReport["Datagrams_OutofOrder"][1])
+                                              str(UDPTest.ServerReport["Ping"].size) + " " + 
+                                              str(UDPTest.ServerReport["Ping"].size_units),
+                                              str(UDPTest.ServerReport["Ping"].speed) + " " + 
+                                              str(UDPTest.ServerReport["Ping"].speed_units),
+                                              str(UDPTest.ServerReport["Time"]),
+                                              str(UDPTest.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
+                                              str(UDPTest.ServerReport["Datagrams_OutofOrder"][1])
                                             ])
                 counter += 1
             #END IF
             toBeReturned.append(["",""])
             counter += 1
         #END FOR
+        #
+        #
+        #
+        #
+        #This is where we convert the Ping tests into 2D versions of themselves. Their data
+        # is the appended to the end of the 2D array for this file.
+        for PingTest in self.mySpeedTests["PING"]:
+            doing_something = False
+        #END FOR
+        #
+        #
+        #
+        #
+        #
         return toBeReturned
     #END DEF
 
@@ -552,11 +579,11 @@ class SpeedTestFile(object):
     # DESC: Looping through each Test, if the test if of type TCP, then
     #       call it's thread sum function, and append the standard deviation to
     #       the passed structure reference.
-    def calc_TCP_StDev_and_append_to_Distribution(self, structRef, list_carriers):
+    def calc_TCP_StDev_for_Distribution(self, structRef, list_carriers):
         #We only use the TCP tests in the function
-        for indivTest in self.mySpeedTests["TCP"]:
+        for TCPTest in self.mySpeedTests["TCP"]:
             #We only use the test if there were no errors in it
-            if not indivTest.ERROR:
+            if not TCPTest.ERROR:
                 #This if/else block makes sure that the test is in our list of carriers.
                 # Otherwise, continue will skip to the next test in the object
                 if (self.NetworkOperator in list_carriers):
@@ -566,18 +593,18 @@ class SpeedTestFile(object):
                 else:
                     continue
                 #END IF/ELIF
-                up_stdev = StDevP(indivTest.sumSpeed_UpThreads())
+                up_stdev = StDevP(TCPTest.sum_Threads_Speed("Up"))
                 if up_stdev is not None:
                     structRef[self.NetworkType]\
                              [mycarrier]\
-                             [indivTest.ConnectionLoc]\
+                             [TCPTest.ConnectionLoc]\
                              ["Up"].append(up_stdev)
                 #END IF
-                down_stdev = StDevP(indivTest.sumSpeed_DownThreads())
+                down_stdev = StDevP(TCPTest.sum_Threads_Speed("Down"))
                 if down_stdev is not None:
                     structRef[self.NetworkType]\
                              [mycarrier]\
-                             [indivTest.ConnectionLoc]\
+                             [TCPTest.ConnectionLoc]\
                              ["Down"].append(down_stdev)
                 #END IF
             #END IF
@@ -588,7 +615,7 @@ class SpeedTestFile(object):
     # DESC: This uses the information in this object to find the row in the CPUC_Results CSV
     #       that it corresponds to. It first checks with DeviceID, Date, and Time. If that
     #       doesn't work, it tries with LocationID, Date, and Time.
-    def this_File_Index_in_MasterCSV(self, masterCSVRef):
+    def this_File_Index_in_GivenCSV(self, masterCSVRef):
         index = None
         for row in masterCSVRef:
             if ((self.DeviceID in str(row[13])) and
@@ -615,9 +642,9 @@ class SpeedTestFile(object):
     def getTCP_with_TestNumber(self, num):
         if not isinstance(num, str):
             raise TypeError
-        for test in self.mySpeedTests["TCP"]:
-            if test.TestNumber == num:
-                return test
+        for TCPTest in self.mySpeedTests["TCP"]:
+            if TCPTest.TestNumber == num:
+                return TCPTest
         #END FOR
         return None
     #END DEF
@@ -626,36 +653,32 @@ class SpeedTestFile(object):
     # DESC: This function first tries to find the index of this file in the CPUC_Results CSV.
     #       If the file was found, it calculates the StDev and Median for all of the TCP tests,
     #       and appends the values to the CSV.
-    def calc_StDev_and_Median_and_append_to_MasterCSV(self, masterCSVRef):
-        thisFile = self.this_File_Index_in_MasterCSV(masterCSVRef)
+    def calc_TCP_StDev_and_Median_then_Append(self, origCSVRef):
+        thisFile = self.this_File_Index_in_GivenCSV(origCSVRef)
         if thisFile is not None:
             toAppend = []
             #The test number order is specific, as test 1 is the first TCP West, 2 is TCP East, etc.
-            # Also, they are all string, as the initialization removed the values from a string, and so
-            # the test number remained a string
+            # Also, the array values are all strings, as the initialization removed the values 
+            # from a string, and so the Test Number variable remained a string
             for testNum in ["1","2","4","5"]:
                 indivTest = self.getTCP_with_TestNumber(testNum)
                 if indivTest is not None:
-                    toAppend.extend( indivTest.create_Array_For_Results_CSV() )
+                    toAppend.extend( indivTest.create_Array_of_StDev_Median_for_CSV() )
                 else:
-                    toAppend.extend( ["NA",""]*2 )
+                    toAppend.extend( ["error"]*4 )
             #END FOR
-            masterCSVRef[thisFile].extend(toAppend)
+            origCSVRef[thisFile].extend(toAppend)
         #END IF
     #END DEF
 
     #DESC: Calculates rVal and MOS of ping tests and appends to CSV reference
     #      delayThresh = if under then they get bucketed
-    def calc_rValAndMOS(self, masterCSVRef, delayThresh):
-        thisFile = self.this_File_Index_in_MasterCSV(masterCSVRef)
-        east = 0
-        west = 0
-        eastTotal = 0
-        westTotal = 0
-        westMax = 0
-        eastMax = 0
-        westLost = 0
-        eastLost = 0
+    def calc_rVal_and_MOS_then_Append(self, masterCSVRef, delayThresh):
+        thisFile = self.this_File_Index_in_GivenCSV(masterCSVRef)
+        east = 0;       west = 0
+        eastTotal = 0;  westTotal = 0
+        eastMax = 0;    westMax = 0
+        eastLost = 0;   westLost = 0
         if thisFile is not None:
             toAppend = []
             for speedTest in self.mySpeedTests["PING"]:
@@ -720,14 +743,16 @@ class SpeedTestFile(object):
     #END DEF
 
 
+
+
     # DESC: Returns all of the sub tests for this file as a string. If there are no
     #       tests, then it returns a string saying there were no tests
     def printSpeedTests(self):
         text = ""
-       # for speedTest in self.mySpeedTests["TCP"]:
-      #      text +=  str(speedTest)
-     #   for speedTest in self.mySpeedTests["UDP"]:
-     #       text +=  str(speedTest)
+        for speedTest in self.mySpeedTests["TCP"]:
+            text +=  str(speedTest)
+        for speedTest in self.mySpeedTests["UDP"]:
+            text +=  str(speedTest)
         for speedTest in self.mySpeedTests["PING"]:
             text +=  str(speedTest)
         #END FOR
@@ -735,7 +760,6 @@ class SpeedTestFile(object):
             text = pad + "No viable network speed tests"
         return text
     #END DEF
-
 
     # DESC: Returns a string representation of the object
     def __str__(self):

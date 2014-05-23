@@ -44,17 +44,17 @@ testForMain(__name__)
 #                   STFileObj:  SpeedTestFile object, holds the raw data that has been parsed
 #       OUTPUTS-    none
 #
-#   convertTo_Structure_To_2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
-#                               array. Each array can be converted to a .csv file. Each array holds all of the
-#                               SpeedTestFile information, down to the Ping level
+#   convert_Structure_To_2D - Returns a structure that has converted each SpeedTestFile into a 2-dimensional
+#                       array. Each array can be converted to a .csv file. Each array holds all of the
+#                       SpeedTestFile information, down to the Ping level
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    None:   The structure created (containing a 2-D array representation of each file)
 #                           is passed to the CSV exporter..
 #
-#   convertTo_Object_To_TCPStDev - Returns a 2D array that can be converted into a 2D array. The information
-#                           inside represents a distribution of the standard deviation of each SpeedTestFile's
-#                           TCP tests. The values used to calculate each StDev is the sum of all TCP threads' speed
-#                           in a specific direction (Up or Down)
+#   create_TCP_StDev_Distribution - Returns a 2D array that can be converted into a 2D array. The information
+#                       inside represents a distribution of the standard deviation of each SpeedTestFile's
+#                       TCP tests. The values used to calculate each StDev is the sum of all TCP threads' speed
+#                       in a specific direction (Up or Down)
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #                   numRangeCols:   Integer, the number of columns that the user would like in their distribution
 #                                   default is 3
@@ -62,25 +62,33 @@ testForMain(__name__)
 #       OUTPUTS-    None:           The structure created (containing the StDevs of each test,
 #                                   categorized by Direction and Location) is passed to the CSV exporter..
 #
-#   convertTo_TCP_to_2D - Takes a STDs like structure, and returns it converted into a 2D array.
-#                         What was given was a structure like so:
-#                         { mobile:
-#                               { carrier1:
-#                                   { Up: [], Down: [] },
-#                                 carrier2:
-#                                   { Up: [], Down: [] },
-#                                 ..
-#                               }
-#                           netbook : { .. }
-#                         }
-#                         Each Up and Down array is a list of standard deviation values
+#   convert_TCPStDevStruct_to_2D - Takes a STDs like structure, and returns it converted into a 2D array.
+#                       What was given was a structure like so:
+#                       { mobile:
+#                           { carrier1:
+#                               { Up: [], Down: [] },
+#                             carrier2:
+#                               { Up: [], Down: [] },
+#                             ..
+#                           }
+#                         netbook : { .. }
+#                       }
+#                       Each Up and Down array is a list of standard deviation values
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
 #                   structure:      a reference to the structure created in convert_objectToTCP
 #                   numRangeCols:   Integer, the number of columns that the user would like in their distribution
 #       OUTPUTS-    new_structure:  2D array, that will be converted into a .csv file
 #
-#   add_StDev_and_Median_to_Master - This calculates the standard deviations of every SpeedTestFile object's
+#   add_StDev_and_Median_to_Given - This calculates the standard deviations of every SpeedTestFile object's
 #                                    TCP tests (Up and Down separately), as well as the median of those tests
+#                                    and appends the values to the imported CSV file, in the appropiate row
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   origRef:    reference to the 2D array of the imported CSV file
+#       OUTPUTS-    None:       The function creates a 2D array of the imported CSV file, appends the necessary
+#                               data, and then exports the file in the users chosen location
+#
+#   add_rVal_and_MOS_to_Given - This calculates the standard deviations of every SpeedTestFile object's
+#                               TCP tests (Up and Down separately), as well as the median of those tests
 #                                    and appends the values to the imported CSV file, in the appropiate row
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #                   origRef:    reference to the 2D array of the imported CSV file
@@ -166,8 +174,9 @@ class SpeedTestDS(object):
                     BBresults = "BB_results/"
                     Samples = ""   #used by if statements at the bottom (-s and -ss)
                 elif (sysArgv[1] == "-p"):
-                    DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
-                    BBresults = "bb results/"
+                    DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/iPerfParser/Raw Data/"
+                    BBresults = "BB results/2013_4thField/"
+                    #BBresults = "BB results/2013_3rdField/"
                     Samples = "sampleTests/"
                 #END DECLARING STRINGS
 
@@ -335,17 +344,19 @@ class SpeedTestDS(object):
     #END DEF
 
 
+
+
     # DESC: Creating a csv file of the data structure. Starts by converting
     #       the structure into a 2-dimensional array, then passes it to the
     #       CSV converter function, which returns the file
-    def convertTo_Structure_To_2D(self):
+    def convert_Structure_To_2D(self):
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
-        csvReady = {
-                        "mobile"  : {},
-                        "netbook" : {}
-                       }
+        csvReady = {  "mobile"  : {},
+                      "netbook" : {},
+                      "bad_info_Files": {}
+                    }
         for key in csvReady:
             for elem in self.Carriers:
                 csvReady[key][elem] = []
@@ -356,8 +367,11 @@ class SpeedTestDS(object):
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
-                    csvReady[devType][carrier].append(speedTest.convertTo2D())
+                    csvReady[devType][carrier].append(speedTest.convert_Obj_To_2D())
             #END FOR
+        #END FOR
+        for speedTest in self.bad_info_Files:
+            csvReady["bad_info_Files"].append(speedTest.convert_Obj_To_2D())
         #END FOR
         #We ask where the user wants the files put
         print("Please select the folder you wish to hold the csv files that will be created:")
@@ -370,22 +384,34 @@ class SpeedTestDS(object):
         # continues until we reach the actual csvExporter. This exports the file with the filename of
         # the object, which happens to be stored in the first row, second cell
         for devType in csvReady:
-            for carrier in csvReady[devType]:
-                for array in csvReady[devType][carrier]:
-                    try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
-                    except: pass
-                    try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType)
-                    except: pass
-                    try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType + "/" + carrier)
-                    except: pass
-                    #This section exports the 2D array, using the file name stored in the 
-                    # 2nd box of the first array
-                    csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
-                                     devType + "/" +
-                                     carrier + "/" +
-                                     array[0][1].split(".")[0] + ".csv")
+            if "bad_info_Files" not in devType:
+                for carrier in csvReady[devType]:
+                    for array in csvReady[devType][carrier]:
+                        try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
+                        except: pass
+                        try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType)
+                        except: pass
+                        try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType + "/" + carrier)
+                        except: pass
+                        #This section exports the 2D array, using the file name stored in the 
+                        # 2nd box of the first array
+                        csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
+                                         devType + "/" +
+                                         carrier + "/" +
+                                         array[0][1].split(".")[0] + ".csv")
+                    #END FOR
                 #END FOR
-            #END FOR
+            else:
+                try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
+                except: pass
+                try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType)
+                except: pass
+                #This section exports the 2D array, using the file name stored in the 
+                # 2nd box of the first array
+                csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
+                                 devType + "/" +
+                                 array[0][1].split(".")[0] + ".csv")
+            #END IF/ELSE
         #END FOR
         return True
     #END DEF
@@ -395,7 +421,7 @@ class SpeedTestDS(object):
     #       an array of 2-dimensional arrays that will be passed into the
     #       CSV converter function. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
-    def convertTo_Object_To_TCPStDev(self, numRangeCols=3, maxRange=1000): #pingData="speed"
+    def create_TCP_StDev_Distribution(self, numRangeCols=3, maxRange=1000):
         #Start by creating an empty dictionary. then copy the structure's
         # dictionary into it, so that when the function is done editting things,
         # the original is not lost
@@ -441,7 +467,7 @@ class SpeedTestDS(object):
                     # of carrier needs to be passed through because we don't know if the carrier name
                     # is in Network Provider or Operator. Hence, we need the array of allowed
                     # carriers, and so we pass in a reference
-                    speedTest.calc_TCP_StDev_and_append_to_Distribution(TCPStDevStruct, self.Carriers)
+                    speedTest.calc_TCP_StDev_for_Distribution(TCPStDevStruct, self.Carriers)
                 #END FOR
             #END FOR
         #END FOR
@@ -451,7 +477,7 @@ class SpeedTestDS(object):
         # in each carrier populated with standard deviation values. A reference to this
         # structure is then passed to the function that converts the Up and Down dictionaries
         # into 2D arrays
-        csvStruct_TCPStDev = self.convertTo_TCP_to_2D(TCPStDevStruct, numRangeCols, maxRange)
+        csvStruct_TCPStDev = self.convert_TCPStDevStruct_to_2D(TCPStDevStruct, numRangeCols, maxRange)
 
         print("Please select the folder you wish to hold the csv file that will be created")
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
@@ -470,7 +496,7 @@ class SpeedTestDS(object):
     #       an array of 2-dimensional arrays that will be passed into the
     #       CSV converter function. Each 2-D array will be placed into a specific
     #       type, carrier, and direction.
-    def convertTo_TCP_to_2D(self, structure, numRangeCols, maxRange):
+    def convert_TCPStDevStruct_to_2D(self, structure, numRangeCols, maxRange):
         if numRangeCols < 3:
             numRangeCols = 3
         if maxRange < numRangeCols:
@@ -548,10 +574,10 @@ class SpeedTestDS(object):
 
     # DESC: This starts with a reference to a 2-D array (converted from the provided CSV file)
     #       and appends the TCP StDev and Median to the appropiate row (each row is a file)
-    def add_StDev_and_Median_to_Master(self, origRef):
+    def add_StDev_and_Median_to_Given(self, origCSVRef, filename):
         #This appends the new column headers to the CPUC_Results CSV if they do not exist.
         # We check if they exist by seeing if the last header is "eTCP_DOWN2_MEDIAN"
-        if (origRef[0][-1] != "eTCP_DOWN2_MEDIAN"):
+        if (origCSVRef[0][-1] != "eTCP_DOWN2_MEDIAN"):
             newHeaders = ["wTCP_UP1_STDEV","wTCP_UP1_MEDIAN",
                           "wTCP_DOWN1_STDEV","wTCP_DOWN1_MEDIAN",
                           "eTCP_UP1_STDEV","eTCP_UP1_MEDIAN",
@@ -561,7 +587,7 @@ class SpeedTestDS(object):
                           "eTCP_UP2_STDEV","eTCP_UP2_MEDIAN",
                           "eTCP_DOWN2_STDEV","eTCP_DOWN2_MEDIAN"
                          ]
-            origRef[0].extend(newHeaders)
+            origCSVRef[0].extend(newHeaders)
         #END IF
         #Counting all of the files in this object, to be used for a progress bar
         filesInStruct = 0
@@ -587,7 +613,7 @@ class SpeedTestDS(object):
                         print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
                                 str(int(percent*100)) + "%", end='\r')
                     #Actually calling the function
-                    speedTest.calc_StDev_and_Median_and_append_to_MasterCSV( origRef )
+                    speedTest.calc_TCP_StDev_and_Median_then_Append( origCSVRef )
                 #END FOR
             #END FOR
         #END FOR
@@ -603,66 +629,71 @@ class SpeedTestDS(object):
                 print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
                         str(int(percent*100)) + "%", end='\r')
             #Actually calling the function
-            speedTest.calc_StDev_and_Median_and_append_to_MasterCSV( origRef )
+            speedTest.calc_TCP_StDev_and_Median_then_Append( origCSVRef )
         #END FOR
         print(" "*80, end='\r')
 
         #If there are any rows that still don't have any information for the TCP StDev and Median,
         # we'll put in a value that says there was no such file in the folders of raw data
-        lastIndex = origRef[0].index("eTCP_DOWN2_MEDIAN")
-        for row in origRef:
+        lastIndex = origCSVRef[0].index("eTCP_DOWN2_MEDIAN")
+        for row in origCSVRef:
             #This creates a smaller array of the current row. If the array is empty, then
             # it means that there we no values in that row yet. We fill those cells
             # in with "FileMissingError"
             are_there_values_here = row[lastIndex-15:lastIndex+1]
             if not are_there_values_here:
-                row.extend(["FileMissingError",""]*8)
+                row.extend(["FileMissingError"]*16)
         #END FOR
 
         print("Please select the folder you wish to hold the csv file that will be created")
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                          title = "Select the Folder You Wish To Hold the CSV File",
                                          mustexist = True)
-        csvExport(origRef, rootOfFiles + "/CPUC_FieldTestResults_Q42013Data_with_StDev_Median.csv")
+        filename = filename.split("/")[-1].split(".")[0]
+        csvExport(origCSVRef, rootOfFiles + "/" + filename + "_with_StDev_Median.csv")
     #END DEF
 
-    # DESC: Calculates r val and MOS (dunno what mos even is at the moment)
-    def rValAndMosCalc(self, origRef, delayThresh):
+
+    # DESC: Calculates rVal and MOS for each given (test?/file?), which are values that
+    #       describe the potential "Voice Over IP" (VoIP) quality of the link from the test's location
+    def add_rVal_and_MOS_to_Given(self, origCSVRef, delayThresh, filename):
         #add the headers to the CSV if we need
-        if (origRef[0][-1] != "rValue"):
+        if (origCSVRef[0][-1] != "MOS"):
             newHeaders = ["rValue","MOS"]
-            origRef[0].extend(newHeaders)
-        
+            origCSVRef[0].extend(newHeaders)
+        #END IF
         #This section goes through all of the tests stored in this structure and runs
         # the SpeedTestFile object's rval and MOS appending function
         for devType in self.mySpeedTestFiles:
             for carrier in self.mySpeedTestFiles[devType]:
                 for speedTest in self.mySpeedTestFiles[devType][carrier]:
-                    speedTest.calc_rValAndMOS(origRef,delayThresh)
+                    speedTest.calc_rVal_and_MOS_then_Append(origCSVRef, delayThresh)
                 #END FOR
             #END FOR
         #END FOR
         #This section does the same thing as above, but it runs through the files 
         # that had no carrier information.
         for speedTest in self.bad_info_Files:
-            speedTest.calc_rValAndMOS(origRef,150)
-
-         #If there are any rows that still don't have any information for the TCP StDev and Median,
+            speedTest.calc_rVal_and_MOS_then_Append(origCSVRef, delayThresh)
+        #END FOR
+        #If there are any rows that still don't have any information for the TCP StDev and Median,
         # we'll put in a value that says there was no such file in the folders of raw data
-        lastIndex = origRef[0].index("rValue")
-        for row in origRef:
+        lastIndex = origCSVRef[0].index("MOS")
+        for row in origCSVRef:
             #This creates a smaller array of the current row. If the array is empty, then
             # it means that there we no values in that row yet. We fill those cells
             # in with "FileMissingError"
-            are_there_values_here = row[lastIndex-15:lastIndex+1]
+            are_there_values_here = row[lastIndex-1:lastIndex+1]
             if not are_there_values_here:
-                row.extend(["FileMissingError",""]*8)
+                row.extend(["FileMissingError"]*2)
         #END FOR
         print("Please select the folder you wish to hold the csv file that will be created")
         rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
                                          title = "Select the Folder You Wish To Hold the CSV File",
                                          mustexist = True)
-        csvExport(origRef, rootOfFiles + "/CPUC_FieldTestResults_Q42013Data_with_rVal_and_MOS.csv")
+
+        filename = filename.split("/")[-1].split(".")[0]
+        csvExport(origCSVRef, rootOfFiles + "/" + filename + "_with_rVal_and_MOS.csv")
     #END DEF
 
 
