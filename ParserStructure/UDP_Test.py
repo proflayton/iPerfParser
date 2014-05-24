@@ -60,7 +60,7 @@ testForMain(__name__)
 #
 #   convert_Obj_To_2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    toBeReturned:   the 2D array that will be returned
+#       OUTPUTS-    objectAs2D:   the 2D array that will be returned
 #
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -161,12 +161,50 @@ class UDPTest(SpeedTest):
 
     # DESC: This converts the object into a 2D representation of itself. Will return a 2D array
     #       that will be used in the SpeedTestFile class.
-    def convert_Obj_To_2D():
-        #
-        #
-        doing_something = False
-        #
-        #
+    def convert_Obj_To_2D(self):
+        objectAs2D = []
+        index = 0
+        #This section sets up the column headers for the test. Each
+        # test will have column headers. The timing headers need
+        # to account for different length threads, hence getLongest
+        objectAs2D.append(["","","","Thread Num","Data Direction"])
+        for t in range(int(self.TestInterval)):
+            objectAs2D[index].append(str(float(t)) + "-" + str(float(t+1)))
+            objectAs2D[index].append("")
+        #END FOR
+        objectAs2D[index].append("END")
+        index += 1
+        #These two lines set up the Test information in the array
+        objectAs2D.append(["","","Test #" + self.TestNumber])
+        objectAs2D.append(["","",self.ConnectionType+" "+self.ConnectionLoc])
+
+        if (self.ERROR):
+            objectAs2D[index].extend(["ERROR", "ERROR"])
+            index += 1
+        else:
+            #Append the threads to the array. If the array is not nothing,
+            # it must then be holding the Test Header information, and so
+            # we don't need any padding
+            for thread in self.myPingThreads:
+                objectAs2D[index].extend(thread.array_itize((int(self.TestInterval)*2)+2))
+                index += 1
+            #END FOR
+        #END IF/ELSE
+
+        #Now appending the Server Report information
+        if not self.ERROR:
+            objectAs2D[index].extend(["","Server Report",
+                                      str(self.ServerReport["Ping"].size) + " " + 
+                                      str(self.ServerReport["Ping"].size_units),
+                                      str(self.ServerReport["Ping"].speed) + " " + 
+                                      str(self.ServerReport["Ping"].speed_units),
+                                      str(self.ServerReport["Time"]),
+                                      str(self.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
+                                      str(self.ServerReport["Datagrams_OutofOrder"][1])
+                                    ])
+        #END IF
+        objectAs2D.append(["",""])
+        return objectAs2D
     #END DEF
 
 
