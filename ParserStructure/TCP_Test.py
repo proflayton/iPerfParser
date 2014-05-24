@@ -57,7 +57,7 @@ testForMain(__name__)
 #
 #   convert_Obj_To_2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    toBeReturned:   the 2D array that will be returned
+#       OUTPUTS-    objectAs2D:   the 2D array that will be returned
 #
 #   getLongestThreadTime - The looks through all of the threads in this function and
 #                          returns the longest thread time in seconds
@@ -213,12 +213,58 @@ class TCPTest(SpeedTest):
 
     # DESC: This converts the object into a 2D representation of itself. Will return a 2D array
     #       that will be used in the SpeedTestFile class.
-    def convert_Obj_To_2D():
-        #
-        #
-        doing_something = False
-        #
-        #
+    def convert_Obj_To_2D(self):
+        objectAs2D = []
+        index = 0
+        #This section sets up the column headers for the test. Each
+        # test will have column headers. The timing headers need
+        # to account for different length threads, hence getLongest
+        test_length = int(self.getLongestThreadTime())
+        objectAs2D.append(["","","","Thread Num","Data Direction"])
+        #This loop creates the text above the tests that show what interval the numbers
+        # correspond to. An empty value is appended because we are going to print out
+        # the speed and size with one cell per value.
+        for t in range(test_length):
+            objectAs2D[index].append(str(float(t)) + "-" + str(float(t+1)))
+            objectAs2D[index].append("")
+        #END FOR
+        #After creating the array that holds the second intervals, we add the END column,
+        # which is where the final ping will go
+        objectAs2D[index].append("END")
+        #These two lines set up the Test information in the array
+        objectAs2D.append(["","","Test #" + self.TestNumber])
+        objectAs2D.append(["","",self.ConnectionType+" "+self.ConnectionLoc])
+        index +=1
+        #If the test has an error, then we print error. Otherwise, we array-itize the
+        # threads and add then to the 2D array
+        if (self.ERROR):
+            objectAs2D[index].extend(["ERROR","ERROR","ERROR"])
+            index += 1
+        else:
+            #Append the threads to the array. We first append the Ups, then the Downs
+            # (test_length*2)+4 refers to how many elements must be in the array that will
+            # be returned by array_itize(). The longest thread is of length "test_length", and
+            # each row has two items (speed and size), and the +4 is for the final Ping object
+            for thread in self.myPingThreads["Up"]:
+                try:
+                    objectAs2D[index].extend(thread.array_itize((test_length*2)+4))
+                except:
+                    objectAs2D.append(["","",""])
+                    objectAs2D[index].extend(thread.array_itize((test_length*2)+4))
+                index += 1
+            #END FOR
+            for thread in self.myPingThreads["Down"]:
+                try:
+                    objectAs2D[index].extend(thread.array_itize((test_length*2)+4))
+                except:
+                    objectAs2D.append(["","",""])
+                    objectAs2D[index].extend(thread.array_itize((test_length*2)+4))
+                index += 1
+            #END FOR
+        #END IF/ELSE
+        #Adding a little spacer between the tests.
+        objectAs2D.append(["",""])
+        return objectAs2D
     #END DEF
 
 

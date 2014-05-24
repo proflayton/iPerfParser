@@ -21,11 +21,14 @@ testForMain(__name__)
 #           returning analyses of the parsed data in .csv files
 #
 # VARIABLES:
-#   Carriers:            List, all of the carriers that we wish to keep track of
-#   ignored_Carriers:    List, will be dynamically added to, if a file has a carrier that we are not tracking
-#   ignored_Files:       List, Strings that hold the file name of an ignored file (bad carrier, no carrier, etc.
-#   mySpeedTestFiles:    Structure, created in __init__, will hold parsed files, categorized by
+#   Carriers:           List, all of the carriers that we wish to keep track of
+#   bad_info_Files      List, parse File objects that don't have the necessary information for sorting
+#   ignored_Carriers:   List, will be dynamically added to, if a file has a carrier that we are not tracking
+#   ignored_Files:      List, Strings that hold the file name of an ignored file (bad carrier, no carrier, etc.
+#   mySpeedTestFiles:   Structure, created in __init__, will hold parsed files, categorized by
 #                        Network Type and Carrier
+#   recursively_print   Boolean, if true, prints all object in mySpeedTestFiles and bad_info_Files
+#   short_str_method    Boolean, if true, prints objects in shorter version. Is passed to objects in structure
 #
 # FUNCTIONS:
 #   __init__ - Used to initialize an object of this class
@@ -345,7 +348,6 @@ class SpeedTestDS(object):
 
 
 
-
     # DESC: Creating a csv file of the data structure. Starts by converting
     #       the structure into a 2-dimensional array, then passes it to the
     #       CSV converter function, which returns the file
@@ -355,11 +357,12 @@ class SpeedTestDS(object):
         # the original is not lost
         csvReady = {  "mobile"  : {},
                       "netbook" : {},
-                      "bad_info_Files": {}
+                      "bad_info_Files": []
                     }
         for key in csvReady:
-            for elem in self.Carriers:
-                csvReady[key][elem] = []
+            if key != "bad_info_Files":
+                for elem in self.Carriers:
+                    csvReady[key][elem] = []
         #END FORs
         #This is where the actual function call is made. Looping through the structure, we call
         # the SpeedTestFile's convertTo2D function, and append the result (a 2D array) to our new
@@ -384,7 +387,7 @@ class SpeedTestDS(object):
         # continues until we reach the actual csvExporter. This exports the file with the filename of
         # the object, which happens to be stored in the first row, second cell
         for devType in csvReady:
-            if "bad_info_Files" not in devType:
+            if devType != "bad_info_Files":
                 for carrier in csvReady[devType]:
                     for array in csvReady[devType][carrier]:
                         try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
@@ -402,19 +405,22 @@ class SpeedTestDS(object):
                     #END FOR
                 #END FOR
             else:
-                try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
-                except: pass
-                try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType)
-                except: pass
-                #This section exports the 2D array, using the file name stored in the 
-                # 2nd box of the first array
-                csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
-                                 devType + "/" +
-                                 array[0][1].split(".")[0] + ".csv")
+                for array in csvReady[devType]:
+                    try: os.mkdir(rootOfFiles + "/" + "StructureToCSV")
+                    except: pass
+                    try: os.mkdir(rootOfFiles + "/" + "StructureToCSV" + "/" + devType)
+                    except: pass
+                    #This section exports the 2D array, using the file name stored in the 
+                    # 2nd box of the first array
+                    csvExport(array, rootOfFiles + "/" + "StructureToCSV" + "/" +
+                                     devType + "/" +
+                                     array[0][1].split(".")[0] + ".csv")
+                #END FOR
             #END IF/ELSE
         #END FOR
         return True
     #END DEF
+
 
 
     # DESC: This will take the object's structure of parsed data and return
@@ -570,6 +576,7 @@ class SpeedTestDS(object):
         #END FOR
         return new_structure
     #END DEF
+
 
 
     # DESC: This starts with a reference to a 2-D array (converted from the provided CSV file)

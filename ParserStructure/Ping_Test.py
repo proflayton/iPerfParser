@@ -35,7 +35,7 @@ testForMain(__name__)
 #
 #   convert_Obj_To_2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    toBeReturned:   the 2D array that will be returned
+#       OUTPUTS-    objectAs2D:   the 2D array that will be returned
 #
 #   __str__ - Returns a string represenation of the object
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
@@ -49,6 +49,7 @@ class PingTest():
     TestNumber = 0
     RecieverIP = "UNKNOWN"
     ConnectionLoc = "UNKNOWN"
+    Times = {}
 
     PacketsSent = 0
     PacketsLost = 0
@@ -66,7 +67,7 @@ class PingTest():
 
     # DESC: Initializing class
     def __init__(self, dataString, testNum=0, isMobile=True, short=False):
-        self.times = []
+        self.Times = {}
         self.text = dataString
         self.isMobile = isMobile
         self.TestNumber = testNum
@@ -77,7 +78,7 @@ class PingTest():
             self.ERROR = True
             self.ErrorMessage = "Connection Error: Network is unreachable"
             return
-        elif "bad exit value" in dataString:
+        elif "Ping timed out" in dataString:
             self.ERROR = True
             self.ErrorMessage = "Connection Error: Ping Timed Out"
             return
@@ -94,13 +95,14 @@ class PingTest():
 
         #Getting the Reciever IP address
         index = 0
-        searchText = "ping statistics" if self.isMobile else "Ping statistics"
+        pingCounter = 0
+        statsText = "ping statistics" if self.isMobile else "Ping statistics"
         pingText = "bytes from" if self.isMobile else "Reply from"
+        pingError1 = "Request timed out"; pingError2 = "General failure"
         for line in self.text:
-            #get the ping times
-            if pingText in line:
-                self.times.append(line.split("time=")[1].split("ms")[0].rstrip());
-            elif searchText in line:
+            #This test comes first so that, when we reach the statistics at the bottom, we read it,
+            # parse it, and then break out of the loop before the other conditional are run
+            if statsText in line:
                 splitText = line.split(" ")
                 for elem in splitText:
                     if "184.72" in elem:
@@ -110,7 +112,14 @@ class PingTest():
                 #END FOR
                 index = self.text.index(line)
                 break
-            #END IF
+            #Parse the individual ping times from the test
+            elif pingText in line:
+                pingCounter += 1
+                self.Times[pingCounter] = line.split("time=")[1].split("ms")[0].strip();
+            elif (pingError1 in line) or (pingError2 in line):
+                pingCounter += 1
+                self.Times[pingCounter] = 0
+            #END IF/ELIF
         #END FOR
 
         #Determining the Connection Location
@@ -121,38 +130,77 @@ class PingTest():
 
         statsArr = self.text[index+1:]
         if self.isMobile:
+            #First declare packetsLine to tbe the first element, and then split it by ",".
+            # Then parse the packets sent and received, and deduce the packets lost
             packetsLine = statsArr[0]
             packetsLine = packetsLine.split(",")
-            self.PacketsSent = int(packetsLine[0].split(" ")[0])
-            tempPacketsReceived = int(packetsLine[1].strip().split(" ")[0])
+            self.PacketsSent = float(packetsLine[0].split(" ")[0])
+            tempPacketsReceived = float(packetsLine[1].strip().split(" ")[0])
             self.PacketsLost = self.PacketsSent - tempPacketsReceived
-            RTTLine = statsArr[1]
-            RTTNums = RTTLine.split("=")[1][:-2].strip().split("/")
-            self.RTTMin = float(RTTNums[0])
-            self.RTTAverage = float(RTTNums[1])
-            self.RTTMax = float(RTTNums[2])
+            #This try/except block is needed, as sometimes the min/avg/max numbers
+            # are not printed out by iPerf. This happens in the case of 100% packet loss
+            try:
+                RTTLine = statsArr[1]
+                RTTNums = RTTLine.split("=")[1][:-2].strip().split("/")
+                self.RTTMin = float(RTTNums[0])
+                self.RTTAverage = float(RTTNums[1])
+                self.RTTMax = float(RTTNums[2])
+            except:
+                using_defaults_of_0 = True
         else:
+            #First declare packetsLine to tbe the first element, and then split it by ",".
+            # Then parse the packets sent and lost
             packetsLine = statsArr[0]
             packetsLine = packetsLine.split(",")
-            self.PacketsSent = int(packetsLine[0].split("=")[1].strip())
-            self.PacketsLost = int(packetsLine[2].split("=")[1].strip().split(" ")[0])
-            RTTLine = statsArr[2]
-            RTTLine = RTTLine.split(",")
-            self.RTTMin = RTTLine[0].split("=")[1][:-2].strip()
-            self.RTTMax = RTTLine[1].split("=")[1][:-2].strip()
-            self.RTTAverage = RTTLine[2].split("=")[1][:-2].strip()
+            self.PacketsSent = float(packetsLine[0].split("=")[1].strip())
+            self.PacketsLost = float(packetsLine[2].split("=")[1].strip().split(" ")[0])
+            #This try/except block is needed, as sometimes the min/avg/max numbers
+            # are not printed out by iPerf. This happens in the case of 100% packet loss
+            try:
+                RTTLine = statsArr[2]
+                RTTLine = RTTLine.split(",")
+                self.RTTMin = RTTLine[0].split("=")[1][:-2].strip()
+                self.RTTMax = RTTLine[1].split("=")[1][:-2].strip()
+                self.RTTAverage = RTTLine[2].split("=")[1][:-2].strip()
+            except:
+                using_defaults_of_0 = True
         #END IF/ELSE
     #END DEF
 
 
     # DESC: This converts the object into a 2D representation of itself. Will return a 2D array
     #       that will be used in the SpeedTestFile class.
-    def convert_Obj_To_2D():
-        #
-        #
-        doing_something = False
-        #
-        #
+    def convert_Obj_To_2D(self):
+        objectAs2D = []
+        index = 0
+        objectAs2D.append(["","","Ping Sequence Num"])
+        #Adding the sequence numbers to correspong with the 
+        for t in range(10):
+            objectAs2D[index].append(str(t+1))
+        #END FOR
+        #These two lines set up the Test information in the array
+        objectAs2D.append(["","","Test #" + self.TestNumber])
+        objectAs2D.append(["","","Ping " + self.ConnectionLoc])
+        objectAs2D.append(["","",""])
+        index +=1
+        #If the test has an error, then we print error. Otherwise, we array-itize the
+        # threads and add then to the 2D array
+        if (self.ERROR):
+            objectAs2D[index].extend(["ERROR","ERROR","ERROR"])
+            return objectAs2D
+        else:
+            #Appending the ping Times
+            for tIndex in self.Times:
+                objectAs2D[index].append(self.Times[tIndex])
+            index += 1
+            #Appending the Packet information, and the RTT information
+            objectAs2D[index].extend(["Packets Sent", self.PacketsSent, "Packets Lost", self.PacketsLost])
+            index += 1
+            objectAs2D[index].extend(["RTT Min", self.RTTMin, "RTT Avg", self.RTTAverage, "RTT Max", self.RTTMax])
+        #END IF/ELSE
+        #Adding a little spacer between the tests.
+        objectAs2D.append(["",""])
+        return objectAs2D
     #END DEF
 
 
@@ -165,15 +213,20 @@ class PingTest():
             this_str += pad + "  ERROR: " + str(self.ErrorMessage) + "\n"
         else:
             if not self.short_str_method:
-                this_str += (pad + "times size: " + str(len(self.times)) + "\n" +
-                             pad + "Packets Sent: " + str(self.PacketsSent) + "\n" +
+                #Printing the individual pings in the ping test
+                this_str += pad + "Ping Times: "
+                for index in self.Times:
+                    this_str += (str(index) + "=" + str(self.Times[index]) + "ms, ")
+                this_str = this_str[:-2] + "\n"
+                #Printing the rest of the information
+                this_str += (pad + "Packets Sent: " + str(self.PacketsSent) + "\n" +
                              pad + "Packets Lost: " + str(self.PacketsLost) + "\n" +
                              pad + "Round Trip Time Minimum: " + str(self.RTTMin) + "\n" +
                              pad + "Round Trip Time Maximum: " + str(self.RTTMax) + "\n" +
                              pad + "Round Trip Time Average: " + str(self.RTTAverage) + "\n"
                             )
             else:
-                this_str += (pad + "Packet Loss Percentage: " + str(self.PacketsLost/self.PacketsSent) + "\n" +
+                this_str += (pad + "Packet Loss Percentage: " + str(self.PacketsLost/self.PacketsSent) + "%\n" +
                              pad + "Round Trip Time Average: " + str(self.RTTAverage) + "\n"
                             )
             #END IF/ELSE
