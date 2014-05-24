@@ -10,7 +10,6 @@ except:
     from utils import testForMain
 testForMain(__name__)
 
-
 # ------------------------------------------------------------------------
 # SPEEDTEST.PY
 #
@@ -69,7 +68,7 @@ testForMain(__name__)
 #
 #   convert_Obj_To_2D - Converts this SpeedTestFile object into a 2D array, and returns the result
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#       OUTPUTS-    toBeReturned:   the 2D array that will be returned
+#       OUTPUTS-    objectAs2D:   the 2D array that will be returned
 #
 #   calc_TCP_StDev_for_Distribution - For each test in this object, if the test is a TCP test, calculate the
 #                       standard deviation of the sum of thread speeds at each 1 second interval.
@@ -115,8 +114,6 @@ testForMain(__name__)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 #
 # ------------------------------------------------------------------------
-
-import math
 
 from .utils import readToAndGetLine, monthAbbrToNum
 from .utils import StDevP, getMedian
@@ -446,135 +443,31 @@ class SpeedTestFile(object):
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
     def convert_Obj_To_2D(self):
-        toBeReturned = []
+        objectAs2D = []
         #Setting up the basic information at the top of the 2D array/.csv file
-        toBeReturned.append(["Filename", self.FileName])
-        toBeReturned.append(["DateTime", self.Date + " " + self.Time])
-        toBeReturned.append(["Location ID", self.LocationID])
-        toBeReturned.append(["Network Type", self.NetworkType])
-        toBeReturned.append(["Provider", (self.NetworkProvider
+        objectAs2D.append(["Filename", self.FileName])
+        objectAs2D.append(["DateTime", self.Date + " " + self.Time])
+        objectAs2D.append(["Location ID", self.LocationID])
+        objectAs2D.append(["Network Type", self.NetworkType])
+        objectAs2D.append(["Provider", (self.NetworkProvider
                                         if (self.NetworkProvider != "N/A")
                                         else self.NetworkOperator)])
-        #Counter refers to the current array in toBeReturned. This array is
+        #Counter refers to the current array in objectAs2D. This array is
         # where the tests will start to be array-itized and appened
-        counter = 5
         for TCPTest in self.mySpeedTests["TCP"]:
-            #This section sets up the column headers for the test. Each
-            # test will have column headers. The timing headers need
-            # to account for different length threads, hence getLongest
-            test_length = int(TCPTest.getLongestThreadTime())
-            toBeReturned.append(["","","","Thread Num","Data Direction"])
-            #This loop creates the text above the tests that show what interval the numbers
-            # correspond to. An empty value is appended because we are going to print out
-            # the speed and size with one cell per value.
-            for t in range(test_length):
-                toBeReturned[counter].append(str(float(t)) + "-" + str(float(t+1)))
-                toBeReturned[counter].append("")
-            #END FOR
-            toBeReturned[counter].append("END")
-            counter += 1
-
-            #These three lines set up the Test information in the array
-            toBeReturned.append(["","","Test #" + TCPTest.TestNumber])
-            toBeReturned.append(["","",TCPTest.ConnectionType+" "+TCPTest.ConnectionLoc])
-
-            if (TCPTest.ERROR):
-                toBeReturned[counter].extend(["ERROR","ERROR"])
-            else:
-                #Append the threads to the array. We first append the Ups, then the Downs
-                for thread in TCPTest.myPingThreads["Up"]:
-                    try:
-                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                    except:
-                        toBeReturned.append(["","",""])
-                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                    counter += 1
-                #END FOR
-                for thread in TCPTest.myPingThreads["Down"]:
-                    try:
-                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                    except:
-                        toBeReturned.append(["","",""])
-                        toBeReturned[counter].extend(thread.array_itize((test_length*2)+4))
-                    counter += 1
-                #END FOR
-            #END IF/ELSE
-
-            #Incrementing the counter so that the next IndivTest that is converted is put below
-            # the previous one (sometimes, there is one thread per test, and just moving to the next
-            # iteration messed up the spacing)
-            nextLine = True
-            while nextLine:
-                try:
-                    aThing = toBeReturned[counter][3]
-                    counter +=1
-                except:
-                    nextLine = False
-            #END WHILE
-            toBeReturned.append(["",""])
-            counter += 1
+            objectAs2D.extend(TCPTest.convert_Obj_To_2D())
         #END FOR
         #Now we create the arrays for the UDP tests, as their structure differs from
         # that of the TCP tests.
         for UDPTest in self.mySpeedTests["UDP"]:
-            #This section sets up the column headers for the test. Each
-            # test will have column headers. The timing headers need
-            # to account for different length threads, hence getLongest
-            toBeReturned.append(["","","","Thread Num","Data Direction"])
-            for t in range(int(UDPTest.TestInterval)):
-                toBeReturned[counter].append(str(float(t)) + "-" + str(float(t+1)))
-                toBeReturned[counter].append("")
-            #END FOR
-            toBeReturned[counter].append("END")
-            counter += 1
-
-            #These three lines set up the Test information in the array
-            toBeReturned.append(["","","Test #" + UDPTest.TestNumber])
-            toBeReturned.append(["","",UDPTest.ConnectionType+" "+UDPTest.ConnectionLoc])
-
-            if (UDPTest.ERROR):
-                toBeReturned[counter].extend(["ERROR", "ERROR"])
-            else:
-                #Append the threads to the array. If the array is not nothing,
-                # it must then be holding the Test Header information, and so
-                # we don't need any padding
-                for thread in UDPTest.myPingThreads:
-                    toBeReturned[counter].extend(thread.array_itize((int(UDPTest.TestInterval)*2)+2))
-                    counter += 1
-                #END FOR
-            #END IF/ELSE
-
-            #Now appending the Server Report information
-            if not UDPTest.ERROR:
-                toBeReturned[counter].extend(["","Server Report",
-                                              str(UDPTest.ServerReport["Ping"].size) + " " + 
-                                              str(UDPTest.ServerReport["Ping"].size_units),
-                                              str(UDPTest.ServerReport["Ping"].speed) + " " + 
-                                              str(UDPTest.ServerReport["Ping"].speed_units),
-                                              str(UDPTest.ServerReport["Time"]),
-                                              str(UDPTest.ServerReport["Datagrams_OutofOrder"][0]) + "/ " +
-                                              str(UDPTest.ServerReport["Datagrams_OutofOrder"][1])
-                                            ])
-                counter += 1
-            #END IF
-            toBeReturned.append(["",""])
-            counter += 1
+            objectAs2D.extend(UDPTest.convert_Obj_To_2D())
         #END FOR
-        #
-        #
-        #
-        #
         #This is where we convert the Ping tests into 2D versions of themselves. Their data
         # is the appended to the end of the 2D array for this file.
         for PingTest in self.mySpeedTests["PING"]:
-            doing_something = False
+            objectAs2D.extend(PingTest.convert_Obj_To_2D())
         #END FOR
-        #
-        #
-        #
-        #
-        #
-        return toBeReturned
+        return objectAs2D
     #END DEF
 
 
@@ -676,6 +569,7 @@ class SpeedTestFile(object):
     #DESC: Calculates rVal and MOS of ping tests and appends to CSV reference
     #      delayThresh = if under then they get bucketed
     def calc_rVal_and_MOS_then_Append(self, masterCSVRef, delayThresh):
+        import math
         thisFile = self.this_File_Index_in_GivenCSV(masterCSVRef)
         east = 0;       west = 0
         eastTotal = 0;  westTotal = 0
@@ -685,8 +579,8 @@ class SpeedTestFile(object):
             toAppend = []
             for speedTest in self.mySpeedTests["PING"]:
                 fd = 0.0
-                for time in speedTest.times:
-                    time = float(time)
+                for time in speedTest.Times:
+                    time = float(speedTest.Times[time])
                     if speedTest.ConnectionLoc == "East":
                         eastLost += speedTest.PacketsLost
                         east+=1
@@ -720,7 +614,8 @@ class SpeedTestFile(object):
                 pb = (1-pn)*(1-fd)
 
                 #Equipment impairment factor
-                ieEff = 5 + 90*(pn+pb)/(pn+pb+10); #14.96 + 16.68*math.log(1+30.11*(pn+pb));//14.96 + 16.68*Math.log(1+30.11*(pn+pbTwo));
+                ieEff = 5 + 90*(pn+pb)/(pn+pb+10); 
+                #14.96 + 16.68*math.log(1+30.11*(pn+pb));//14.96 + 16.68*Math.log(1+30.11*(pn+pbTwo));
 
                 #calculate H(x) -either a zero or a one
                 hofx = 1
