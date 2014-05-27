@@ -209,7 +209,7 @@ class SpeedTestDS(object):
                                 pass
                         #END FOR files
                     #END FOR os.walk
-                #------------------------------------------------
+                # ------------------------------------------------------------
                 elif (sysArgv[2] == "-s"):
                     try:
                         self.recursively_print = False if sysArgv[3] == "False" else True
@@ -243,12 +243,29 @@ class SpeedTestDS(object):
                         file1 = DataRoot + Samples + "sample_test_1.txt"
                     test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
                     self.addToStructure(test_SpeedTest)
+                # ------------------------------------------------------------
+                elif (sysArgv[2] == "-qk"):
+                    for root, dirs, files in os.walk(DataRoot + "/testthese/"):
+                        for aFile in files:
+                            #Seeing if the file given is, in fact, a data file
+                            #If not, the script will exit and display the message below
+                            f = open(os.path.join(root, aFile),'r')
+                            try:
+                                isItCPUC = f.readline()
+                                if ("CPUC Tester Beta v2.0" in isItCPUC):
+                                    test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
+                                    self.addToStructure(test_STFile)
+                            except:
+                                pass
+                            #END TRY/EXCEPT
+                        #END FOR files
+                    #END FOR os.walk
                 else:
                     print("I don't know that option.")
                 #END IF/ELIF/ELSE
             #END IF/ELSE
-        # ----------------------------------------------------------
-        # ----------------------------------------------------------
+        # ------------------------------------------------------------
+        # ------------------------------------------------------------
         else:
             #Asking for a directory from the user
             # initialdir sets the starting point as the user's home directory

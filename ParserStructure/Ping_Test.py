@@ -82,6 +82,10 @@ class PingTest():
             self.ERROR = True
             self.ErrorMessage = "Connection Error: Ping Timed Out"
             return
+        elif ("Quitting operations" in dataString) or ("Quitting Operations" in dataString):
+            self.ERROR = True
+            self.ErrorMessage = "Test quit by User."
+            return
         #END IF/ELIF
         self.text = dataString.split('\n')
 
@@ -92,13 +96,16 @@ class PingTest():
                 self.TestNumber = line.split(" ")[2].split(":")[0].split("..")[0]
                 break
         #END FOR
-
+        
         #Getting the Reciever IP address
         index = 0
         pingCounter = 0
         statsText = "ping statistics" if self.isMobile else "Ping statistics"
         pingText = "bytes from" if self.isMobile else "Reply from"
-        pingError1 = "Request timed out"; pingError2 = "General failure"
+        pingErrors = ["Request timed out",
+                      "General failure",
+                      "host unreachable",
+                      "net unreachable" ]
         for line in self.text:
             #This test comes first so that, when we reach the statistics at the bottom, we read it,
             # parse it, and then break out of the loop before the other conditional are run
@@ -113,13 +120,21 @@ class PingTest():
                 index = self.text.index(line)
                 break
             #Parse the individual ping times from the test
-            elif pingText in line:
+            else:
                 pingCounter += 1
-                self.Times[pingCounter] = line.split("time=")[1].split("ms")[0].strip();
-            elif (pingError1 in line) or (pingError2 in line):
-                pingCounter += 1
-                self.Times[pingCounter] = 0
-            #END IF/ELIF
+                isErrorPresent = False
+                for error in pingErrors:
+                    if error in line:
+                        self.Times[pingCounter] = 0
+                        isErrorPresent = True
+                        break
+                if isErrorPresent:
+                    continue
+                #END FOR
+                if pingText in line:
+                    self.Times[pingCounter] = line.split("time=")[1].split("ms")[0].strip();
+                #END IF
+            #END IF/ELSE
         #END FOR
 
         #Determining the Connection Location
@@ -130,7 +145,7 @@ class PingTest():
 
         statsArr = self.text[index+1:]
         if self.isMobile:
-            #First declare packetsLine to tbe the first element, and then split it by ",".
+            #First declare packetsLine to be the first element, and then split it by ",".
             # Then parse the packets sent and received, and deduce the packets lost
             packetsLine = statsArr[0]
             packetsLine = packetsLine.split(",")

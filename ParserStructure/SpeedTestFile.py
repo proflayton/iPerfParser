@@ -434,12 +434,6 @@ class SpeedTestFile(object):
     #END DEf
 
 
-    #
-    # !!!
-    # Implement array_itization of Ping Test
-    # Move array-itization of Tests into object's file
-    # !!!
-    #
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
     def convert_Obj_To_2D(self):
