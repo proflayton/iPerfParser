@@ -22,9 +22,19 @@ testForMain(__name__)
 #           standard deviation of TCP upload and download speed tests).
 #
 # VARIABLES:
+#   ConnectionType      String, represents the type of connection
 #   TestNumber          Integer, the number of this test from the original raw data file
-#   ConnectionLoc       String, represents where this test is connected to (East or West)
 #   RecieverIP          String, IP of the server this test is connected to
+#   ConnectionLoc       String, represents where this test is connected to (East or West)
+#   Times               List, holds all of the individual ping times in the test
+#   PacketsSent         Integer, number of packets sent during the test
+#   PacketsLost         Integer, number of packets not received by the recipient
+#   RTTMin              Integer, RTT min recorded by the test
+#   RTTMax              Integer, RTT max recorded by the test
+#   RTTAverage          Integer, RTT average recorded by the test
+#   isMobile            Boolean, if the test was on a mobile device, the format is different
+#   ERROR               Boolean, if there was an error in the test, then this is True
+#   ErrorMessage        String, the message that will be output when str is called
 #   short_str_method           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
@@ -46,6 +56,7 @@ from .utils import global_str_padding as pad; pad = pad*2
 class PingTest():
     # ------------------------
     # Class variables
+    ConnectionType = "PING"
     TestNumber = 0
     RecieverIP = "UNKNOWN"
     ConnectionLoc = "UNKNOWN"
@@ -222,6 +233,7 @@ class PingTest():
     # DESC: Creating a string representation of our object
     def __str__(self):
         this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
+                    pad + "Connection Type: " + str(self.ConnectionType) + "\n" +
                     pad + "Connection Location: " + str(self.ConnectionLoc) + "\n"
                    )
         if self.ERROR:
