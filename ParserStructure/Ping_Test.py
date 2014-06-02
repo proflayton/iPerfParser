@@ -22,9 +22,19 @@ testForMain(__name__)
 #           standard deviation of TCP upload and download speed tests).
 #
 # VARIABLES:
+#   ConnectionType      String, represents the type of connection
 #   TestNumber          Integer, the number of this test from the original raw data file
-#   ConnectionLoc       String, represents where this test is connected to (East or West)
 #   RecieverIP          String, IP of the server this test is connected to
+#   ConnectionLoc       String, represents where this test is connected to (East or West)
+#   Times               List, holds all of the individual ping times in the test
+#   PacketsSent         Integer, number of packets sent during the test
+#   PacketsLost         Integer, number of packets not received by the recipient
+#   RTTMin              Integer, RTT min recorded by the test
+#   RTTMax              Integer, RTT max recorded by the test
+#   RTTAverage          Integer, RTT average recorded by the test
+#   isMobile            Boolean, if the test was on a mobile device, the format is different
+#   ERROR               Boolean, if there was an error in the test, then this is True
+#   ErrorMessage        String, the message that will be output when str is called
 #   short_str_method           Boolean, used in SpeedTestDataStructure if the printout requested in short of long.
 #                           Default is False
 #
@@ -46,6 +56,7 @@ from .utils import global_str_padding as pad; pad = pad*2
 class PingTest():
     # ------------------------
     # Class variables
+    ConnectionType = "PING"
     TestNumber = 0
     RecieverIP = "UNKNOWN"
     ConnectionLoc = "UNKNOWN"
@@ -82,6 +93,10 @@ class PingTest():
             self.ERROR = True
             self.ErrorMessage = "Connection Error: Ping Timed Out"
             return
+        elif ("Quitting operations" in dataString) or ("Quitting Operations" in dataString):
+            self.ERROR = True
+            self.ErrorMessage = "Test quit by User."
+            return
         #END IF/ELIF
         self.text = dataString.split('\n')
 
@@ -92,13 +107,16 @@ class PingTest():
                 self.TestNumber = line.split(" ")[2].split(":")[0].split("..")[0]
                 break
         #END FOR
-
+        
         #Getting the Reciever IP address
         index = 0
         pingCounter = 0
         statsText = "ping statistics" if self.isMobile else "Ping statistics"
         pingText = "bytes from" if self.isMobile else "Reply from"
-        pingError1 = "Request timed out"; pingError2 = "General failure"
+        pingErrors = ["Request timed out",
+                      "General failure",
+                      "host unreachable",
+                      "net unreachable" ]
         for line in self.text:
             #This test comes first so that, when we reach the statistics at the bottom, we read it,
             # parse it, and then break out of the loop before the other conditional are run
@@ -113,13 +131,21 @@ class PingTest():
                 index = self.text.index(line)
                 break
             #Parse the individual ping times from the test
-            elif pingText in line:
+            else:
                 pingCounter += 1
-                self.Times[pingCounter] = line.split("time=")[1].split("ms")[0].strip();
-            elif (pingError1 in line) or (pingError2 in line):
-                pingCounter += 1
-                self.Times[pingCounter] = 0
-            #END IF/ELIF
+                isErrorPresent = False
+                for error in pingErrors:
+                    if error in line:
+                        self.Times[pingCounter] = 0
+                        isErrorPresent = True
+                        break
+                if isErrorPresent:
+                    continue
+                #END FOR
+                if pingText in line:
+                    self.Times[pingCounter] = line.split("time=")[1].split("ms")[0].strip();
+                #END IF
+            #END IF/ELSE
         #END FOR
 
         #Determining the Connection Location
@@ -130,7 +156,7 @@ class PingTest():
 
         statsArr = self.text[index+1:]
         if self.isMobile:
-            #First declare packetsLine to tbe the first element, and then split it by ",".
+            #First declare packetsLine to be the first element, and then split it by ",".
             # Then parse the packets sent and received, and deduce the packets lost
             packetsLine = statsArr[0]
             packetsLine = packetsLine.split(",")
@@ -207,6 +233,7 @@ class PingTest():
     # DESC: Creating a string representation of our object
     def __str__(self):
         this_str = (pad + "Test Number: " + str(self.TestNumber) + "\n" +
+                    pad + "Connection Type: " + str(self.ConnectionType) + "\n" +
                     pad + "Connection Location: " + str(self.ConnectionLoc) + "\n"
                    )
         if self.ERROR:

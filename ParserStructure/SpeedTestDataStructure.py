@@ -189,8 +189,8 @@ class SpeedTestDS(object):
                     # each kind, a mobile Test, and a netbook Test
                     file1 = DataRoot + BBresults + "10_17_2013/99000344556962-10172013151027.txt"
                     file2 = DataRoot + BBresults + "10_17_2013/WBBDTest2-10172013151943.txt"
-                    stfile1 = SpeedTestFile(file1, self.short_str_method)
-                    stfile2 = SpeedTestFile(file2, self.short_str_method)
+                    stfile1 = SpeedTestFile(file1, self.Carriers, self.short_str_method)
+                    stfile2 = SpeedTestFile(file2, self.Carriers, self.short_str_method)
                     self.addToStructure(stfile1)
                     self.addToStructure(stfile2)
                 elif (sysArgv[2] == "-c"):
@@ -202,14 +202,14 @@ class SpeedTestDS(object):
                             try:
                                 isItCPUC = f.readline()
                                 if ("CPUC Tester Beta v2.0" in isItCPUC):
-                                    test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
+                                    test_STFile = SpeedTestFile(os.path.join(root, aFile), self.Carriers, self.short_str_method)
                                     self.addToStructure(test_STFile)
                                 #END IF
                             except:
                                 pass
                         #END FOR files
                     #END FOR os.walk
-                #------------------------------------------------
+                # ------------------------------------------------------------
                 elif (sysArgv[2] == "-s"):
                     try:
                         self.recursively_print = False if sysArgv[3] == "False" else True
@@ -225,7 +225,7 @@ class SpeedTestDS(object):
                             try:
                                 isItCPUC = f.readline()
                                 if ("CPUC Tester Beta v2.0" in isItCPUC):
-                                    test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
+                                    test_STFile = SpeedTestFile(os.path.join(root, aFile), self.Carriers, self.short_str_method)
                                     self.addToStructure(test_STFile)
                             except:
                                 pass
@@ -241,14 +241,31 @@ class SpeedTestDS(object):
                     file1 = DataRoot + Samples + "sample_test_" + str(num) + ".txt"
                     if not os.path.isfile(file1):
                         file1 = DataRoot + Samples + "sample_test_1.txt"
-                    test_SpeedTest = SpeedTestFile(file1, self.short_str_method)
+                    test_SpeedTest = SpeedTestFile(file1, self.Carriers, self.short_str_method)
                     self.addToStructure(test_SpeedTest)
+                # ------------------------------------------------------------
+                elif (sysArgv[2] == "-qk"):
+                    for root, dirs, files in os.walk(DataRoot + "/testthese/"):
+                        for aFile in files:
+                            #Seeing if the file given is, in fact, a data file
+                            #If not, the script will exit and display the message below
+                            f = open(os.path.join(root, aFile),'r')
+                            try:
+                                isItCPUC = f.readline()
+                                if ("CPUC Tester Beta v2.0" in isItCPUC):
+                                    test_STFile = SpeedTestFile(os.path.join(root, aFile), self.Carriers, self.short_str_method)
+                                    self.addToStructure(test_STFile)
+                            except:
+                                pass
+                            #END TRY/EXCEPT
+                        #END FOR files
+                    #END FOR os.walk
                 else:
                     print("I don't know that option.")
                 #END IF/ELIF/ELSE
             #END IF/ELSE
-        # ----------------------------------------------------------
-        # ----------------------------------------------------------
+        # ------------------------------------------------------------
+        # ------------------------------------------------------------
         else:
             #Asking for a directory from the user
             # initialdir sets the starting point as the user's home directory
@@ -297,7 +314,7 @@ class SpeedTestDS(object):
                                         str(int(percent*100)) + "%", end='\r')
                             #END IF
                             #This is where the file is actually created, and then added to the structure
-                            test_STFile = SpeedTestFile(os.path.join(root, aFile), self.short_str_method)
+                            test_STFile = SpeedTestFile(os.path.join(root, aFile), self.Carriers, self.short_str_method)
                             self.addToStructure(test_STFile)
                         #END IF
                     except:
@@ -312,19 +329,12 @@ class SpeedTestDS(object):
 
     # DESC: Add the created Speed Test File object to the correct dictionaries
     def addToStructure(self, STFileObj):
-        #Checking to see if the passed object's Network Provider
+        #Checking to see if the passed object's Network Carrier
         # is in our list of Carriers. If it is, use the STFile's
         # network type and provider to add it to the correct dictionary
-        if STFileObj.NetworkProvider in self.Carriers:
+        if STFileObj.NetworkCarrier in self.Carriers:
             (self.mySpeedTestFiles[STFileObj.NetworkType]
-                                     [STFileObj.NetworkProvider]
-                                     .append(STFileObj) )
-        #If the Network Provider was not in the list of carriers, try
-        # using the Network Operator. If that variable is in the list of
-        # carriers, use it and the network type to add it to the correct dict
-        elif STFileObj.NetworkOperator in self.Carriers:
-            (self.mySpeedTestFiles[STFileObj.NetworkType]
-                                     [STFileObj.NetworkOperator]
+                                     [STFileObj.NetworkCarrier]
                                      .append(STFileObj) )
         #Otherwise, the File parsed does not have any useful information for us.
         # As long as it's Network Provider and Network Operator are not "N/A", add

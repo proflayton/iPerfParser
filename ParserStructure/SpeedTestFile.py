@@ -36,6 +36,8 @@ testForMain(__name__)
 #   NetworkProvider     String, holding Network Provider that this test was conducted with (i.e. the Carrier)
 #   NetworkOperator     String, holding Network Operator that this test was conducted with (i.e. the Carrier)
 #                           note: Sometimes, the carrier name is in Network Provider, other times it is in Network Operator
+#   NetworkCarrier      String, will always hold one of the given network carriers defined in the SpeedTestDataStructure.
+#                           note: determined when NetworkProvider and Operator are parsed. A copy of either variable
 #   DeviceID            String, the Device ID number
 #   ConnectionType      String, holding Connection type that this test was conducted with
 #   LocationID          Integer, the ID number of the location that this test was conducted at
@@ -53,11 +55,14 @@ testForMain(__name__)
 #   __init__ - initializes the object by parsing the data in the given file path. calls load()
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #                   filePath:   String, containing absolute path to raw data file
+#                   listOfCarriers: List, passed from STDS. Used when defining NetworkCarrier
+#                   short:      Boolean, determines how this object will print out it's data when __str__ is called
 #       OUTPUTS-    none
 #
 #   loadHeaderInfo - initializes the object by parsing the data in the given file path.
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #                   filePath:   String, containing absolute path to raw data file
+#                   listOfCarriers: List, passed from STDS. Used when defining NetworkCarrier
 #       OUTPUTS-    None
 #
 #   createIndivTests - This takes the string of the entire file contents, and splits it up by test.
@@ -143,6 +148,7 @@ class SpeedTestFile(object):
 
     NetworkProvider = "UNKNOWN"
     NetworkOperator = "UNKNOWN"
+    NetworkCarrier = "UNKNOWN"
     DeviceID = "UNKNOWN"
     ConnectionType = "UNKNOWN"
 
@@ -159,20 +165,20 @@ class SpeedTestFile(object):
     # -------------------
 
     # DESC: init functions calls load using the given file path
-    def __init__(self, filePath, short=False):
+    def __init__(self, filePath, listOfCarriers, short=False):
         self.short_str_method = short
         self.ignored_text = []
         self.mySpeedTests = {  "TCP" : [],
                                "UDP" : [],
                                "PING": []   }
         self.FileName = filePath.split("/")[-1]
-        self.loadHeaderInfo(filePath)
+        self.loadHeaderInfo(filePath, listOfCarriers)
     #END INIT
 
 
     # DESC: parses data and info in given file (location is filePath)
     #       and stores it in the object's attributes
-    def loadHeaderInfo(self, filePath):
+    def loadHeaderInfo(self, filePath, listOfCarriers):
         #Open the file and read through the first line (which is "CPUC Beta .....")
         # save byte location to self.FileStreamLoc
         fs = open(filePath,'r')
@@ -269,6 +275,13 @@ class SpeedTestFile(object):
         except:
             self.NetworkOperator = "N/A"
         fs.seek(self.FileStreamLoc)
+        #Defining self.NetworkCarrier, based on the data in NetworkProvider and NetworkOperator
+        if self.NetworkProvider in listOfCarriers:
+            self.NetworkCarrier = self.NetworkProvider
+        elif self.NetworkOperator in listOfCarriers:
+            self.NetworkCarrier = self.NetworkOperator
+        else:
+            self.NetworkCarrier = "N/A"
 
         #Get Device ID
         #First TRY branch is for the mobile data files (no spaces in Network Provider)
@@ -434,12 +447,6 @@ class SpeedTestFile(object):
     #END DEf
 
 
-    #
-    # !!!
-    # Implement array_itization of Ping Test
-    # Move array-itization of Tests into object's file
-    # !!!
-    #
     # DESC: Converts all of the individual test and ping threads and such
     #       in this object and returns a 2D array of it all
     def convert_Obj_To_2D(self):
@@ -449,9 +456,7 @@ class SpeedTestFile(object):
         objectAs2D.append(["DateTime", self.Date + " " + self.Time])
         objectAs2D.append(["Location ID", self.LocationID])
         objectAs2D.append(["Network Type", self.NetworkType])
-        objectAs2D.append(["Provider", (self.NetworkProvider
-                                        if (self.NetworkProvider != "N/A")
-                                        else self.NetworkOperator)])
+        objectAs2D.append(["Provider", self.NetworkCarrier])
         #Counter refers to the current array in objectAs2D. This array is
         # where the tests will start to be array-itized and appened
         for TCPTest in self.mySpeedTests["TCP"]:
@@ -481,12 +486,8 @@ class SpeedTestFile(object):
             if not TCPTest.ERROR:
                 #This if/else block makes sure that the test is in our list of carriers.
                 # Otherwise, continue will skip to the next test in the object
-                if (self.NetworkOperator in list_carriers):
-                    mycarrier = self.NetworkOperator
-                elif (self.NetworkProvider in list_carriers):
-                    mycarrier = self.NetworkProvider
-                else:
-                    continue
+                if (self.NetworkCarrier in list_carriers):  mycarrier = self.NetworkCarrier
+                else:  continue
                 #END IF/ELIF
                 up_stdev = StDevP(TCPTest.sum_Threads_Speed("Up"))
                 if up_stdev is not None:
@@ -509,7 +510,7 @@ class SpeedTestFile(object):
 
     # DESC: This uses the information in this object to find the row in the CPUC_Results CSV
     #       that it corresponds to. It first checks with DeviceID, Date, and Time. If that
-    #       doesn't work, it tries with LocationID, Date, and Time.
+    #       doesn't work, it tries with LocationID, Date, Time, and Network Carrier.
     def this_File_Index_in_GivenCSV(self, masterCSVRef):
         index = None
         for row in masterCSVRef:
@@ -518,14 +519,32 @@ class SpeedTestFile(object):
                 (self.Time in str(row[6])) ):
                 index = masterCSVRef.index(row)
                 break
+            elif ((self.LocationID in str(row[3])) and
+                  (self.Date in str(row[5])) and
+                  (self.Time in str(row[6])) and
+                  (self.NetworkCarrier in str(row[7])) ):
+                index = masterCSVRef.index(row)
+                break
+            #END IF/ELIF
         #END FOR
-        if (index == None):
+        if (index is None):
             for row in masterCSVRef:
                 if ((self.LocationID in str(row[3])) and
                     (self.Date in str(row[5])) and
                     (self.Time in str(row[6])) ):
-                    index = masterCSVRef.index(row)
-                    break
+                    #If our other attempts at finding the row failed, we'll search using
+                    # just the date, time, and location id. However, before we return the index, we
+                    # first test that we have nothing in the columns we are creating. The index of the
+                    # last column of the values we are inserting is the length of the header row minus 1.
+                    # If the TRY statement doesn't catch an error, then there are already values there, and we
+                    # continue searching.
+                    try:
+                        isIndexDefined = row[len(masterCSVRef[0])-1]
+                    except:
+                        index = masterCSVRef.index(row)
+                        break
+                    #END TRY/EXCEPT
+                #END IF
             #END FOR
         #END IF
         return index
