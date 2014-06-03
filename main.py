@@ -75,12 +75,19 @@ while command:
         #Adding the StDev and Median values to the csv of file information
         #The first few lines declare the string of the path to the original CSV file. It
         # is then imported as a 2D array, and a reference to it is passed to the appropiate function
-        version = str(input("Please input the number Field Test you are appending to (3,4, etc.): "))
+        version = str(input("Please input the number Field Test you are appending to\nOptions [3, 4, 3sm, 4sm] : "))
         this_dir, this_filename = os.path.split(__file__)
         if version == "3":
             DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_3rd2013_Data.csv")
         elif version == "4":
             DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_4th2013_Data.csv")
+        if version == "3sm":
+            DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_3rd2013_Data_with_StDev_Median.csv")
+        elif version == "4sm":
+            DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_4th2013_Data_with_StDev_Median.csv")
+        else:
+            print("That option is not available")
+            raise SystemExit
         originalCSV = utils.csvImport(DATA_PATH)
         #Now we run the actual function, which will return the CSV we are looking for
         so_many_STDs.add_StDev_and_Median_to_Given(originalCSV, DATA_PATH)
@@ -88,12 +95,19 @@ while command:
         #Adding the rVal and MOS values to the csv of file information
         #The first few lines declare the string of the path to the original CSV file. It
         # is then imported as a 2D array, and a reference to it is passed to the appropiate function
-        version = str(input("Please input the number Field Test you are appending to (3,4, etc.): "))
+        version = str(input("Please input the number Field Test you are appending to\nOptions [3, 4, 3sm, 4sm] : "))
         this_dir, this_filename = os.path.split(__file__)
         if version == "3":
             DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_3rd2013_Data.csv")
         elif version == "4":
             DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_4th2013_Data.csv")
+        if version == "3sm":
+            DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_3rd2013_Data_with_StDev_Median.csv")
+        elif version == "4sm":
+            DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_4th2013_Data_with_StDev_Median.csv")
+        else:
+            print("That option is not available")
+            raise SystemExit
         originalCSV = utils.csvImport(DATA_PATH)
         #Now we run the actual function, which will return the CSV we are looking for
         so_many_STDs.add_rVal_and_MOS_to_Given(originalCSV, 150, DATA_PATH)

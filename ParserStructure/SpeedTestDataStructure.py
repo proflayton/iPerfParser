@@ -87,6 +87,15 @@ testForMain(__name__)
 #                                    and appends the values to the imported CSV file, in the appropiate row
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #                   origRef:    reference to the 2D array of the imported CSV file
+#                   filename:   String, the name the of the reference file
+#       OUTPUTS-    None:       The function creates a 2D array of the imported CSV file, appends the necessary
+#                               data, and then exports the file in the users chosen location
+#
+#   add_TCP_Throughput_to_Given - .......
+#                                 .......
+#       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   origRef:    reference to the 2D array of the imported CSV file
+#                   filename:   String, the name the of the reference file
 #       OUTPUTS-    None:       The function creates a 2D array of the imported CSV file, appends the necessary
 #                               data, and then exports the file in the users chosen location
 #
@@ -95,6 +104,7 @@ testForMain(__name__)
 #                                    and appends the values to the imported CSV file, in the appropiate row
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
 #                   origRef:    reference to the 2D array of the imported CSV file
+#                   filename:   String, the name the of the reference file
 #       OUTPUTS-    None:       The function creates a 2D array of the imported CSV file, appends the necessary
 #                               data, and then exports the file in the users chosen location
 #
@@ -668,6 +678,87 @@ class SpeedTestDS(object):
                                          mustexist = True)
         filename = filename.split("/")[-1].split(".")[0]
         csvExport(origCSVRef, rootOfFiles + "/" + filename + "_with_StDev_Median.csv")
+    #END DEF
+
+
+    # DESC: This starts with a reference to a 2-D array (converted from the provided CSV file)
+    #       and appends the TCP StDev and Median to the appropiate row (each row is a file)
+    def add_TCP_Throughput_to_Given(self, origCSVRef, filename):
+        #This appends the new column headers to the CPUC_Results CSV if they do not exist.
+        # We check if they exist by seeing if the last header is "eTCP_DOWN2_MEDIAN"
+        if (origCSVRef[0][-1] != "eTCP_DOWN2_TP"):
+            newHeaders = ["wTCP_TPCALC","eTCP_TPCALC"
+                          "wTCP_UP1_TP_Percent","wTCP_DOWN1_TP_Percent",
+                          "eTCP_UP1_TP_Percent","eTCP_DOWN1_TP_Percent",
+                          "wTCP_UP2_TP_Percent","wTCP_DOWN2_TP_Percent",
+                          "eTCP_UP2_TP_Percent","eTCP_DOWN2_TP_Percent",
+                         ]
+            origCSVRef[0].extend(newHeaders)
+        #END IF
+        """
+        #Counting all of the files in this object, to be used for a progress bar
+        filesInStruct = 0
+        for devType in self.mySpeedTestFiles:
+            for carrier in self.mySpeedTestFiles[devType]:
+                filesInStruct += len(self.mySpeedTestFiles[devType][carrier])
+        filesInStruct += len(self.bad_info_Files)
+        #Variables used to track how many objects have been processed
+        objCounter = 0
+        counterCounter = 0
+
+        #This section goes through all of the tests stored in this structure and runs
+        # the SpeedTestFile object's StDev and Median appending function
+        for devType in self.mySpeedTestFiles:
+            for carrier in self.mySpeedTestFiles[devType]:
+                for speedTest in self.mySpeedTestFiles[devType][carrier]:
+                    #Creating the progress bar
+                    objCounter += 1
+                    counterCounter += 1
+                    if counterCounter > (filesInStruct/200):
+                        counterCounter = 0
+                        percent = float(objCounter)/filesInStruct
+                        print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
+                                str(int(percent*100)) + "%", end='\r')
+                    #Actually calling the function
+                    speedTest.calc_TCP_StDev_and_Median_then_Append( origCSVRef )
+                #END FOR
+            #END FOR
+        #END FOR
+        #This section does the same thing as above, but it runs through the files 
+        # that had no carrier information.
+        for speedTest in self.bad_info_Files:
+            #Creating the progress bar
+            objCounter += 1
+            counterCounter += 1
+            if counterCounter > (filesInStruct/200):
+                counterCounter = 0
+                percent = float(objCounter)/filesInStruct
+                print("[" + "="*int(percent*13) + " "*int((1-percent)*13) + "] " + 
+                        str(int(percent*100)) + "%", end='\r')
+            #Actually calling the function
+            speedTest.calc_TCP_StDev_and_Median_then_Append( origCSVRef )
+        #END FOR
+        print(" "*80, end='\r')
+
+        #If there are any rows that still don't have any information for the TCP StDev and Median,
+        # we'll put in a value that says there was no such file in the folders of raw data
+        lastIndex = origCSVRef[0].index("eTCP_DOWN2_MEDIAN")
+        for row in origCSVRef:
+            #This creates a smaller array of the current row. If the array is empty, then
+            # it means that there we no values in that row yet. We fill those cells
+            # in with "FileMissingError"
+            are_there_values_here = row[lastIndex-15:lastIndex+1]
+            if not are_there_values_here:
+                row.extend(["FileMissingError"]*16)
+        #END FOR
+
+        print("Please select the folder you wish to hold the csv file that will be created")
+        rootOfFiles = TKFD.askdirectory( initialdir = os.path.expanduser("~"),
+                                         title = "Select the Folder You Wish To Hold the CSV File",
+                                         mustexist = True)
+        filename = filename.split("/")[-1].split(".")[0]
+        csvExport(origCSVRef, rootOfFiles + "/" + filename + "_with_StDev_Median.csv")
+        """
     #END DEF
 
 

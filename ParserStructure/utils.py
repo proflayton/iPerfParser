@@ -38,6 +38,15 @@
 #       INPUTS-     array:  list of values that will be used in calculated StDev
 #       OUTPUTS-    dev:    Integer, the StDev of the given array
 #
+#   calcTCPThroughput - Calculates the theoretical TCP Throughput of the connection whose RTT has been given
+#       INPUTS-     RTT     Integer/Float, the round trip time it took to send a packet on a connection.
+#                           cannot be a string, None, or 0
+#                   MSS     Integer/Float, default 1024, the maximum segment size that can be sent in the TCP connection
+#                           cannot be a string, None, or 0
+#                   Loss    Integer/Float, default 0.01, the percentage of packets that will be lost in the connection
+#                           cannot be a string, None, or 0
+#       OUTPUTS-    Integer/None    Returns None if wrong type of value was given, otherwise an Integer
+#
 #   csvExport - Used to initialize an object of this class
 #       INPUTS-     a_2D_Array:     A 2-dimensional array with each sub array representing
 #                                   a line in the end csv file
@@ -174,6 +183,24 @@ def getMedian(vals):
         return sortedVals[int(len(sortedVals)/2)]
     else:
         return (sortedVals[int(len(sortedVals)/2)] + sortedVals[int(len(sortedVals)/2)-1])/2.0
+#END DEF
+
+# DESC: Given a few values (RTT is required), this function will return
+#       the theoretical TCP Throughput on the connection from which the RTT was obtained.
+#       RTT must be in milliseconds
+#       MSS must be in bytes
+#       Loss must be in percent
+#       Returns the theoretical throughput in bits/sec.
+def calcTCPThroughput(RTT, MSS=1448, Loss=0.01):
+    for value in [RTT, MSS, Loss]:
+        if (value == 0) or (value is None) or (isinstance(value, str)):
+            return None
+    #END FOR
+    RTT_calc = RTT * 1000.0
+    MSS_calc = MSS * 1024.0
+    Loss_calc = Loss / 100.0
+    from math import sqrt
+    return (RTT_calc / MSS_calc) * (1.0 / sqrt(Loss_calc))
 #END DEF
 
 

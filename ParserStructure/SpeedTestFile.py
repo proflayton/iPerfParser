@@ -90,6 +90,10 @@ testForMain(__name__)
 #                   masterCSVRef:   reference to the 2D array of the CSV file
 #       OUTPUTS-    None
 #
+#   calc_TCP_Throughput_then_Append - ..
+#       INPUTS-     ..
+#       OUTPUTS-    ..
+#
 #   calc_rVal_and_MOS_then_Append - ..
 #       INPUTS-     ..
 #       OUTPUTS-    ..
@@ -584,6 +588,35 @@ class SpeedTestFile(object):
             origCSVRef[thisFile].extend(toAppend)
         #END IF
     #END DEF
+
+
+    # DESC: ..
+    def calc_TCP_Throughput_then_Append(self, origCSVRef):
+        thisFile = self.this_File_Index_in_GivenCSV(origCSVRef)
+        if thisFile is not None:
+            """
+            calcTCPThroughput(RTT, MSS=1448, Loss=0.01)
+            in each test, in each direction, add together end transfer speeds measured
+            go through TCP test (1->2->4->5) directions and compare to calc value
+            append percentage of theoretical
+
+            toAppend = []
+            #The test number order is specific, as test 1 is the first TCP West, 2 is TCP East, etc.
+            # Also, the array values are all strings, as the initialization removed the values 
+            # from a string, and so the Test Number variable remained a string
+            for testNum in ["1","2","4","5"]:
+                indivTest = self.get_Test_with_TestNumber(testNum, "TCP")
+                if indivTest is not None:
+                    toAppend.extend( indivTest.create_Array_of_StDev_Median_for_CSV() )
+                else:
+                    toAppend.extend( ["error"]*4 )
+            #END FOR
+            origCSVRef[thisFile].extend(toAppend)
+            """
+            a = 1
+        #END IF
+    #END DEF
+
 
     #DESC: Calculates rVal and MOS of ping tests and appends to CSV reference
     #      delayThresh = if under then they get bucketed
