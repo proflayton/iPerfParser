@@ -105,12 +105,13 @@ testForMain(__name__)
 #       OUTPUTS-    index:          Integer, the row index at which this file is located in the CPUC_Results CSV
 #                                   If the file was not found in the CSV, returns None
 #
-#   get_Test_with_TestNumber - This takes a given string, whose value corresponds to the test number
-#                       (which will be either 1, 2, 4, or 5), and returns the corresponding TCPTest
+#   get_Test_with_Attribute - This takes a few given strings. Returns the corresponding Test
+#                       whose value in the specified attribute corresponds to the passed value 
 #       INPUTS-     self:       reference to the object calling this method (i.e. Java's THIS)
+#                   attribute:  String, the attribute name we are comparing to
+#                   value:      String/Integer, value we wish to find
 #                   testType:   String, is either TCP, UDP, or PING.
-#                   num:        String, the test number of the TCP test we wish to get
-#       OUTPUTS-    test:       TCPTest object whose number corresponds to the given value in num.
+#       OUTPUTS-    test:       Test object whose attribute corresponds to the given value in value.
 #                               If no test was found, returns None
 #
 #   printSpeedTests - Return a string that has the information of each speed test in the object
@@ -125,7 +126,7 @@ testForMain(__name__)
 # ------------------------------------------------------------------------
 
 from .utils import readToAndGetLine, monthAbbrToNum
-from .utils import StDevP, getMedian
+from .utils import StDevP, getMedian, calcTCPThroughput
 from .utils import global_str_padding as pad; pad = pad*1
 from .TCP_Test import TCPTest
 from .UDP_Test import UDPTest
@@ -437,7 +438,7 @@ class SpeedTestFile(object):
                     newUDP = UDPTest(testText, short=self.short_str_method)
                     self.mySpeedTests["UDP"].append(newUDP)
                 #END IF/ELSE
-            elif ("PING" in testText or "Pinging" in testText):
+            elif (": Ping" in testText or "Pinging" in testText):
                 newPing = None
                 if self.NetworkType == "mobile":
                     newPing = PingTest(testText, isMobile=True, short=self.short_str_method)
@@ -521,27 +522,36 @@ class SpeedTestFile(object):
             if ((self.DeviceID in str(row[13])) and
                 (self.Date in str(row[5])) and
                 (self.Time in str(row[6])) ):
-                index = masterCSVRef.index(row)
-                break
+                #Before we return the index, we first test that we have nothing in the columns we
+                # are creating. The index of the last column of the values we are inserting is
+                # the length of the header row minus 1.
+                # If the TRY statement doesn't catch an error, then there are already values there, and we
+                # continue searching.
+                try:
+                    isIndexDefined = row[len(masterCSVRef[0])-1]
+                except:
+                    index = masterCSVRef.index(row)
+                    break
+                #END TRY/EXCEPT
             elif ((self.LocationID in str(row[3])) and
                   (self.Date in str(row[5])) and
                   (self.Time in str(row[6])) and
                   (self.NetworkCarrier in str(row[7])) ):
-                index = masterCSVRef.index(row)
-                break
+                try:
+                    isIndexDefined = row[len(masterCSVRef[0])-1]
+                except:
+                    index = masterCSVRef.index(row)
+                    break
+                #END TRY/EXCEPT
             #END IF/ELIF
         #END FOR
         if (index is None):
             for row in masterCSVRef:
+                #If our other attempts at finding the row failed, we'll search using
+                # just the date, time, and location id.
                 if ((self.LocationID in str(row[3])) and
                     (self.Date in str(row[5])) and
                     (self.Time in str(row[6])) ):
-                    #If our other attempts at finding the row failed, we'll search using
-                    # just the date, time, and location id. However, before we return the index, we
-                    # first test that we have nothing in the columns we are creating. The index of the
-                    # last column of the values we are inserting is the length of the header row minus 1.
-                    # If the TRY statement doesn't catch an error, then there are already values there, and we
-                    # continue searching.
                     try:
                         isIndexDefined = row[len(masterCSVRef[0])-1]
                     except:
@@ -557,12 +567,17 @@ class SpeedTestFile(object):
 
     # DESC: Using the value passed in num, this looks for the test whose TestNumber
     #       corresponds to that value. If there was no such test, returns None
-    def get_Test_with_TestNumber(self, num, testType="TCP"):
-        if not isinstance(num, str):
+    def get_Test_with_Attribute(self, attribute, value, testType="TCP"):
+        if (not isinstance(attribute, str)) or (value is None):
             raise TypeError
         for aTest in self.mySpeedTests[testType]:
-            if aTest.TestNumber == num:
-                return aTest
+            try:
+                if (aTest.__dict__[attribute] == value):
+                    return aTest
+                #END IF
+            except:
+                the_test_didnt_have_that_attribute = True
+            #END TRY/EXCEPT
         #END FOR
         return None
     #END DEF
@@ -579,7 +594,7 @@ class SpeedTestFile(object):
             # Also, the array values are all strings, as the initialization removed the values 
             # from a string, and so the Test Number variable remained a string
             for testNum in ["1","2","4","5"]:
-                indivTest = self.get_Test_with_TestNumber(testNum, "TCP")
+                indivTest = self.get_Test_with_Attribute("TestNumber", testNum, "TCP")
                 if indivTest is not None:
                     toAppend.extend( indivTest.create_Array_of_StDev_Median_for_CSV() )
                 else:
@@ -591,33 +606,58 @@ class SpeedTestFile(object):
 
 
     # DESC: ..
+    #       ..
     def calc_TCP_Throughput_then_Append(self, origCSVRef):
         thisFile = self.this_File_Index_in_GivenCSV(origCSVRef)
         if thisFile is not None:
-            """
-            calcTCPThroughput(RTT, MSS=1448, Loss=0.01)
-            in each test, in each direction, add together end transfer speeds measured
-            go through TCP test (1->2->4->5) directions and compare to calc value
-            append percentage of theoretical
-
+            #Declaring the array of values that will be appended
             toAppend = []
-            #The test number order is specific, as test 1 is the first TCP West, 2 is TCP East, etc.
-            # Also, the array values are all strings, as the initialization removed the values 
-            # from a string, and so the Test Number variable remained a string
+            #Calculating the theoretical TCP Throughput (TP_trtcl) for a given connection based
+            # on the average RTT in the Ping test. Loss is the theoretical percent of packets lost
+            westPing = self.get_Test_with_Attribute("ConnectionLoc", "West", "PING")
+            eastPing = self.get_Test_with_Attribute("ConnectionLoc", "East", "PING")
+            #In both blocks, we have a tertiary if statement, where ___TP_trtcl is only calculated if the ping
+            # returned by the statement above had no errors. Otherwise, it equals None, and is appended
+            westTP_trtcl = (calcTCPThroughput(float(westPing.RTTAverage), Loss=0.0001)
+                            if (westPing is not None) else "DataError")
+            toAppend.append(westTP_trtcl)
+            eastTP_trtcl = (calcTCPThroughput(float(eastPing.RTTAverage), Loss=0.0001)
+                            if (eastPing is not None) else "DataError")
+            toAppend.append(eastTP_trtcl)
+            #For each direction, we add the transfer speeds from the final measurement, and determine
+            # the percent of the theoretical throughput that is achieved.
             for testNum in ["1","2","4","5"]:
-                indivTest = self.get_Test_with_TestNumber(testNum, "TCP")
-                if indivTest is not None:
-                    toAppend.extend( indivTest.create_Array_of_StDev_Median_for_CSV() )
+                TCPTest = self.get_Test_with_Attribute("TestNumber", testNum, "TCP")
+                if (TCPTest is not None) and (not TCPTest.ERROR):
+                    for direction in ["Up","Down"]:
+                        #We first add up the final measurement's speeds, keeping track of how many
+                        # values we've added. We then divide the number, and divide again by the calculated
+                        # theoretical TCP Throughput for the TCP Test's direction,
+                        # and then multiply by 100 (to get a percent). This is then appended to the array
+                        sumSpeed = 0; threadCnt = 0
+                        for thread in TCPTest.myPingThreads[direction]:
+                            sumSpeed += thread.myfinalPing.speed; threadCnt += 1.0
+                        #END FOR
+                        if ((TCPTest.ConnectionLoc == "West") and ((westTP_trtcl == "DataError") or (westTP_trtcl==0))):
+                            TP_pct = "DataError"
+                        elif ((TCPTest.ConnectionLoc == "East") and ((eastTP_trtcl == "DataError") or (eastTP_trtcl==0))):
+                            TP_pct = "DataError"
+                        else:
+                            TP_pct = str( ((sumSpeed/threadCnt)/westTP_trtcl)*100 
+                                        if TCPTest.ConnectionLoc == "West" 
+                                        else ((sumSpeed/threadCnt)/eastTP_trtcl)*100 ) + "%"
+                        #END IF/ELIF/ELSE
+                        toAppend.append(TP_pct)
+                    #END FOR
                 else:
-                    toAppend.extend( ["error"]*4 )
+                    toAppend.extend( ["error"]*2 )
             #END FOR
             origCSVRef[thisFile].extend(toAppend)
-            """
-            a = 1
         #END IF
     #END DEF
 
 
+    """
     #DESC: Calculates rVal and MOS of ping tests and appends to CSV reference
     #      delayThresh = if under then they get bucketed
     def calc_rVal_and_MOS_then_Append(self, masterCSVRef, delayThresh):
@@ -690,7 +730,7 @@ class SpeedTestFile(object):
             masterCSVRef[thisFile].extend(toAppend)
         #END IF
     #END DEF
-
+    """ 
 
     # DESC: Returns all of the sub tests for this file as a string. If there are no
     #       tests, then it returns a string saying there were no tests

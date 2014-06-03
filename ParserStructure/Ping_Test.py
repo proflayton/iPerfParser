@@ -185,9 +185,9 @@ class PingTest():
             try:
                 RTTLine = statsArr[2]
                 RTTLine = RTTLine.split(",")
-                self.RTTMin = RTTLine[0].split("=")[1][:-2].strip()
-                self.RTTMax = RTTLine[1].split("=")[1][:-2].strip()
-                self.RTTAverage = RTTLine[2].split("=")[1][:-2].strip()
+                self.RTTMin = float(RTTLine[0].split("=")[1][:-2].strip())
+                self.RTTMax = float(RTTLine[1].split("=")[1][:-2].strip())
+                self.RTTAverage = float(RTTLine[2].split("=")[1][:-2].strip())
             except:
                 using_defaults_of_0 = True
         #END IF/ELSE

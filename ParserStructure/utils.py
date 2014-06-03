@@ -12,9 +12,11 @@
 #                       methods of all classes.
 #
 # FUNCTIONS:
-#   testForMain - ..
-#       INPUTS-     ..
-#       OUTPUTS-    ..
+#   testForMain - This tests if the file being run is being run as main. This is a problem (kind of) for
+#               the class files like Ping_Test or TCP_Test. This function will, if __name__ is __main__, exit
+#               the program, and give the user a list of file locations where main.py might be
+#       INPUTS-     name:   String, the value of the programs __name__ variable
+#       OUTPUTS-    none:   Exits program if conditions are met. Otherwise, nothing is returned
 #
 #   readToAndGetLine -  Given a file stream, reads the stream until the delimiter is found
 #       INPUTS-     fileStream:         FileStream object, called with open(FILEPATH, 'r')
@@ -90,7 +92,7 @@ def testForMain(name):
     #END __name__=='__main__'
 #END DEF
 #Now I check for main (from this file, utils)
-testForMain(__name__)
+#testForMain(__name__)
 
 
 #This is going to be a global variable used in the __str__ methods of all other modules
@@ -191,16 +193,20 @@ def getMedian(vals):
 #       MSS must be in bytes
 #       Loss must be in percent
 #       Returns the theoretical throughput in bits/sec.
-def calcTCPThroughput(RTT, MSS=1448, Loss=0.01):
+def calcTCPThroughput(RTT, MSS=1024, Loss=0.000001):
     for value in [RTT, MSS, Loss]:
-        if (value == 0) or (value is None) or (isinstance(value, str)):
+        if (value is None) or (isinstance(value, str)):
             return None
     #END FOR
-    RTT_calc = RTT * 1000.0
-    MSS_calc = MSS * 1024.0
+    for value in [RTT, MSS, Loss]:
+        if (value == 0):
+            return 0
+    #END FOR
+    RTT_calc = RTT / 1000.0
+    MSS_calc = MSS * 8.0 / 1024.0
     Loss_calc = Loss / 100.0
     from math import sqrt
-    return (RTT_calc / MSS_calc) * (1.0 / sqrt(Loss_calc))
+    return ( (MSS_calc / RTT_calc) / sqrt(Loss_calc) )
 #END DEF
 
 
