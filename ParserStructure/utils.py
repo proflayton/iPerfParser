@@ -12,9 +12,11 @@
 #                       methods of all classes.
 #
 # FUNCTIONS:
-#   testForMain - ..
-#       INPUTS-     ..
-#       OUTPUTS-    ..
+#   testForMain - This tests if the file being run is being run as main. This is a problem (kind of) for
+#               the class files like Ping_Test or TCP_Test. This function will, if __name__ is __main__, exit
+#               the program, and give the user a list of file locations where main.py might be
+#       INPUTS-     name:   String, the value of the programs __name__ variable
+#       OUTPUTS-    none:   Exits program if conditions are met. Otherwise, nothing is returned
 #
 #   readToAndGetLine -  Given a file stream, reads the stream until the delimiter is found
 #       INPUTS-     fileStream:         FileStream object, called with open(FILEPATH, 'r')
@@ -34,9 +36,22 @@
 #       INPUTS-     num:    Integer, representing the month index (from 1 to 12)
 #       OUTPUTS-    retrn:  String, abbreviation for a month (e.g. Jun, Oct, etc.)
 #
-#   StDevP - Calculates the population standard deviation of the given array
+#   calcStDevP - Calculates the population standard deviation of the given array
 #       INPUTS-     array:  list of values that will be used in calculated StDev
 #       OUTPUTS-    dev:    Integer, the StDev of the given array
+#
+#   calcMean - Calculates the mean of the given array of values
+#       INPUTS-     array:  list of values that will be used in calculated StDev
+#       OUTPUTS-    dev:    Integer, the StDev of the given array
+#
+#   calcTCPThroughput - Calculates the theoretical TCP Throughput of the connection whose RTT has been given
+#       INPUTS-     RTT     Integer/Float, the round trip time it took to send a packet on a connection.
+#                           cannot be a string, None, or 0
+#                   MSS     Integer/Float, default 1024, the maximum segment size that can be sent in the TCP connection
+#                           cannot be a string, None, or 0
+#                   Loss    Integer/Float, default 0.01, the percentage of packets that will be lost in the connection
+#                           cannot be a string, None, or 0
+#       OUTPUTS-    Integer/None    Returns None if wrong type of value was given, otherwise an Integer
 #
 #   csvExport - Used to initialize an object of this class
 #       INPUTS-     a_2D_Array:     A 2-dimensional array with each sub array representing
@@ -81,7 +96,7 @@ def testForMain(name):
     #END __name__=='__main__'
 #END DEF
 #Now I check for main (from this file, utils)
-testForMain(__name__)
+#testForMain(__name__)
 
 
 #This is going to be a global variable used in the __str__ methods of all other modules
@@ -150,18 +165,26 @@ def monthNumToAbbr(num):
 
 # DESC: Returns the population standard deviation of the given array of values.
 #       If an empty array is given, it returns None, which should be ignored
-def StDevP(array):
+def calcStDevP(array):
     if not array:
         return None
-    avg = float(0)
-    for elem in array:
-        avg += elem
-    avg = avg / len(array)
+    avg = calcMean(array)
     dev = float(0)
     for elem in array:
         dev += (elem - avg)**2
     dev = (dev / len(array))**(1.0/2.0)
     return dev
+#END DEF
+
+# DESC: Returns the mean of the given array of values.
+#       If an empty array is given, it returns None, which should be ignored
+def calcMean(array):
+    if not array:
+        return None
+    avg = float(0)
+    for elem in array:
+        avg += elem
+    return (avg / len(array))
 #END DEF
 
 # DESC: This function takes in an array
@@ -174,6 +197,28 @@ def getMedian(vals):
         return sortedVals[int(len(sortedVals)/2)]
     else:
         return (sortedVals[int(len(sortedVals)/2)] + sortedVals[int(len(sortedVals)/2)-1])/2.0
+#END DEF
+
+# DESC: Given a few values (RTT is required), this function will return
+#       the theoretical TCP Throughput on the connection from which the RTT was obtained.
+#       RTT must be in milliseconds
+#       MSS must be in bytes
+#       Loss must be in percent
+#       Returns the theoretical throughput in bits/sec.
+def calcTCPThroughput(RTT, MSS=1024, Loss=0.000001):
+    for value in [RTT, MSS, Loss]:
+        if (value is None) or (isinstance(value, str)):
+            return None
+    #END FOR
+    for value in [RTT, MSS, Loss]:
+        if (value == 0):
+            return 0
+    #END FOR
+    RTT_calc = RTT / 1000.0
+    MSS_calc = MSS * 8.0 / 1024.0
+    Loss_calc = Loss / 100.0
+    from math import sqrt
+    return ( (MSS_calc / RTT_calc) / sqrt(Loss_calc) )
 #END DEF
 
 
@@ -211,16 +256,16 @@ def csvImport(fileNameToImport):
 
 
 
-""" #------------------------------------------
-In case you every need to have a one line method to print out elements in
-an array, use list comprehension.
-e.g.
-    [print(line) for line in dataArr]
-    
-The basic structure is as such...
-
-new_list = [expression(i) for i in old_list if filter(i)]
-    [ expression for item in list if conditional ]
-""" #------------------------------------------
+#  ------------------------------------------
+# In case you every need to have a one line method to print out elements in
+# an array, use list comprehension.
+# e.g.
+#     [print(line) for line in dataArr]
+#    
+# The basic structure is as such...
+#
+# new_list = [expression(i) for i in old_list if filter(i)]
+#    [ expression for item in list if conditional ]
+#  ------------------------------------------
 
 

@@ -34,6 +34,7 @@ if not isLessThanVersion((3,0)):
 from ParserStructure.SpeedTestDataStructure import SpeedTestDS as STDs
 import ParserStructure.utils as utils
 import os, sys
+import tkinter as TK, tkinter.filedialog as TKFD
 
 #Here's where main actually starts
 # creating a Speed Test Data Structure
@@ -53,8 +54,12 @@ while command:
           "  -2-  Create a distribution of the standard deviations of TCP network speeds\n" +
           "       (based off the sum of speeds of all four TCP threads per Test, per File\n" +
           "  -3-  Append the standard deviation and median of the Sum threads of the TCP tests\n" +
-          "       to the master CSV file included in the package\n" +
-          "  -4-  Append the rValue and MOS to the CSV file\n" +
+          "       to the master CSV file chosen\n" +
+          "  -4-  Append the standard deviation and mean of all threads in all TCP tests\n" +
+          "       in a given direction (Up and Down) to the master CSV file chosen\n" +
+          "  -5-  Append the percentage of measured TCP Throughput compared to\n" +
+          "       the theoretical TCP Throughput (based on RTT of connection) to the CSV file chosen\n" +
+          "  -6-  Append the rValue and MOS to the CSV file\n" +
           " -q/Q- Quit")
     choice = input("--> ")
     print("============================================")
@@ -71,33 +76,42 @@ while command:
         buckets = int(input("Number of buckets in histogram: "))
         maxValue = int(input("Max Standard Deviation value allowed: "))
         so_many_STDs.create_TCP_StDev_Distribution(buckets, maxValue)
-    elif "3" in choice:
+    elif (("3" in choice) or ("4" in choice) or
+          ("5" in choice) or ("6" in choice)):
         #Adding the StDev and Median values to the csv of file information
-        #The first few lines declare the string of the path to the original CSV file. It
-        # is then imported as a 2D array, and a reference to it is passed to the appropiate function
-        version = str(input("Please input the number Field Test you are appending to (3,4, etc.): "))
+        #The first few lines ask the user to chose the original CSV file. It is then imported 
+        # as a 2D array, and a reference to it is passed to the appropiate function
+        print("Please select the original csv file that will be appended to...")
         this_dir, this_filename = os.path.split(__file__)
-        if version == "3":
-            DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_3rd2013_Data.csv")
-        elif version == "4":
-            DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_4th2013_Data.csv")
+        DATA_PATH = TKFD.askopenfilename( initialdir = os.path.join(this_dir, "ReferenceData"),
+                                          title = "Select the CSV File you wish to Append the values to",
+                                          filetypes = [("CSV files", "*.csv"),
+                                                       ("Text files", "*.txt")],
+                                          multiple = False)
         originalCSV = utils.csvImport(DATA_PATH)
-        #Now we run the actual function, which will return the CSV we are looking for
-        so_many_STDs.add_StDev_and_Median_to_Given(originalCSV, DATA_PATH)
-    elif "4" in choice:
-        #Adding the rVal and MOS values to the csv of file information
-        #The first few lines declare the string of the path to the original CSV file. It
-        # is then imported as a 2D array, and a reference to it is passed to the appropiate function
-        version = str(input("Please input the number Field Test you are appending to (3,4, etc.): "))
-        this_dir, this_filename = os.path.split(__file__)
-        if version == "3":
-            DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_3rd2013_Data.csv")
-        elif version == "4":
-            DATA_PATH = os.path.join(this_dir, "ReferenceData", "CPUC_FieldTestResults_4th2013_Data.csv")
-        originalCSV = utils.csvImport(DATA_PATH)
-        #Now we run the actual function, which will return the CSV we are looking for
-        so_many_STDs.add_rVal_and_MOS_to_Given(originalCSV, 150, DATA_PATH)
-    elif "q" in choice or "Q" in choice:
+        #Now we run the actual function, which will return the CSV we are looking for. We first
+        # declare the headers we will need, and then call the necessary function
+        if "3" in choice:
+            headers = ["wTCP_UP1_STDEV","wTCP_UP1_MEDIAN","wTCP_DOWN1_STDEV","wTCP_DOWN1_MEDIAN",
+                       "eTCP_UP1_STDEV","eTCP_UP1_MEDIAN","eTCP_DOWN1_STDEV","eTCP_DOWN1_MEDIAN",
+                       "wTCP_UP2_STDEV","wTCP_UP2_MEDIAN","wTCP_DOWN2_STDEV","wTCP_DOWN2_MEDIAN",
+                       "eTCP_UP2_STDEV","eTCP_UP2_MEDIAN","eTCP_DOWN2_STDEV","eTCP_DOWN2_MEDIAN"  ]
+            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "StDev/Median")
+        elif "4" in choice:
+            headers = ["cTCP_UP_STDEV","cTCP_UP_MEAN","cTCP_DOWN_STDEV","cTCP_DOWN_MEAN"]
+            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "All StDev/Mean")
+        elif "5" in choice:
+            headers = ["wTCP_TPCALC","eTCP_TPCALC",
+                       "wTCP_UP1_TP_Pct","wTCP_DOWN1_TP_Pct",
+                       "eTCP_UP1_TP_Pct","eTCP_DOWN1_TP_Pct",
+                       "wTCP_UP2_TP_Pct","wTCP_DOWN2_TP_Pct",
+                       "eTCP_UP2_TP_Pct","eTCP_DOWN2_TP_Pct"  ]
+            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "TCPThroughput")
+        elif "6" in choice:
+            headers = ["rValue","MOS"]
+            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "rVal/MOS", 150)
+        #END IF/ELIF
+    elif ("q" in choice) or ("Q" in choice):
         #Ending the program
         print("Quitting operations")
         command = False
