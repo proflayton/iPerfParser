@@ -126,7 +126,7 @@ testForMain(__name__)
 # ------------------------------------------------------------------------
 
 from .utils import readToAndGetLine, monthAbbrToNum
-from .utils import StDevP, getMedian, calcTCPThroughput
+from .utils import calcStDevP, calcMean, getMedian, calcTCPThroughput
 from .utils import global_str_padding as pad; pad = pad*1
 from .TCP_Test import TCPTest
 from .UDP_Test import UDPTest
@@ -494,14 +494,14 @@ class SpeedTestFile(object):
                 if (self.NetworkCarrier in list_carriers):  mycarrier = self.NetworkCarrier
                 else:  continue
                 #END IF/ELIF
-                up_stdev = StDevP(TCPTest.sum_Threads_Speed("Up"))
+                up_stdev = calcStDevP(TCPTest.sum_Threads_Speed("Up"))
                 if up_stdev is not None:
                     structRef[self.NetworkType]\
                              [mycarrier]\
                              [TCPTest.ConnectionLoc]\
                              ["Up"].append(up_stdev)
                 #END IF
-                down_stdev = StDevP(TCPTest.sum_Threads_Speed("Down"))
+                down_stdev = calcStDevP(TCPTest.sum_Threads_Speed("Down"))
                 if down_stdev is not None:
                     structRef[self.NetworkType]\
                              [mycarrier]\
@@ -601,6 +601,44 @@ class SpeedTestFile(object):
                     toAppend.extend( ["error"]*4 )
             #END FOR
             origCSVRef[thisFile].extend(toAppend)
+        #END IF
+    #END DEF
+
+
+    # DESC: ..
+    #       ..
+    def calc_TCP_Total_StDev_and_Mean_then_Append(self, origCSVRef):
+        thisFile = self.this_File_Index_in_GivenCSV(origCSVRef)
+        if thisFile is not None:
+            #We producing four numbers, two from each direction. For each TCP test direction (Up and Down),
+            # we will create an array that will hold values that are the sum of the speeds of all 4 TCP threads
+            # in all 4 tests. For each TCP test, in each direction, the code adds together the values from
+            # each thread for a given time interval, and saves the number in an array. That array is passed
+            # to the StDev and Mean functions.
+            UpVals = []
+            DownVals = []
+            #For each TCP test, we call the sum_Threads_Speed() function. Given a direction (Up/Down), 
+            # this function will return an array where each number represents a sum of the speeds
+            # experienced by each thread. If all 4 threads wer uploading/downloading for 10 seconds,
+            # the function will return an array of 10 values, where each value is the sum of the speed of
+            # all 4 threads. These values are added to our large array, which will
+            # be passed to calcStDev() and calcMean()
+            for TCPTest in self.mySpeedTests["TCP"]:
+                UpVals.extend(TCPTest.sum_Threads_Speed("Up"))
+                DownVals.extend(TCPTest.sum_Threads_Speed("Down"))
+            #END FOR
+            #The headers appended are in this order
+            #["cTCP_UP_STDEV","cTCP_UP_MEAN","cTCP_DOWN_STDEV","cTCP_DOWN_MEAN"]
+            #First, we append the stdev and mean of the Up direction. If there were no tests, append "error"
+            if UpVals:
+                origCSVRef[thisFile].extend( [calcStDevP(UpVals), calcMean(UpVals)] )
+            else:
+                origCSVRef[thisFile].extend( ["error"]*2 )
+            #Now we append the stdev and mean of the Down direction
+            if DownVals:
+                origCSVRef[thisFile].extend( [calcStDevP(DownVals), calcMean(DownVals)] )
+            else:
+                origCSVRef[thisFile].extend( ["error"]*2 )
         #END IF
     #END DEF
 

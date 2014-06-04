@@ -78,7 +78,7 @@ testForMain(__name__)
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    String, representing the attributes of the object (THIS)
 # ------------------------------------------------------------------------
-from .utils import StDevP, getMedian
+from .utils import calcStDevP, getMedian
 from .utils import global_str_padding as pad; pad = pad*2
 from .IndividualSpeedTest import SpeedTest
 from .PingThread import PingThread
@@ -326,9 +326,9 @@ class TCPTest(SpeedTest):
             #Calculating the stDev's and medians of the Up and Down threads
             upThread = self.sum_Threads_Speed("Up")
             downThread = self.sum_Threads_Speed("Down")
-            toReturn.append( StDevP(upThread) )
+            toReturn.append( calcStDevP(upThread) )
             toReturn.append( getMedian(upThread) )
-            toReturn.append( StDevP(downThread) )
+            toReturn.append( calcStDevP(downThread) )
             toReturn.append( getMedian(downThread) )
         else:
             toReturn = ["DataError"]*4

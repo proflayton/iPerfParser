@@ -119,6 +119,7 @@ class SpeedTestDS(object):
 
     recursively_print = False
     short_str_method = True
+    progressBarLen = 25
     # ---------------------
 
     # DESC: Initializing class
@@ -294,7 +295,6 @@ class SpeedTestDS(object):
             #Now we read in the files, and keep track of how many files have been read in and parsed
             fileCounter = 0
             counterCounter = 0
-            progressBarLen = 20
             for root, dirs, files in os.walk(rootOfFiles):
                 for aFile in files:
                     #Seeing if the file given is, in fact, a data file
@@ -308,7 +308,7 @@ class SpeedTestDS(object):
                             if counterCounter > (totalFiles/200):
                                 counterCounter = 0
                                 percent = float(fileCounter)/totalFiles
-                                print("[" + "="*int(percent*progressBarLen) + " "*int((1-percent)*progressBarLen) + "] " + 
+                                print("[" + "="*int(percent*self.progressBarLen) + " "*int((1-percent)*self.progressBarLen) + "] " + 
                                         str(int(percent*100)) + "%", end='\r')
                             #END IF
                             #This is where the file is actually created, and then added to the structure
@@ -596,7 +596,7 @@ class SpeedTestDS(object):
             print("You must pass in a non-empty list in the 'headers' variable")
             return None
         #END IF
-        functionOpts = ["StDev/Median","TCPThroughput","rVal/MOS"]
+        functionOpts = ["StDev/Median","TCPThroughput","rVal/MOS","All StDev/Mean"]
         if function not in functionOpts:
             print("You must pass in an option in the given list for the 'function':")
             string = ""
@@ -619,7 +619,6 @@ class SpeedTestDS(object):
         #Variables used to track how many objects have been processed
         objCounter = 0
         counterCounter = 0
-        progressBarLen = 20
         #This section goes through all of the tests stored in this structure and runs
         # the SpeedTestFile object's StDev and Median appending function
         for devType in self.mySpeedTestFiles:
@@ -631,12 +630,14 @@ class SpeedTestDS(object):
                     if counterCounter > (filesInStruct/200):
                         counterCounter = 0
                         percent = float(objCounter)/filesInStruct
-                        print("[" + "="*int(percent*progressBarLen) + " "*int((1-percent)*progressBarLen) + "] " + 
+                        print("[" + "="*int(percent*self.progressBarLen) + " "*int((1-percent)*self.progressBarLen) + "] " + 
                                 str(int(percent*100)) + "%", end='\r')
                     #END IF
                     #Actually calling the function that was requested in the function call
                     if function == "StDev/Median":
                         speedTest.calc_TCP_StDev_and_Median_then_Append( origCSVRef )
+                    elif function == "All StDev/Mean":
+                        speedTest.calc_TCP_Total_StDev_and_Mean_then_Append( origCSVRef )
                     elif function == "TCPThroughput":
                         speedTest.calc_TCP_Throughput_then_Append( origCSVRef )
                     elif function == "rVal/MOS":
@@ -653,12 +654,14 @@ class SpeedTestDS(object):
             if counterCounter > (filesInStruct/200):
                 counterCounter = 0
                 percent = float(objCounter)/filesInStruct
-                print("[" + "="*int(percent*progressBarLen) + " "*int((1-percent)*progressBarLen) + "] " + 
+                print("[" + "="*int(percent*self.progressBarLen) + " "*int((1-percent)*self.progressBarLen) + "] " + 
                         str(int(percent*100)) + "%", end='\r')
             #END IF
             #Actually calling the function that was requested in the function call
             if function == "StDev/Median":
                 speedTest.calc_TCP_StDev_and_Median_then_Append( origCSVRef )
+            elif function == "All StDev/Mean":
+                speedTest.calc_TCP_Total_StDev_and_Mean_then_Append( origCSVRef )
             elif function == "TCPThroughput":
                 speedTest.calc_TCP_Throughput_then_Append( origCSVRef )
             elif function == "rVal/MOS":

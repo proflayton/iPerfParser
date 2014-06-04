@@ -54,10 +54,12 @@ while command:
           "  -2-  Create a distribution of the standard deviations of TCP network speeds\n" +
           "       (based off the sum of speeds of all four TCP threads per Test, per File\n" +
           "  -3-  Append the standard deviation and median of the Sum threads of the TCP tests\n" +
-          "       to the master CSV file included in the package\n" +
-          "  -4-  Append the rValue and MOS to the CSV file\n" +
+          "       to the master CSV file chosen\n" +
+          "  -4-  Append the standard deviation and mean of all threads in all TCP tests\n" +
+          "       in a given direction (Up and Down) to the master CSV file chosen\n" +
           "  -5-  Append the percentage of measured TCP Throughput compared to\n" +
-          "       the theoretical TCP Throughput (based on RTT of connection) to the CSV file\n" +
+          "       the theoretical TCP Throughput (based on RTT of connection) to the CSV file chosen\n" +
+          "  -6-  Append the rValue and MOS to the CSV file\n" +
           " -q/Q- Quit")
     choice = input("--> ")
     print("============================================")
@@ -74,7 +76,8 @@ while command:
         buckets = int(input("Number of buckets in histogram: "))
         maxValue = int(input("Max Standard Deviation value allowed: "))
         so_many_STDs.create_TCP_StDev_Distribution(buckets, maxValue)
-    elif ("3" in choice) or ("4" in choice) or ("5" in choice):
+    elif (("3" in choice) or ("4" in choice) or
+          ("5" in choice) or ("6" in choice)):
         #Adding the StDev and Median values to the csv of file information
         #The first few lines ask the user to chose the original CSV file. It is then imported 
         # as a 2D array, and a reference to it is passed to the appropiate function
@@ -95,8 +98,8 @@ while command:
                        "eTCP_UP2_STDEV","eTCP_UP2_MEDIAN","eTCP_DOWN2_STDEV","eTCP_DOWN2_MEDIAN"  ]
             so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "StDev/Median")
         elif "4" in choice:
-            headers = ["rValue","MOS"]
-            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "rVal/MOS", 150)
+            headers = ["cTCP_UP_STDEV","cTCP_UP_MEAN","cTCP_DOWN_STDEV","cTCP_DOWN_MEAN"]
+            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "All StDev/Mean")
         elif "5" in choice:
             headers = ["wTCP_TPCALC","eTCP_TPCALC",
                        "wTCP_UP1_TP_Pct","wTCP_DOWN1_TP_Pct",
@@ -104,6 +107,9 @@ while command:
                        "wTCP_UP2_TP_Pct","wTCP_DOWN2_TP_Pct",
                        "eTCP_UP2_TP_Pct","eTCP_DOWN2_TP_Pct"  ]
             so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "TCPThroughput")
+        elif "6" in choice:
+            headers = ["rValue","MOS"]
+            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "rVal/MOS", 150)
         #END IF/ELIF
     elif ("q" in choice) or ("Q" in choice):
         #Ending the program

@@ -36,7 +36,11 @@
 #       INPUTS-     num:    Integer, representing the month index (from 1 to 12)
 #       OUTPUTS-    retrn:  String, abbreviation for a month (e.g. Jun, Oct, etc.)
 #
-#   StDevP - Calculates the population standard deviation of the given array
+#   calcStDevP - Calculates the population standard deviation of the given array
+#       INPUTS-     array:  list of values that will be used in calculated StDev
+#       OUTPUTS-    dev:    Integer, the StDev of the given array
+#
+#   calcMean - Calculates the mean of the given array of values
 #       INPUTS-     array:  list of values that will be used in calculated StDev
 #       OUTPUTS-    dev:    Integer, the StDev of the given array
 #
@@ -161,18 +165,26 @@ def monthNumToAbbr(num):
 
 # DESC: Returns the population standard deviation of the given array of values.
 #       If an empty array is given, it returns None, which should be ignored
-def StDevP(array):
+def calcStDevP(array):
     if not array:
         return None
-    avg = float(0)
-    for elem in array:
-        avg += elem
-    avg = avg / len(array)
+    avg = calcMean(array)
     dev = float(0)
     for elem in array:
         dev += (elem - avg)**2
     dev = (dev / len(array))**(1.0/2.0)
     return dev
+#END DEF
+
+# DESC: Returns the mean of the given array of values.
+#       If an empty array is given, it returns None, which should be ignored
+def calcMean(array):
+    if not array:
+        return None
+    avg = float(0)
+    for elem in array:
+        avg += elem
+    return (avg / len(array))
 #END DEF
 
 # DESC: This function takes in an array
@@ -244,16 +256,16 @@ def csvImport(fileNameToImport):
 
 
 
-""" #------------------------------------------
-In case you every need to have a one line method to print out elements in
-an array, use list comprehension.
-e.g.
-    [print(line) for line in dataArr]
-    
-The basic structure is as such...
-
-new_list = [expression(i) for i in old_list if filter(i)]
-    [ expression for item in list if conditional ]
-""" #------------------------------------------
+#  ------------------------------------------
+# In case you every need to have a one line method to print out elements in
+# an array, use list comprehension.
+# e.g.
+#     [print(line) for line in dataArr]
+#    
+# The basic structure is as such...
+#
+# new_list = [expression(i) for i in old_list if filter(i)]
+#    [ expression for item in list if conditional ]
+#  ------------------------------------------
 
 

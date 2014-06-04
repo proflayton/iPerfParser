@@ -79,10 +79,17 @@ class PingTest():
     # DESC: Initializing class
     def __init__(self, dataString, testNum=0, isMobile=True, short=False):
         self.Times = {}
-        self.text = dataString
+        self.text = dataString.split('\n')
         self.isMobile = isMobile
         self.TestNumber = testNum
         self.short_str_method = short
+
+        #This block will declare this objects TestNumber
+        for line in self.text:
+            if ("Starting Test" in line) and (self.TestNumber == 0):
+                self.TestNumber = line.split(" ")[2].split(":")[0].split("..")[0]
+                break
+        #END FOR
 
         #These are the two error cases I've noticed for Ping Tests
         if "Network is unreachable" in dataString:
@@ -98,15 +105,6 @@ class PingTest():
             self.ErrorMessage = "Test quit by User."
             return
         #END IF/ELIF
-        self.text = dataString.split('\n')
-
-        #This block will copy the command line call into the iPerfCommand variable,
-        # as well as declare this objects TestNumber
-        for line in self.text:
-            if ("Starting Test" in line) and (self.TestNumber == 0):
-                self.TestNumber = line.split(" ")[2].split(":")[0].split("..")[0]
-                break
-        #END FOR
         
         #Getting the Reciever IP address
         index = 0
