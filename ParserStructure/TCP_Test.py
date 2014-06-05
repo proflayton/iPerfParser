@@ -64,6 +64,10 @@ testForMain(__name__)
 #       INPUTS-     self:   reference to the object calling this method (i.e. Java's THIS)
 #       OUTPUTS-    time:   Integer, representing the longest thread time
 #
+#   getThreadWithNum - ..
+#       INPUTS-     ..
+#       OUTPUTS-    ..
+#
 #   sum_Threads_Speed - Creating an array of the sum of each 1 second interval of all 4 thread's speed
 #       INPUTS-     self:               reference to the object calling this method (i.e. Java's THIS)
 #                   direction:          String, threads of specified direction (Up or Down) that will be summed
@@ -191,10 +195,10 @@ class TCPTest(SpeedTest):
             for direction in dirSplitTempThreads:
                 for thread in dirSplitTempThreads[direction]:
                     self.myPingThreads[direction].append( 
-                        PingThread(dirSplitTempThreads[direction][thread],\
-                                   thread, direction,\
-                                   self.MeasuringFmt["Size"],\
-                                   self.MeasuringFmt["Speed"],\
+                        PingThread(dirSplitTempThreads[direction][thread],
+                                   thread, direction,
+                                   self.MeasuringFmt["Size"],
+                                   self.MeasuringFmt["Speed"],
                                    self.short_str_method) )
             #END FOR
             return True
@@ -290,6 +294,25 @@ class TCPTest(SpeedTest):
     #END DEF
 
 
+    # DESC: ..
+    #       ..
+    def getThreadWithNum(self, direction="Up", pipeNum="3"):
+        if pipeNum not in ["3","4","5","6"]:
+            print("You must input a string, either 3, 4, 5, or 6")
+            print(pipeNum)
+            raise SystemExit
+        #END IF
+        if (direction != "Up") and (direction != "Down"):
+            direction = "Down"
+        #END IF
+        for thread in self.myPingThreads[direction]:
+            if thread.PipeNumber == pipeNum:
+                return thread
+        #END FOR
+        return None
+    #END DEF
+
+
     # DESC: This returns the sum of the threads of the given direction in this test
     def sum_Threads_Speed(self, direction="Down"):
         if (direction != "Up") and (direction != "Down"):
@@ -352,10 +375,10 @@ class TCPTest(SpeedTest):
         if self.ERROR:
             this_str += pad + "  ERROR: " + str(self.ErrorMessage) + "\n"
         else:
-            for pingThread in self.myPingThreads["Up"]:
-                this_str += str(pingThread)
-            for pingThread in self.myPingThreads["Down"]:
-                this_str += str(pingThread)
+            for num in ["3","4","5","6"]:
+                this_str += str(self.getThreadWithNum("Up", num))
+            for num in ["3","4","5","6"]:
+                this_str += str(self.getThreadWithNum("Down", num))
             #END FOR
         #END IF/ELSE
         return this_str
