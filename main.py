@@ -83,7 +83,7 @@ while command:
         # as a 2D array, and a reference to it is passed to the appropiate function
         print("Please select the original csv file that will be appended to...")
         this_dir, this_filename = os.path.split(__file__)
-        DATA_PATH = TKFD.askopenfilename( initialdir = os.path.join(this_dir, "ReferenceData"),
+        DATA_PATH = TKFD.askopenfilename( initialdir = os.path.expanduser("~"),
                                           title = "Select the CSV File you wish to Append the values to",
                                           filetypes = [("CSV files", "*.csv"),
                                                        ("Text files", "*.txt")],

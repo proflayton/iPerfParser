@@ -175,9 +175,8 @@ class SpeedTestDS(object):
                     BBresults = "BB_results/"
                     Samples = ""   #used by if statements at the bottom (-s and -ss)
                 elif (sysArgv[1] == "-p"):
-                    DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/iPerfParser/Raw Data/"
+                    DataRoot = "/Users/peterwalker/Documents/School/+ CSUMB Courses/CPUC/Raw Data/"
                     BBresults = "BB results/2013_4thField/"
-                    #BBresults = "BB results/2013_3rdField/"
                     Samples = "sampleTests/"
                 #END DECLARING STRINGS
 
