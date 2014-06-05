@@ -98,8 +98,8 @@ while command:
                        "eTCP_UP2_STDEV","eTCP_UP2_MEDIAN","eTCP_DOWN2_STDEV","eTCP_DOWN2_MEDIAN"  ]
             so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "StDev/Median")
         elif "4" in choice:
-            headers = ["cTCP_UP_STDEV","cTCP_UP_MEAN","cTCP_DOWN_STDEV","cTCP_DOWN_MEAN"]
-            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "All StDev/Mean")
+            headers = ["cTCP_UP_STDEV","cTCP_UP_MEDIAN","cTCP_DOWN_STDEV","cTCP_DOWN_MEDIAN"]
+            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "All StDev/Median")
         elif "5" in choice:
             headers = ["wTCP_TPCALC","eTCP_TPCALC",
                        "wTCP_UP1_TP_Pct","wTCP_DOWN1_TP_Pct",
@@ -108,8 +108,8 @@ while command:
                        "eTCP_UP2_TP_Pct","eTCP_DOWN2_TP_Pct"  ]
             so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "TCPThroughput")
         elif "6" in choice:
-            headers = ["rValue","MOS"]
-            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "rVal/MOS", 150)
+            headers = ["w_rValue","w_MOS","e_rValue","e_MOS","c_rValue","c_MOS"]
+            so_many_STDs.add_Values_to_Given_CSV(originalCSV, DATA_PATH, headers, "rVal/MOS", delayThreshold=150)
         #END IF/ELIF
     elif ("q" in choice) or ("Q" in choice):
         #Ending the program

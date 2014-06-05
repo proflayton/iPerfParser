@@ -591,12 +591,12 @@ class SpeedTestDS(object):
     #       a CSV file that has been passed in. The function used to calculate said values depends on the string
     #       passed in the 'function' variable. The values in the 'headers' array must also match what the
     #       SpeedTestFile function will do.
-    def add_Values_to_Given_CSV(self, origCSVRef, filename, headers, function, delayThresh=150):
+    def add_Values_to_Given_CSV(self, origCSVRef, filename, headers, function, delayThreshold=150):
         if (not isinstance(headers, list)) or (len(headers) == 0):
             print("You must pass in a non-empty list in the 'headers' variable")
             return None
         #END IF
-        functionOpts = ["StDev/Median","TCPThroughput","rVal/MOS","All StDev/Mean"]
+        functionOpts = ["StDev/Median","TCPThroughput","rVal/MOS","All StDev/Median"]
         if function not in functionOpts:
             print("You must pass in an option in the given list for the 'function':")
             string = ""
@@ -636,12 +636,12 @@ class SpeedTestDS(object):
                     #Actually calling the function that was requested in the function call
                     if function == "StDev/Median":
                         speedTest.calc_TCP_StDev_and_Median_then_Append( origCSVRef )
-                    elif function == "All StDev/Mean":
-                        speedTest.calc_TCP_Total_StDev_and_Mean_then_Append( origCSVRef )
+                    elif function == "All StDev/Median":
+                        speedTest.calc_TCP_Total_StDev_and_Median_then_Append( origCSVRef )
                     elif function == "TCPThroughput":
                         speedTest.calc_TCP_Throughput_then_Append( origCSVRef )
                     elif function == "rVal/MOS":
-                        speedTest.calc_rVal_and_MOS_then_Append( origCSVRef, delayThresh )
+                        speedTest.calc_rVal_and_MOS_then_Append( origCSVRef, delayThreshold )
                 #END FOR
             #END FOR
         #END FOR
@@ -660,12 +660,12 @@ class SpeedTestDS(object):
             #Actually calling the function that was requested in the function call
             if function == "StDev/Median":
                 speedTest.calc_TCP_StDev_and_Median_then_Append( origCSVRef )
-            elif function == "All StDev/Mean":
-                speedTest.calc_TCP_Total_StDev_and_Mean_then_Append( origCSVRef )
+            elif function == "All StDev/Median":
+                speedTest.calc_TCP_Total_StDev_and_Median_then_Append( origCSVRef )
             elif function == "TCPThroughput":
                 speedTest.calc_TCP_Throughput_then_Append( origCSVRef )
             elif function == "rVal/MOS":
-                speedTest.calc_rVal_and_MOS_then_Append( origCSVRef, delayThresh )
+                speedTest.calc_rVal_and_MOS_then_Append( origCSVRef, delayThreshold )
         #END FOR
         #This clears the progress bar from the output
         print(" "*80, end='\r')
@@ -687,10 +687,10 @@ class SpeedTestDS(object):
                                          title = "Select the Folder You Wish To Hold the CSV File",
                                          mustexist = True)
         filename = filename.split("/")[-1].split(".")[0]
-        if "v1" in filename:
+        if "_ver_" in filename:
             newfilename = filename[:-1] + str( int(filename[-1])+1 )
         else:
-            newfilename = filename + "_v1"
+            newfilename = filename + "_ver_1"
         csvExport(origCSVRef, rootOfFiles + "/" + newfilename + ".csv")
     #END DEF
 

@@ -53,6 +53,10 @@
 #                           cannot be a string, None, or 0
 #       OUTPUTS-    Integer/None    Returns None if wrong type of value was given, otherwise an Integer
 #
+#   calc_rVal_MOS - ..
+#       INPUTS-     ..
+#       OUTPUTS-    ..
+#
 #   csvExport - Used to initialize an object of this class
 #       INPUTS-     a_2D_Array:     A 2-dimensional array with each sub array representing
 #                                   a line in the end csv file
@@ -96,7 +100,7 @@ def testForMain(name):
     #END __name__=='__main__'
 #END DEF
 #Now I check for main (from this file, utils)
-#testForMain(__name__)
+testForMain(__name__)
 
 
 #This is going to be a global variable used in the __str__ methods of all other modules
@@ -221,6 +225,43 @@ def calcTCPThroughput(RTT, MSS=1024, Loss=0.000001):
     return ( (MSS_calc / RTT_calc) / sqrt(Loss_calc) )
 #END DEF
 
+# DESC: This takes a few given numbers that come from determining RTT and packet loss,
+#       and returns the rVal and MOS as a tuple.
+def calc_rVal_MOS(pktSum, pktCount, pktExpected, pktLost, pktFd):
+    #Doing some value checking
+    for elem in [pktSum, pktCount, pktExpected, pktLost, pktFd]:
+        if not isinstance(elem, float):
+            raise TypeError
+    #END FOR
+    #Calculating the average RTT (Sum is a sum of all RTT, Count is how many)
+    pktAverage = pktSum / pktCount
+
+    #pktFd is the number of packets (i.e. pings) where the RTT was below
+    # a certain threshold. We divide that by how many pings were sent (pktExpected)
+    # to get a decimal representation of the ratio.
+    pktFd = pktFd / pktExpected
+
+    #Loss rate is calculate using this formula
+    P_n = pktLost / pktCount
+    #Loss rate of jitter buffer is calculated using this formula
+    P_b = (1 - P_n) * (1 - pktFd)
+    #Equipment Impairment Factor
+    I_eEff = 5 + (90 * (P_n+P_b) / (P_n+P_b+10) )
+    #Calculating H(x). This is either 0 or 1
+    H_of_X = 0 if ((pktAverage-177.3) < 0) else 1
+    #Calculating Delay Impairment Factor
+    I_d = (0.024 * pktAverage) + (0.11 * (pktAverage-177.3) * H_of_X)
+
+    #Now we can finally calculate the rValue and the MOS
+    rValue = 93.2 - I_d - I_eEff
+    MOS = 1 if (rValue <= 0) else ( 1 + (0.035*rValue) + (rValue * (rValue-60) * (100-rValue) * 7 * 0.000001 ) )
+    #This line is for rounding off the extra numbers on the end of the MOS value.
+    # We just want 1 place after the decimal
+    MOS = float(round(MOS*10))/10.0
+    #And now we return a tuple of the rVal and MOS value. Returned in a tuple
+    # because I didn't want to use an array. Deal with it
+    return (rValue, MOS)
+#END DEF
 
 
 # DESC: This fuction takes in two values:
@@ -231,7 +272,7 @@ def csvExport(a_2D_Array, fileNameToSave):
     for row in a_2D_Array:
         rowOfText = ''
         for col in row:
-            rowOfText += ('"' + str(col) + '",')
+            rowOfText += ('"' + str(col).strip() + '",')
         f.write(rowOfText[:-1]+"\n")
     f.close()
 #END DEF
@@ -246,7 +287,7 @@ def csvImport(fileNameToImport):
         a_1D_Array = []
         cols = line.split(",")
         for c in cols:
-            a_1D_Array.append(c.replace("\n","").replace("\n\r",""))
+            a_1D_Array.append(c.replace("\n","").replace("\n\r","").replace("\"",""))
         #END FOR
         a_2D_Array.append(a_1D_Array)
         line = f.readline().replace("\n","").replace("\n\r","")

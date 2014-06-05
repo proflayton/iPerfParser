@@ -85,10 +85,17 @@ testForMain(__name__)
 #
 #   calc_TCP_StDev_and_Median_then_Append - This calculates the standard deviation and
 #                       median of the TCP tests in this object, and then appends the values to
-#                       the CPUC_Results CSV the is provided in the package
+#                       the CPUC_Results CSV the is chosen by the user
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#                   masterCSVRef:   reference to the 2D array of the CSV file
-#       OUTPUTS-    None
+#                   origCSVRef:     reference to the 2D array of the CSV file
+#       OUTPUTS-    None            returns 16 values
+#
+#   calc_TCP_Total_StDev_and_Median_then_Append - This calculates the standard deviation and
+#                       median of all the TCP tests in this object, and then appends the values to
+#                       the CPUC_Results CSV the is chosen by the user
+#       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
+#                   origCSVRef:     reference to the 2D array of the CSV file
+#       OUTPUTS-    None            returns 4 values
 #
 #   calc_TCP_Throughput_then_Append - ..
 #       INPUTS-     ..
@@ -101,7 +108,7 @@ testForMain(__name__)
 #   this_File_Index_in_GivenCSV - This looks for the row in the CPUC_Results CSV that corresponds
 #                       to this object's information
 #       INPUTS-     self:           reference to the object calling this method (i.e. Java's THIS)
-#                   masterCSVRef:   reference to the 2D array of the CSV file
+#                   origCSVRef:     reference to the 2D array of the CSV file
 #       OUTPUTS-    index:          Integer, the row index at which this file is located in the CPUC_Results CSV
 #                                   If the file was not found in the CSV, returns None
 #
@@ -126,7 +133,7 @@ testForMain(__name__)
 # ------------------------------------------------------------------------
 
 from .utils import readToAndGetLine, monthAbbrToNum
-from .utils import calcStDevP, calcMean, getMedian, calcTCPThroughput
+from .utils import calcStDevP, calcMean, getMedian, calcTCPThroughput, calc_rVal_MOS
 from .utils import global_str_padding as pad; pad = pad*1
 from .TCP_Test import TCPTest
 from .UDP_Test import UDPTest
@@ -516,9 +523,9 @@ class SpeedTestFile(object):
     # DESC: This uses the information in this object to find the row in the CPUC_Results CSV
     #       that it corresponds to. It first checks with DeviceID, Date, and Time. If that
     #       doesn't work, it tries with LocationID, Date, Time, and Network Carrier.
-    def this_File_Index_in_GivenCSV(self, masterCSVRef):
+    def this_File_Index_in_GivenCSV(self, origCSVRef):
         index = None
-        for row in masterCSVRef:
+        for row in origCSVRef:
             if ((self.DeviceID in str(row[13])) and
                 (self.Date in str(row[5])) and
                 (self.Time in str(row[6])) ):
@@ -528,9 +535,9 @@ class SpeedTestFile(object):
                 # If the TRY statement doesn't catch an error, then there are already values there, and we
                 # continue searching.
                 try:
-                    isIndexDefined = row[len(masterCSVRef[0])-1]
+                    isIndexDefined = row[len(origCSVRef[0])-1]
                 except:
-                    index = masterCSVRef.index(row)
+                    index = origCSVRef.index(row)
                     break
                 #END TRY/EXCEPT
             elif ((self.LocationID in str(row[3])) and
@@ -538,24 +545,24 @@ class SpeedTestFile(object):
                   (self.Time in str(row[6])) and
                   (self.NetworkCarrier in str(row[7])) ):
                 try:
-                    isIndexDefined = row[len(masterCSVRef[0])-1]
+                    isIndexDefined = row[len(origCSVRef[0])-1]
                 except:
-                    index = masterCSVRef.index(row)
+                    index = origCSVRef.index(row)
                     break
                 #END TRY/EXCEPT
             #END IF/ELIF
         #END FOR
         if (index is None):
-            for row in masterCSVRef:
+            for row in origCSVRef:
                 #If our other attempts at finding the row failed, we'll search using
                 # just the date, time, and location id.
                 if ((self.LocationID in str(row[3])) and
                     (self.Date in str(row[5])) and
                     (self.Time in str(row[6])) ):
                     try:
-                        isIndexDefined = row[len(masterCSVRef[0])-1]
+                        isIndexDefined = row[len(origCSVRef[0])-1]
                     except:
-                        index = masterCSVRef.index(row)
+                        index = origCSVRef.index(row)
                         break
                     #END TRY/EXCEPT
                 #END IF
@@ -606,8 +613,8 @@ class SpeedTestFile(object):
 
 
     # DESC: ..
-    #       ..
-    def calc_TCP_Total_StDev_and_Mean_then_Append(self, origCSVRef):
+    #       .. 
+    def calc_TCP_Total_StDev_and_Median_then_Append(self, origCSVRef):
         thisFile = self.this_File_Index_in_GivenCSV(origCSVRef)
         if thisFile is not None:
             #We producing four numbers, two from each direction. For each TCP test direction (Up and Down),
@@ -622,7 +629,7 @@ class SpeedTestFile(object):
             # experienced by each thread. If all 4 threads wer uploading/downloading for 10 seconds,
             # the function will return an array of 10 values, where each value is the sum of the speed of
             # all 4 threads. These values are added to our large array, which will
-            # be passed to calcStDev() and calcMean()
+            # be passed to calcStDev() and getMedian()
             for TCPTest in self.mySpeedTests["TCP"]:
                 UpVals.extend(TCPTest.sum_Threads_Speed("Up"))
                 DownVals.extend(TCPTest.sum_Threads_Speed("Down"))
@@ -631,12 +638,12 @@ class SpeedTestFile(object):
             #["cTCP_UP_STDEV","cTCP_UP_MEAN","cTCP_DOWN_STDEV","cTCP_DOWN_MEAN"]
             #First, we append the stdev and mean of the Up direction. If there were no tests, append "error"
             if UpVals:
-                origCSVRef[thisFile].extend( [calcStDevP(UpVals), calcMean(UpVals)] )
+                origCSVRef[thisFile].extend( [calcStDevP(UpVals), getMedian(UpVals)] )
             else:
                 origCSVRef[thisFile].extend( ["error"]*2 )
             #Now we append the stdev and mean of the Down direction
             if DownVals:
-                origCSVRef[thisFile].extend( [calcStDevP(DownVals), calcMean(DownVals)] )
+                origCSVRef[thisFile].extend( [calcStDevP(DownVals), getMedian(DownVals)] )
             else:
                 origCSVRef[thisFile].extend( ["error"]*2 )
         #END IF
@@ -695,80 +702,111 @@ class SpeedTestFile(object):
     #END DEF
 
 
-    """
     #DESC: Calculates rVal and MOS of ping tests and appends to CSV reference
     #      delayThresh = if under then they get bucketed
-    def calc_rVal_and_MOS_then_Append(self, masterCSVRef, delayThresh):
-        import math
-        thisFile = self.this_File_Index_in_GivenCSV(masterCSVRef)
-        east = 0;       west = 0
-        eastTotal = 0;  westTotal = 0
-        eastMax = 0;    westMax = 0
-        eastLost = 0;   westLost = 0
+    def calc_rVal_and_MOS_then_Append(self, origCSVRef, delayThreshold):
+        #Converted to Python from original script
+        # by Ian Bowers, CSUMB, Feb 2013
+        thisFile = self.this_File_Index_in_GivenCSV(origCSVRef)
+        #Setting a lot of variables that will hold the numbers we need. We have 3 categories;
+        # East, West, and Total. Each category has a counter, __TPng (the theoretical number of pings we expect)
+        # total (sum), a max (RTT), Lost (packets lost), and F(d)
+        westCnt = 0.0;      eastCnt = 0.0;      totalCnt = 0.0
+        westTPng = 10.0;    eastTPng = 10.0;    totalTPng = 20.0
+        westSum = 0.0;      eastSum = 0.0;      totalSum = 0.0
+        westMax = 0.0;      eastMax = 0.0;      totalMax = 0.0
+        westLost = 0.0;     eastLost = 0.0;     totalLost = 0.0
+        # F(d) -the rate of packets below delay threshold, done by incrementing this value for every packet
+        # that is below delayThreshold and then dividing by the total number of measurements. This value
+        # is recorded in the variables below
+        westFd = 0.0;       eastFd = 0.0;       totalFd = 0.0
+        #Declaring a few arrays, which will all be combined at the end before appending to the CSV
+        eastResults = []
+        westResults = []
+        totalResults = []
+        #If the variable thisFile is not None, it means that the CSV has a row with this file's information.
+        # We can then proceed to calculate the rValue and MOS
         if thisFile is not None:
+            #This is the array that will hold the values we wil append to the CSV
             toAppend = []
-            for speedTest in self.mySpeedTests["PING"]:
-                fd = 0.0
-                for time in speedTest.Times:
-                    time = float(speedTest.Times[time])
-                    if speedTest.ConnectionLoc == "East":
-                        eastLost += speedTest.PacketsLost
-                        east+=1
-                        eastTotal += time
-                        if(time > eastMax):
-                            eastMax = time
+            #This for loop totals up the RTT times. Each value is put into the total and
+            # the test's respective locations (East or West). 
+            for PingTest in self.mySpeedTests["PING"]:
+                #If there was an error in the test, we ignore the test entirely, and continue
+                # to the next element
+                if PingTest.ERROR:
+                    continue
+                #The first two blocks determine the direction of the Ping test we are
+                # currently accessing. We then update the Max and Lost variables for each location,
+                # and then we update the total Max and Lost
+                if PingTest.ConnectionLoc == "West":
+                    westMax = PingTest.RTTMax if (westMax < PingTest.RTTMax) else westMax
+                    westLost += PingTest.PacketsLost
+                elif PingTest.ConnectionLoc == "East":
+                    eastMax = PingTest.RTTMax if (eastMax < PingTest.RTTMax) else eastMax
+                    eastLost += PingTest.PacketsLost
+                #END IF/ELIF
+                #Updating the total Max and Lost variables
+                totalMax = PingTest.RTTMax if (totalMax < PingTest.RTTMax) else totalMax
+                totalLost += PingTest.PacketsLost
+                #Now we loop through all of the ping times so that we can add them to the Sum variable. If the
+                # time retrieved is not 0, the value is added to the ___Sum for it's location (East/West) 
+                # and the totalSum. We also increment "Fd" if the time is above the given threshold "delayThreshold"
+                for index in PingTest.Times:
+                    time = PingTest.Times[index]
+                    if time > 0:
+                        if PingTest.ConnectionLoc == "East":
+                            eastCnt += 1
+                            eastSum += time
+                            if (time < delayThreshold):
+                                eastFd += 1
+                        elif PingTest.ConnectionLoc == "West":
+                            westCnt += 1
+                            westSum += time
+                            if (time < delayThreshold):
+                                westFd += 1
+                        #END IF/ELSE
+                        totalCnt += 1
+                        totalSum += time
+                        if (time < delayThreshold):
+                            totalFd+=1
                         #END IF
-                    elif speedTest.ConnectionLoc == "West":
-                        westLost += speedTest.PacketsLost
-                        west+=1
-                        westTotal += time
-                        if(time > westMax):
-                            westMax = time
-                        #END IF
-                    #END IF/ELSE
-                    if(time < delayThresh):
-                        fd+=1
                     #END IF
-            #END FOR
-            if(east + west <= 0):
-                #print("Error. east + west <= 0 for " + str(self.FileName))
-                #Some error when pinging
-                toAppend = ["NA","NA"]
+                #END FOR times
+            #END FOR tests
+
+            #This section sees if the east, west, and total counts were 0. If any of them were,
+            # that category's result is "NA"
+            #West Cateogry
+            if (westCnt == 0):
+                westResults = ["NA","NA"]
             else:
-                pktSecAve = (eastTotal + westTotal)/(east + west)
-                #F(d) calculated
-                fd = fd/(east + west)
-                #loss rate
-                pn = (eastLost + westLost)/(east + west)
-                #loss rate of jitter buffer
-                pb = (1-pn)*(1-fd)
+                (rVal, MOS) = calc_rVal_MOS(westSum, westCnt, westTPng, westLost, westFd)
+                westResults = [rVal, MOS]
+            #END IF/ELSE
+            #East Category
+            if (eastCnt == 0):
+                eastResults = ["NA","NA"]
+            else:
+                (rVal, MOS) = calc_rVal_MOS(eastSum, eastCnt, eastTPng, eastLost, eastFd)
+                eastResults = [rVal, MOS]
+            #END IF/ELSE
+            #Total Category
+            if (totalCnt == 0):
+                totalResults = ["NA","NA"]
+            else:
+                (rVal, MOS) = calc_rVal_MOS(totalSum, totalCnt, totalTPng, totalLost, totalFd)
+                totalResults = [rVal, MOS]
+            #END IF/ELSE
 
-                #Equipment impairment factor
-                ieEff = 5 + 90*(pn+pb)/(pn+pb+10); 
-                #14.96 + 16.68*math.log(1+30.11*(pn+pb));//14.96 + 16.68*Math.log(1+30.11*(pn+pbTwo));
-
-                #calculate H(x) -either a zero or a one
-                hofx = 1
-                if ((pktSecAve-177.3)<0):
-                    hofx = 0
-
-                #calculate delay impairment factor
-                idf = (0.024 * pktSecAve) + 0.11*(pktSecAve-177.3)*hofx;
-
-                #calculate r value
-                rvalue = 93.2 - idf - ieEff;
-                #calculate MOS from r value
-                mos = 1
-                if (rvalue>=0):
-                    mos = 1+0.035*rvalue+rvalue*(rvalue-60)*(100-rvalue)*7*math.pow(10, -6);
-
-                toAppend = [rvalue,mos];
-            #END IF
-
-            masterCSVRef[thisFile].extend(toAppend)
+            #After either assigning NA to rVal/MOS, or passing the numbers to the rVal/MOS calculating function,
+            # we append first the west results, then east, then total
+            origCSVRef[thisFile].extend(westResults)
+            origCSVRef[thisFile].extend(eastResults)
+            origCSVRef[thisFile].extend(totalResults)
         #END IF
     #END DEF
-    """ 
+
 
     # DESC: Returns all of the sub tests for this file as a string. If there are no
     #       tests, then it returns a string saying there were no tests

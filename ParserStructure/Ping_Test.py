@@ -121,7 +121,7 @@ class PingTest():
             if statsText in line:
                 splitText = line.split(" ")
                 for elem in splitText:
-                    if "184.72" in elem:
+                    if "184.72." in elem:
                         self.RecieverIP = elem.strip()
                         self.RecieverIP = self.RecieverIP[:-1] if not self.isMobile else self.RecieverIP
                         break
@@ -132,6 +132,10 @@ class PingTest():
             else:
                 pingCounter += 1
                 isErrorPresent = False
+                #This checks to see if there are any error messages in the ping message. If there
+                # was an error, the boolean isErrorPresent is made true, and the loop does not continue to
+                # "if pingText in line", as the line will not have the information we need, and the .split()
+                # will break. A time of 0 is inserted into self.Times as a placeholder.
                 for error in pingErrors:
                     if error in line:
                         self.Times[pingCounter] = 0
@@ -141,7 +145,7 @@ class PingTest():
                     continue
                 #END FOR
                 if pingText in line:
-                    self.Times[pingCounter] = line.split("time=")[1].split("ms")[0].strip();
+                    self.Times[pingCounter] = float(line.split("time=")[1].split("ms")[0].strip())
                 #END IF
             #END IF/ELSE
         #END FOR
