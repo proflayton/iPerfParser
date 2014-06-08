@@ -203,7 +203,7 @@ class SpeedTestDS(object):
                                     self.addToStructure(test_STFile)
                                 #END IF
                             except:
-                                pass
+                                self.ignored_Files.append(aFile)
                         #END FOR files
                     #END FOR os.walk
                 # ------------------------------------------------------------
@@ -225,7 +225,7 @@ class SpeedTestDS(object):
                                     test_STFile = SpeedTestFile(os.path.join(root, aFile), self.Carriers, self.short_str_method)
                                     self.addToStructure(test_STFile)
                             except:
-                                pass
+                                self.ignored_Files.append(aFile)
                             #END TRY/EXCEPT
                         #END FOR files
                     #END FOR os.walk
@@ -253,7 +253,7 @@ class SpeedTestDS(object):
                                     test_STFile = SpeedTestFile(os.path.join(root, aFile), self.Carriers, self.short_str_method)
                                     self.addToStructure(test_STFile)
                             except:
-                                pass
+                                self.ignored_Files.append(aFile)
                             #END TRY/EXCEPT
                         #END FOR files
                     #END FOR os.walk
@@ -286,7 +286,7 @@ class SpeedTestDS(object):
                         if ("CPUC Tester Beta v2.0" in isItCPUC):
                             totalFiles += 1
                     except:
-                        pass
+                        continue
                 #END FOR files
             #END FOR os.walker
             print("Done counting files...")
@@ -315,7 +315,7 @@ class SpeedTestDS(object):
                             self.addToStructure(test_STFile)
                         #END IF
                     except:
-                        pass
+                        self.ignored_Files.append(aFile)
                 #END FOR files
             #END FOR os.walk
             #Printing an empty line after all of the files have been read, so to clear the text
@@ -719,6 +719,7 @@ class SpeedTestDS(object):
             #Print the number of files that were ignored because of bad carrier information
             returnedString += "Num ignore files: " + str(len(self.ignored_Files)) + "\n"
         else:
+            returnedString += "Ignored Files:\n"
             #This loop prints the file names of all of the ignored files
             for itir in range( int(len(self.ignored_Files)/2) ):
                 try: returnedString += self.ignored_Files[itir*2] + ", " + self.ignored_Files[(itir*2)+1] + "\n"
