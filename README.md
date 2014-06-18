@@ -6,7 +6,9 @@ This Program is currently out-of-date. More updated version, which will provide 
 
 
 iPerf Parser in Python
- - main.py is the starting script that will be run. It uses class files located in ParserStructure, which are used to store speed test information. After choosing the starting folder (which houses all of the raw data files), the parser will interpret the raw data into objects, and then ask the user what kind of analysis they would like done.
+ - main.py is the starting script that will be run. It uses class files located in ParserStructure, which are used to store
+   speed test information. After choosing the starting folder (which houses all of the raw data files), the parser will
+   interpret the raw data into objects, and then ask the user what kind of analysis they would like done.
 
  - Current analyses:
    + Distribution of the standard deviation of TCP connections. The speeds used
